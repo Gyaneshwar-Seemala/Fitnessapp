@@ -1,0 +1,1417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Apex 50 — Protocol</title>
+
+  <!-- PWA Manifest & Standalone Settings -->
+  <link rel="manifest" href="./manifest.json">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#0d0f12">
+
+  <!-- iOS Standalone Settings -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Apex50">
+  <link rel="apple-touch-icon" href="https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/Dumbbell_icon.png/512px-Dumbbell_icon.png">
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js');
+      });
+    }
+  </script>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Google Fonts: Plus Jakarta Sans for UI + JetBrains Mono for metrics -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', '-apple-system', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace']
+          },
+          colors: {
+            brand: {
+              terracotta: '#C85A32',
+              terracottaDark: '#E06B43',
+              olive: '#47634E',
+              oliveLight: '#5E8266'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    :root {
+      --bg-page: #F7F5F0;
+      --card-bg: #FFFFFF;
+      --border-color: #E8E2D8;
+      --text-primary: #18181B;
+      --text-muted: #71717A;
+    }
+    .dark {
+      --bg-page: #0C0C0E;
+      --card-bg: #161619;
+      --border-color: #27272A;
+      --text-primary: #F4F4F5;
+      --text-muted: #A1A1AA;
+    }
+    body {
+      background-color: var(--bg-page);
+      color: var(--text-primary);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+      -webkit-font-smoothing: antialiased;
+      transition: background-color 0.25s ease, color 0.25s ease;
+    }
+    input, textarea {
+      user-select: text;
+    }
+    .safe-bottom {
+      padding-bottom: max(1.2rem, env(safe-area-inset-bottom, 1.2rem));
+    }
+    .paper-card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+      transition: background-color 0.25s ease, border-color 0.25s ease;
+    }
+    .subtle-press:active {
+      transform: scale(0.975);
+      transition: transform 0.08s ease;
+    }
+    .custom-scroll::-webkit-scrollbar {
+      width: 4px;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background: var(--border-color);
+      border-radius: 9999px;
+    }
+  </style>
+</head>
+<body class="flex justify-center min-h-screen">
+
+  <!-- Mobile Device Shell -->
+  <div class="w-full max-w-md flex flex-col min-h-screen relative pb-28 border-x border-stone-200 dark:border-stone-800 shadow-2xl transition-colors duration-200">
+    
+    <!-- Top Fixed Clean Header -->
+    <header class="sticky top-0 z-30 px-5 pt-4 pb-3.5 border-b border-stone-200 dark:border-stone-800 flex items-center justify-between bg-inherit/95 backdrop-blur-md">
+      <div class="flex items-baseline gap-2">
+        <h1 class="text-xl font-extrabold tracking-tight text-stone-900 dark:text-stone-100">Apex 50</h1>
+        <span class="text-[10px] font-mono tracking-widest uppercase font-bold text-brand-terracotta dark:text-brand-terracottaDark">PROTOCOL</span>
+      </div>
+      
+      <div class="flex items-center gap-2">
+        <!-- Theme Toggle -->
+        <button onclick="toggleAppTheme()" class="w-8 h-8 rounded-full flex items-center justify-center border border-stone-200 dark:border-stone-700 bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-200 subtle-press transition">
+          <i id="themeIcon" data-lucide="moon" class="w-4 h-4"></i>
+        </button>
+
+        <!-- API Key Status Pill -->
+        <button onclick="switchTab('settings')" class="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-bold border border-stone-200 dark:border-stone-700 bg-stone-100 dark:bg-stone-800 text-stone-800 dark:text-stone-200 subtle-press transition">
+          <i data-lucide="key" class="w-3.5 h-3.5 text-brand-terracotta"></i>
+          <span id="apiKeyStatusText">API Key</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Dynamic Screen Content -->
+    <main class="flex-1 px-4 pt-4 space-y-4 overflow-y-auto custom-scroll">
+
+      <!-- ================= VIEW 1: TODAY'S LOG ================= -->
+      <section id="view-today" class="space-y-4">
+        
+        <!-- Fasted Weight & Day Hero Card -->
+        <div class="paper-card rounded-2xl p-5">
+          <div class="flex justify-between items-start">
+            <div>
+              <div class="text-[11px] font-mono font-bold uppercase tracking-wider text-stone-400 dark:text-stone-500 flex items-center gap-1.5">
+                <span>Phase 01</span>
+                <span>•</span>
+                <span id="todayDateStr">Day 16 of 50</span>
+              </div>
+              <div class="flex items-baseline gap-2 mt-1">
+                <input type="number" step="0.1" id="weightHeroInput" class="w-24 bg-transparent text-4xl font-extrabold text-stone-900 dark:text-stone-50 tracking-tight focus:outline-none focus:border-b-2 border-brand-terracotta" onchange="saveHeroWeight(this.value)">
+                <span class="text-sm font-bold text-stone-400 dark:text-stone-500">kg</span>
+              </div>
+            </div>
+            <div class="text-right">
+              <span class="inline-block px-3 py-1 rounded-full text-xs font-mono font-bold bg-stone-100 dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-stone-900 dark:text-stone-200">
+                Target: 70.0 kg
+              </span>
+              <p class="text-xs font-mono font-bold text-emerald-600 dark:text-emerald-400 mt-1.5">-1.2 kg net</p>
+            </div>
+          </div>
+
+          <!-- 50-Day Trajectory Bar -->
+          <div class="mt-4 pt-3.5 border-t border-stone-100 dark:border-stone-800">
+            <div class="flex justify-between text-xs font-mono font-bold mb-1.5 text-stone-500 dark:text-stone-400">
+              <span>Challenge Trajectory</span>
+              <span id="protocolProgressPct" class="text-stone-900 dark:text-stone-100">32%</span>
+            </div>
+            <div class="w-full h-2 bg-stone-100 dark:bg-stone-800 rounded-full overflow-hidden">
+              <div id="protocolProgressBar" class="h-full bg-stone-900 dark:bg-stone-200 rounded-full transition-all duration-500" style="width: 32%;"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- AI Action Launchers -->
+        <div class="grid grid-cols-2 gap-3">
+          <button onclick="switchTab('lens-food')" class="paper-card rounded-2xl p-4 flex items-center gap-3.5 subtle-press text-left hover:border-brand-terracotta transition group">
+            <div class="w-10 h-10 rounded-xl bg-orange-50 dark:bg-orange-950/50 text-brand-terracotta flex items-center justify-center shrink-0">
+              <i data-lucide="camera" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <div class="text-sm font-bold text-stone-900 dark:text-stone-100 leading-tight">Food Lens</div>
+              <div class="text-[11px] font-medium text-stone-400 dark:text-stone-500 mt-0.5">Snap or type meal</div>
+            </div>
+          </button>
+
+          <button onclick="switchTab('lens-workout')" class="paper-card rounded-2xl p-4 flex items-center gap-3.5 subtle-press text-left hover:border-emerald-600 transition group">
+            <div class="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
+              <i data-lucide="dumbbell" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <div class="text-sm font-bold text-stone-900 dark:text-stone-100 leading-tight">Workout Lens</div>
+              <div class="text-[11px] font-medium text-stone-400 dark:text-stone-500 mt-0.5">Parse gym screenshot</div>
+            </div>
+          </button>
+        </div>
+
+        <!-- Calories & Nutrition Card -->
+        <div class="paper-card rounded-2xl p-5 space-y-4">
+          <div class="flex items-center justify-between">
+            <div>
+              <div class="text-[11px] font-mono font-bold uppercase tracking-wider text-stone-400 dark:text-stone-500">Daily Calorie Ceiling</div>
+              <div class="flex items-baseline gap-1.5 mt-0.5">
+                <span id="calCurrentDisplay" class="text-3xl font-extrabold tracking-tight text-stone-900 dark:text-stone-50 font-mono">1,240</span>
+                <span class="text-xs font-mono font-bold text-stone-400 dark:text-stone-500">/ 1,900 kcal</span>
+              </div>
+            </div>
+            <div class="text-right">
+              <span id="calRemainingBadge" class="text-xs font-mono font-bold px-3 py-1 rounded-lg bg-stone-100 dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-stone-800 dark:text-stone-200">
+                660 kcal left
+              </span>
+            </div>
+          </div>
+
+          <!-- Progress Bar -->
+          <div class="w-full h-2.5 bg-stone-100 dark:bg-stone-800 rounded-full overflow-hidden">
+            <div id="calProgressBar" class="h-full bg-brand-terracotta rounded-full transition-all duration-300" style="width: 65%;"></div>
+          </div>
+
+          <!-- High-Contrast Macros Grid -->
+          <div class="grid grid-cols-3 gap-2 pt-2 border-t border-stone-100 dark:border-stone-800 text-center">
+            <div class="py-1">
+              <span class="text-[10px] font-mono font-bold uppercase text-stone-400 dark:text-stone-500">Protein</span>
+              <div class="text-base font-extrabold font-mono text-stone-900 dark:text-stone-100 mt-0.5"><span id="macroProteinToday">118</span><span class="text-xs font-medium text-stone-400">/150g</span></div>
+            </div>
+            <div class="py-1 border-x border-stone-100 dark:border-stone-800">
+              <span class="text-[10px] font-mono font-bold uppercase text-stone-400 dark:text-stone-500">Carbs</span>
+              <div class="text-base font-extrabold font-mono text-stone-900 dark:text-stone-100 mt-0.5"><span id="macroCarbsToday">112</span>g</div>
+            </div>
+            <div class="py-1">
+              <span class="text-[10px] font-mono font-bold uppercase text-stone-400 dark:text-stone-500">Fats</span>
+              <div class="text-base font-extrabold font-mono text-stone-900 dark:text-stone-100 mt-0.5"><span id="macroFatsToday">34</span>g</div>
+            </div>
+          </div>
+
+          <!-- Logged Meals List -->
+          <div class="pt-3 border-t border-stone-100 dark:border-stone-800">
+            <div class="flex justify-between items-center mb-2.5">
+              <span class="text-[11px] font-mono font-bold uppercase tracking-wider text-stone-400 dark:text-stone-500">Today's Ingested Meals</span>
+              <button onclick="switchTab('lens-food')" class="text-xs font-bold text-brand-terracotta dark:text-brand-terracottaDark hover:underline">+ Log Meal</button>
+            </div>
+            <div id="todayMealsContainer" class="space-y-2"></div>
+          </div>
+        </div>
+
+        <!-- Hydration Protocol Card -->
+        <div class="paper-card rounded-2xl p-5 space-y-4">
+          <div class="flex items-center justify-between">
+            <div>
+              <div class="text-[11px] font-mono font-bold uppercase tracking-wider text-stone-400 dark:text-stone-500">Hydration (4.0L Target)</div>
+              <div class="flex items-baseline gap-1 mt-0.5">
+                <span id="waterCurrentDisplay" class="text-3xl font-extrabold font-mono text-stone-900 dark:text-stone-50 tracking-tight">3.25</span>
+                <span class="text-xs font-mono font-bold text-stone-400 dark:text-stone-500">/ 4.00 L</span>
+              </div>
+            </div>
+            <span id="waterPctBadge" class="text-xs font-mono font-bold px-3 py-1 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
+              81%
+            </span>
+          </div>
+
+          <div class="w-full h-2 bg-stone-100 dark:bg-stone-800 rounded-full overflow-hidden">
+            <div id="waterProgressBar" class="h-full bg-emerald-600 rounded-full transition-all duration-300" style="width: 81%;"></div>
+          </div>
+
+          <div class="grid grid-cols-4 gap-2 pt-1">
+            <button onclick="addWater(250)" class="py-2 rounded-xl border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-800/60 font-mono text-xs font-bold text-stone-800 dark:text-stone-200 subtle-press hover:border-emerald-500 transition">+250ml</button>
+            <button onclick="addWater(500)" class="py-2 rounded-xl border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-800/60 font-mono text-xs font-bold text-stone-800 dark:text-stone-200 subtle-press hover:border-emerald-500 transition">+500ml</button>
+            <button onclick="addWater(1000)" class="py-2 rounded-xl border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-800/60 font-mono text-xs font-bold text-stone-800 dark:text-stone-200 subtle-press hover:border-emerald-500 transition">+1.0L</button>
+            <button onclick="resetWater()" class="py-2 rounded-xl border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-800/60 font-mono text-xs font-bold text-stone-400 dark:text-stone-500 hover:text-red-600 subtle-press transition">Reset</button>
+          </div>
+        </div>
+
+        <!-- Workout of the Day Card -->
+        <div class="paper-card rounded-2xl p-5 space-y-3.5">
+          <div class="flex items-center justify-between">
+            <div>
+              <div class="text-[11px] font-mono font-bold uppercase tracking-wider text-stone-400 dark:text-stone-500">Daily Training Session</div>
+              <div class="text-base font-bold text-stone-900 dark:text-stone-100 mt-0.5" id="todaySplitDisplay">Pull (Back & Biceps)</div>
+            </div>
+            <label class="flex items-center gap-2 cursor-pointer bg-stone-100 dark:bg-stone-800 border border-stone-200 dark:border-stone-700 px-3 py-1.5 rounded-full subtle-press">
+              <input type="checkbox" id="todayWorkoutCheckbox" class="w-4 h-4 text-stone-900 rounded accent-brand-terracotta focus:ring-0" onchange="toggleWorkoutCompleted()">
+              <span class="text-xs font-mono font-bold text-stone-900 dark:text-stone-200">Completed</span>
+            </label>
+          </div>
+
+          <div class="grid grid-cols-4 gap-2 text-center">
+            <button onclick="setSplitPreset('Push')" class="py-1.5 text-xs font-mono font-bold rounded-lg border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-700 dark:text-stone-300 hover:border-stone-400">Push</button>
+            <button onclick="setSplitPreset('Pull')" class="py-1.5 text-xs font-mono font-bold rounded-lg border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-700 dark:text-stone-300 hover:border-stone-400">Pull</button>
+            <button onclick="setSplitPreset('Legs')" class="py-1.5 text-xs font-mono font-bold rounded-lg border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-700 dark:text-stone-300 hover:border-stone-400">Legs</button>
+            <button onclick="setSplitPreset('Rest / Active')" class="py-1.5 text-xs font-mono font-bold rounded-lg border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-700 dark:text-stone-300 hover:border-stone-400">Rest</button>
+          </div>
+
+          <textarea id="todayWorkoutNotes" rows="2" placeholder="Exercise notes, load, reps or AI parsed summaries..." class="w-full p-3 text-xs font-mono bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-700 rounded-xl text-stone-900 dark:text-stone-100 placeholder-stone-400 focus:outline-none focus:border-stone-800 dark:focus:border-stone-300" onchange="saveTodayNotes()"></textarea>
+
+          <button onclick="switchTab('lens-workout')" class="w-full py-2.5 rounded-xl border border-dashed border-stone-300 dark:border-stone-700 text-xs font-mono font-bold text-stone-500 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100 flex items-center justify-center gap-2 subtle-press transition">
+            <i data-lucide="image" class="w-4 h-4 text-emerald-600"></i> Upload Hevy / Gym Screenshot
+          </button>
+        </div>
+
+      </section>
+
+      <!-- ================= VIEW 2: AI FOOD LENS ================= -->
+      <section id="view-lens-food" class="hidden space-y-4">
+        <div class="flex items-center justify-between pb-1">
+          <div>
+            <h2 class="text-xl font-extrabold text-stone-900 dark:text-stone-100 tracking-tight">Food Lens</h2>
+            <p class="text-xs text-stone-400 font-medium">Gemini 2.5 Flash Nutrition Vision</p>
+          </div>
+          <button onclick="switchTab('today')" class="text-xs font-mono font-bold text-stone-500 hover:text-stone-900 dark:hover:text-stone-100">
+            &larr; Today
+          </button>
+        </div>
+
+        <div class="paper-card rounded-2xl p-5 space-y-4">
+          <div class="text-xs font-mono font-bold uppercase tracking-wider text-stone-400 dark:text-stone-500">1. Meal Photo</div>
+          
+          <div id="mealImageDropArea" class="border-2 border-dashed border-stone-300 dark:border-stone-700 rounded-xl p-5 flex flex-col items-center justify-center text-center cursor-pointer hover:border-brand-terracotta bg-stone-50/50 dark:bg-stone-900/40 transition min-h-[140px]" onclick="document.getElementById('foodFileInput').click()">
+            <img id="foodPhotoPreview" class="hidden w-full h-48 object-cover rounded-xl mb-2">
+            <div id="foodPlaceholderUI" class="space-y-1.5">
+              <i data-lucide="camera" class="w-7 h-7 text-brand-terracotta mx-auto"></i>
+              <div class="text-sm font-bold text-stone-900 dark:text-stone-200">Tap to snap or upload meal</div>
+              <div class="text-[11px] text-stone-400 font-mono">JPG, PNG, HEIC</div>
+            </div>
+          </div>
+          <input type="file" id="foodFileInput" accept="image/*" class="hidden" onchange="handleFoodImageSelected(event)">
+
+          <div class="pt-2 border-t border-stone-100 dark:border-stone-800">
+            <label class="block text-[11px] font-mono font-bold uppercase tracking-wider text-stone-400 dark:text-stone-500 mb-1.5">2. Or Describe Meal / Context</label>
+            <textarea id="foodTextDescription" rows="2.5" placeholder="e.g. 2 wheat rotis with ghee, 150g grilled chicken breast, 1 bowl dal" class="w-full p-3 text-xs font-medium bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-700 rounded-xl text-stone-900 dark:text-stone-100 placeholder-stone-400 focus:outline-none focus:border-stone-900 dark:focus:border-stone-300"></textarea>
+          </div>
+
+          <button onclick="runGeminiFoodAnalysis()" id="btnAnalyzeFood" class="w-full py-3 rounded-xl bg-stone-900 dark:bg-stone-100 text-stone-50 dark:text-stone-900 text-xs font-mono font-bold uppercase tracking-wider subtle-press flex items-center justify-center gap-2 hover:opacity-90 transition">
+            <i data-lucide="sparkles" class="w-4 h-4 text-brand-terracotta"></i> Calculate Calories & Macros
+          </button>
+        </div>
+
+        <!-- AI Food Review Card -->
+        <div id="foodResultCard" class="hidden paper-card rounded-2xl p-5 border-2 border-brand-terracotta space-y-4">
+          <div class="flex items-center justify-between border-b border-stone-100 dark:border-stone-800 pb-2.5">
+            <div>
+              <span class="text-[10px] font-mono uppercase tracking-wider text-brand-terracotta font-extrabold">Gemini Nutrition Breakdown</span>
+              <h3 id="foodResName" class="text-lg font-extrabold text-stone-900 dark:text-stone-100 mt-0.5">Meal Name</h3>
+            </div>
+            <span class="text-2xl font-extrabold font-mono text-stone-900 dark:text-stone-100" id="foodResCal">0 <span class="text-xs font-normal text-stone-400">kcal</span></span>
+          </div>
+
+          <div class="grid grid-cols-3 gap-2 text-center">
+            <div class="p-2.5 bg-stone-50 dark:bg-stone-900 rounded-xl border border-stone-200 dark:border-stone-800">
+              <span class="text-[9px] font-mono font-bold uppercase text-stone-400">Protein</span>
+              <div class="font-mono text-sm font-extrabold text-stone-900 dark:text-stone-100 mt-0.5" id="foodResProtein">0g</div>
+            </div>
+            <div class="p-2.5 bg-stone-50 dark:bg-stone-900 rounded-xl border border-stone-200 dark:border-stone-800">
+              <span class="text-[9px] font-mono font-bold uppercase text-stone-400">Carbs</span>
+              <div class="font-mono text-sm font-extrabold text-stone-900 dark:text-stone-100 mt-0.5" id="foodResCarbs">0g</div>
+            </div>
+            <div class="p-2.5 bg-stone-50 dark:bg-stone-900 rounded-xl border border-stone-200 dark:border-stone-800">
+              <span class="text-[9px] font-mono font-bold uppercase text-stone-400">Fats</span>
+              <div class="font-mono text-sm font-extrabold text-stone-900 dark:text-stone-100 mt-0.5" id="foodResFats">0g</div>
+            </div>
+          </div>
+
+          <p id="foodResNotes" class="text-xs text-stone-600 dark:text-stone-300 leading-relaxed italic bg-stone-50 dark:bg-stone-900/60 p-3 rounded-xl border border-stone-200 dark:border-stone-800"></p>
+
+          <div class="flex gap-2 pt-1">
+            <button onclick="discardFoodResult()" class="w-1/3 py-2.5 rounded-xl border border-stone-300 dark:border-stone-700 font-mono text-xs font-bold text-stone-500">Discard</button>
+            <button onclick="commitFoodToLog()" class="w-2/3 py-2.5 rounded-xl bg-brand-terracotta text-white font-mono text-xs font-bold uppercase subtle-press hover:opacity-90">Commit to Today</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= VIEW 3: AI WORKOUT SCREENSHOT LENS ================= -->
+      <section id="view-lens-workout" class="hidden space-y-4">
+        <div class="flex items-center justify-between pb-1">
+          <div>
+            <h2 class="text-xl font-extrabold text-stone-900 dark:text-stone-100 tracking-tight">Workout Lens</h2>
+            <p class="text-xs text-stone-400 font-medium">Hevy & Gym App Screenshot Parser</p>
+          </div>
+          <button onclick="switchTab('today')" class="text-xs font-mono font-bold text-stone-500 hover:text-stone-900 dark:hover:text-stone-100">
+            &larr; Today
+          </button>
+        </div>
+
+        <div class="paper-card rounded-2xl p-5 space-y-4">
+          <div class="text-xs font-mono font-bold uppercase tracking-wider text-stone-400 dark:text-stone-500">Upload Hevy / FitNotes Screenshot</div>
+          
+          <div id="workoutDropArea" class="border-2 border-dashed border-stone-300 dark:border-stone-700 rounded-xl p-5 flex flex-col items-center justify-center text-center cursor-pointer hover:border-emerald-500 bg-stone-50/50 dark:bg-stone-900/40 transition min-h-[140px]" onclick="document.getElementById('workoutFileInput').click()">
+            <img id="workoutPhotoPreview" class="hidden w-full max-h-64 object-contain rounded-xl mb-2">
+            <div id="workoutPlaceholderUI" class="space-y-1.5">
+              <i data-lucide="dumbbell" class="w-7 h-7 text-emerald-600 mx-auto"></i>
+              <div class="text-sm font-bold text-stone-900 dark:text-stone-200">Tap to select gym screenshot</div>
+              <div class="text-[11px] text-stone-400 font-mono">Parses exercises, sets, reps & total kg</div>
+            </div>
+          </div>
+          <input type="file" id="workoutFileInput" accept="image/*" class="hidden" onchange="handleWorkoutImageSelected(event)">
+
+          <button onclick="runGeminiWorkoutAnalysis()" id="btnAnalyzeWorkout" class="w-full py-3 rounded-xl bg-stone-900 dark:bg-stone-100 text-stone-50 dark:text-stone-900 text-xs font-mono font-bold uppercase tracking-wider subtle-press flex items-center justify-center gap-2 hover:opacity-90 transition">
+            <i data-lucide="sparkles" class="w-4 h-4 text-emerald-500"></i> Parse Session & Volume
+          </button>
+        </div>
+
+        <!-- Workout Result Preview -->
+        <div id="workoutResultCard" class="hidden paper-card rounded-2xl p-5 border-2 border-emerald-600 space-y-4">
+          <div class="flex items-start justify-between border-b border-stone-100 dark:border-stone-800 pb-3">
+            <div>
+              <span class="text-[10px] font-mono uppercase tracking-wider text-emerald-600 font-extrabold">Parsed Gym Session</span>
+              <h3 id="workoutResTitle" class="text-lg font-extrabold text-stone-900 dark:text-stone-100 mt-0.5">Session</h3>
+              <div id="workoutResFocus" class="text-xs font-bold font-mono text-stone-400 mt-0.5">Focus</div>
+            </div>
+            <div class="text-right">
+              <div class="text-[10px] font-mono text-stone-400 font-bold uppercase">Volume</div>
+              <div id="workoutResVolume" class="font-mono text-base font-extrabold text-stone-900 dark:text-stone-100">0 kg</div>
+            </div>
+          </div>
+
+          <div class="space-y-2" id="workoutResExercisesList"></div>
+
+          <div class="p-3 bg-stone-50 dark:bg-stone-900 rounded-xl border border-stone-200 dark:border-stone-800 text-xs text-stone-700 dark:text-stone-300 font-mono" id="workoutResSummary"></div>
+
+          <div class="flex gap-2 pt-1">
+            <button onclick="discardWorkoutResult()" class="w-1/3 py-2.5 rounded-xl border border-stone-300 dark:border-stone-700 font-mono text-xs font-bold text-stone-500">Discard</button>
+            <button onclick="commitWorkoutToLog()" class="w-2/3 py-2.5 rounded-xl bg-emerald-600 text-white font-mono text-xs font-bold uppercase subtle-press hover:opacity-90">Commit to Today</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= VIEW 4: TRAJECTORY & ANALYTICS ================= -->
+      <section id="view-trends" class="hidden space-y-4">
+        <div class="pb-1">
+          <h2 class="text-xl font-extrabold text-stone-900 dark:text-stone-100 tracking-tight">Trajectory</h2>
+          <p class="text-xs text-stone-400 font-medium">50-Day challenge metrics & historical ledger</p>
+        </div>
+
+        <!-- 3-Pill Summary -->
+        <div class="paper-card rounded-2xl p-4 sm:p-5">
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 divide-y sm:divide-y-0 sm:divide-x divide-stone-100 dark:divide-stone-800 text-center">
+            <div class="py-2 sm:py-0 sm:px-2 flex flex-col items-center justify-center">
+              <span class="text-[10px] font-mono font-bold uppercase tracking-wider text-stone-400">Current Weight</span>
+              <div id="metricCurrentWeight" class="text-2xl font-extrabold text-stone-900 dark:text-stone-100 font-mono mt-1 break-words">75.0 kg</div>
+              <span class="text-[10px] font-mono font-medium text-stone-400 mt-0.5">Day 16 of 50</span>
+            </div>
+            <div class="py-2 sm:py-0 sm:px-2 flex flex-col items-center justify-center">
+              <span class="text-[10px] font-mono font-bold uppercase tracking-wider text-stone-400">Net Delta</span>
+              <div id="metricNetLost" class="text-2xl font-extrabold text-emerald-600 dark:text-emerald-400 font-mono mt-1 break-words">-1.2 kg</div>
+              <span class="text-[10px] font-mono font-medium text-stone-400 mt-0.5">From 76.2 kg start</span>
+            </div>
+            <div class="py-2 sm:py-0 sm:px-2 flex flex-col items-center justify-center">
+              <span class="text-[10px] font-mono font-bold uppercase tracking-wider text-stone-400">To Milestone</span>
+              <div id="metricToGoal" class="text-2xl font-extrabold text-brand-terracotta dark:text-brand-terracottaDark font-mono mt-1 break-words">5.0 kg</div>
+              <span class="text-[10px] font-mono font-medium text-stone-400 mt-0.5">Target: 70.0 kg</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Weight Line Chart -->
+        <div class="paper-card rounded-2xl p-4 sm:p-5 space-y-3">
+          <div class="flex flex-wrap items-baseline justify-between gap-2">
+            <span class="text-xs font-mono font-bold uppercase tracking-wider text-stone-400">Fasted Weight Trajectory</span>
+            <span class="text-xs font-mono font-bold text-brand-terracotta dark:text-brand-terracottaDark">Floor: 70.0 kg</span>
+          </div>
+          <div class="w-full h-48 relative min-w-0">
+            <svg id="weightSvgChart" class="w-full h-full overflow-visible"></svg>
+          </div>
+          <div class="flex justify-between text-[10px] font-mono font-medium text-stone-400 pt-2 border-t border-stone-100 dark:border-stone-800">
+            <span>Day 1 (76.2kg)</span>
+            <span>Day 16 (75.0kg)</span>
+            <span>Day 50 (70.0kg)</span>
+          </div>
+        </div>
+
+        <!-- Calorie Adherence Bars -->
+        <div class="paper-card rounded-2xl p-4 sm:p-5 space-y-3">
+          <div class="flex flex-wrap items-baseline justify-between gap-2">
+            <span class="text-xs font-mono font-bold uppercase tracking-wider text-stone-400">Caloric Adherence Ledger</span>
+            <span class="text-xs font-mono font-bold text-stone-500">Ceiling: 1,900 kcal</span>
+          </div>
+          <div class="w-full h-36 relative min-w-0">
+            <svg id="calSvgChart" class="w-full h-full overflow-visible"></svg>
+          </div>
+          <div class="flex justify-between text-[10px] font-mono font-medium text-stone-400 pt-2 border-t border-stone-100 dark:border-stone-800">
+            <span>Historical Days</span>
+            <span class="text-brand-terracotta dark:text-brand-terracottaDark">• Red = Exceeded ceiling</span>
+          </div>
+        </div>
+
+        <!-- Historical Ledger -->
+        <div class="paper-card rounded-2xl p-4 sm:p-5 space-y-3">
+          <div class="text-xs font-mono font-bold uppercase tracking-wider text-stone-400">Historical Log Entries</div>
+          <div id="historyEntriesLedger" class="space-y-2.5 max-h-80 overflow-y-auto custom-scroll pr-1"></div>
+        </div>
+      </section>
+
+      <!-- ================= VIEW 5: CONFIG & DATA IMPORT/EXPORT ================= -->
+      <section id="view-settings" class="hidden space-y-4">
+        <div class="pb-1">
+          <h2 class="text-xl font-extrabold text-stone-900 dark:text-stone-100 tracking-tight">Configuration & Data</h2>
+          <p class="text-xs text-stone-400 font-medium">Theme, Gemini API key & Custom JSON Data</p>
+        </div>
+
+        <!-- Theme Mode Card -->
+        <div class="paper-card rounded-2xl p-4 sm:p-5 flex flex-wrap items-center justify-between gap-3">
+          <div class="min-w-0 flex-1">
+            <div class="text-sm font-bold text-stone-900 dark:text-stone-100">Display Theme</div>
+            <div class="text-xs text-stone-400 mt-0.5">Switch between Warm Editorial & Obsidian Dark</div>
+          </div>
+          <button onclick="toggleAppTheme()" class="px-4 py-2.5 rounded-xl border border-stone-200 dark:border-stone-700 bg-stone-100 dark:bg-stone-800 text-xs font-mono font-bold flex items-center gap-2 subtle-press shrink-0">
+            <i id="themeToggleBtnIcon" data-lucide="moon" class="w-4 h-4"></i>
+            <span id="themeToggleBtnText">Dark</span>
+          </button>
+        </div>
+
+        <!-- Gemini API Key Card -->
+        <div class="paper-card rounded-2xl p-4 sm:p-5 space-y-3.5">
+          <div class="flex items-center gap-2">
+            <i data-lucide="key" class="w-4 h-4 text-brand-terracotta shrink-0"></i>
+            <span class="text-xs font-mono font-bold text-stone-900 dark:text-stone-100 uppercase tracking-wider">Gemini 2.5 Flash API Key</span>
+          </div>
+          <p class="text-xs text-stone-500 dark:text-stone-400 leading-relaxed">
+            Direct client-side key for Food Lens analysis and Gym screenshot OCR. Stored exclusively in your phone's browser storage.
+          </p>
+          <input type="password" id="settingsKeyInput" placeholder="AIzaSy..." class="w-full p-3.5 text-xs font-mono bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-700 rounded-xl text-stone-900 dark:text-stone-100 focus:outline-none focus:border-stone-900 dark:focus:border-stone-200" onchange="updateApiKey(this.value)">
+          <div class="text-[11px] text-stone-400 font-mono">
+            Get your free key at <a href="https://aistudio.google.com/" target="_blank" class="underline text-brand-terracotta font-bold">Google AI Studio</a>.
+          </div>
+        </div>
+
+        <!-- JSON Format & Import/Export -->
+        <div class="paper-card rounded-2xl p-4 sm:p-5 space-y-4">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <div class="text-xs font-mono font-bold uppercase tracking-wider text-stone-900 dark:text-stone-100">Upload Your Own Data (JSON)</div>
+            <button onclick="downloadSampleJSON()" class="text-xs font-mono font-bold text-brand-terracotta dark:text-brand-terracottaDark hover:underline subtle-press">Sample File</button>
+          </div>
+          <p class="text-xs text-stone-500 dark:text-stone-400 leading-relaxed">
+            You can prepare your custom historical data in the format below and upload it directly to populate all 50 days instantly.
+          </p>
+
+          <div class="p-4 bg-stone-900 text-stone-200 rounded-xl text-[11px] font-mono leading-relaxed border border-stone-800 overflow-x-auto custom-scroll w-full">
+            <pre class="m-0 whitespace-pre"><code>{
+  "2026-11-06": {
+    "dayNum": 16,
+    "weight": 75.0,
+    "water": 3250,
+    "sleep": 7.5,
+    "split": "Pull (Back & Bi)",
+    "workoutDone": true,
+    "workoutNotes": "Heavy rows & pull-ups",
+    "meals": [
+      {
+        "id": 1,
+        "name": "Eggs & Toast",
+        "cal": 420,
+        "protein": 26,
+        "carbs": 34,
+        "fats": 16,
+        "time": "08:30"
+      }
+    ]
+  }
+}</code></pre>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+            <button onclick="document.getElementById('importFilePicker').click()" class="w-full py-3 px-4 rounded-xl bg-brand-terracotta dark:bg-brand-terracottaDark text-white text-xs font-mono font-bold subtle-press flex items-center justify-center gap-2 hover:opacity-90 transition">
+              <i data-lucide="upload" class="w-4 h-4"></i> Upload JSON
+            </button>
+            <button onclick="exportDataJSON()" class="w-full py-3 px-4 rounded-xl border border-stone-200 dark:border-stone-700 bg-stone-100 dark:bg-stone-800 text-stone-800 dark:text-stone-200 text-xs font-mono font-bold subtle-press flex items-center justify-center gap-2 transition hover:border-stone-400">
+              <i data-lucide="download" class="w-4 h-4"></i> Export Backup
+            </button>
+          </div>
+          <input type="file" id="importFilePicker" accept=".json" class="hidden" onchange="importDataJSON(event)">
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Bottom Mobile Nav Bar -->
+    <nav class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-inherit/95 backdrop-blur-md border-t border-stone-200 dark:border-stone-800 safe-bottom z-40 px-3 py-2 flex justify-around items-center">
+      <button onclick="switchTab('today')" id="nav-btn-today" class="flex flex-col items-center gap-1 text-stone-900 dark:text-stone-100 subtle-press transition">
+        <i data-lucide="calendar" class="w-4 h-4"></i>
+        <span class="text-[9px] font-mono font-bold tracking-wider uppercase">Today</span>
+      </button>
+
+      <button onclick="switchTab('lens-food')" id="nav-btn-lens-food" class="flex flex-col items-center gap-1 text-stone-400 dark:text-stone-500 subtle-press transition">
+        <i data-lucide="camera" class="w-4 h-4"></i>
+        <span class="text-[9px] font-mono font-bold tracking-wider uppercase">Food</span>
+      </button>
+
+      <button onclick="switchTab('lens-workout')" id="nav-btn-lens-workout" class="flex flex-col items-center gap-1 text-stone-400 dark:text-stone-500 subtle-press transition">
+        <i data-lucide="dumbbell" class="w-4 h-4"></i>
+        <span class="text-[9px] font-mono font-bold tracking-wider uppercase">Workout</span>
+      </button>
+
+      <button onclick="switchTab('trends')" id="nav-btn-trends" class="flex flex-col items-center gap-1 text-stone-400 dark:text-stone-500 subtle-press transition">
+        <i data-lucide="line-chart" class="w-4 h-4"></i>
+        <span class="text-[9px] font-mono font-bold tracking-wider uppercase">Trends</span>
+      </button>
+
+      <button onclick="switchTab('settings')" id="nav-btn-settings" class="flex flex-col items-center gap-1 text-stone-400 dark:text-stone-500 subtle-press transition">
+        <i data-lucide="sliders" class="w-4 h-4"></i>
+        <span class="text-[9px] font-mono font-bold tracking-wider uppercase">Config</span>
+      </button>
+    </nav>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 bg-stone-900 dark:bg-stone-100 text-stone-50 dark:text-stone-900 text-xs font-mono font-bold px-4 py-2 rounded-full shadow-2xl pointer-events-none transition-all duration-200 opacity-0 transform -translate-y-2">
+      <span id="toastMessage">Updated</span>
+    </div>
+
+  </div>
+
+  <script>
+    const STORAGE_KEY_LOGS = 'apex50_editorial_logs_v2';
+    const STORAGE_KEY_API_KEY = 'apex50_editorial_gemini_key_v2';
+    const STORAGE_KEY_THEME = 'apex50_theme_v2';
+
+    const PROTOCOL = {
+      startWeight: 76.2,
+      goalWeight: 70.0,
+      totalDays: 50,
+      calCeiling: 1900,
+      proteinGoal: 150,
+      waterTarget: 4000
+    };
+
+    let apiKey = localStorage.getItem(STORAGE_KEY_API_KEY) || '';
+    let dailyRecords = {};
+    let isDarkMode = localStorage.getItem(STORAGE_KEY_THEME) === 'dark';
+
+    let stagedFoodData = null;
+    let stagedFoodBase64 = null;
+    let stagedWorkoutData = null;
+    let stagedWorkoutBase64 = null;
+
+    const today = new Date();
+    const todayKey = today.toISOString().split('T')[0];
+
+    window.addEventListener('DOMContentLoaded', () => {
+      applyTheme(isDarkMode);
+      initDatabase();
+      updateApiKeyUI();
+      renderTodayView();
+      lucide.createIcons();
+    });
+
+    function toggleAppTheme() {
+      isDarkMode = !isDarkMode;
+      localStorage.setItem(STORAGE_KEY_THEME, isDarkMode ? 'dark' : 'light');
+      applyTheme(isDarkMode);
+    }
+
+    function applyTheme(dark) {
+      if (dark) {
+        document.documentElement.classList.add('dark');
+        document.getElementById('themeIcon').setAttribute('data-lucide', 'sun');
+        document.getElementById('themeToggleBtnIcon').setAttribute('data-lucide', 'sun');
+        document.getElementById('themeToggleBtnText').innerText = 'Light';
+      } else {
+        document.documentElement.classList.remove('dark');
+        document.getElementById('themeIcon').setAttribute('data-lucide', 'moon');
+        document.getElementById('themeToggleBtnIcon').setAttribute('data-lucide', 'moon');
+        document.getElementById('themeToggleBtnText').innerText = 'Dark';
+      }
+      lucide.createIcons();
+    }
+
+    function initDatabase() {
+      const stored = localStorage.getItem(STORAGE_KEY_LOGS);
+      if (stored) {
+        try {
+          dailyRecords = JSON.parse(stored);
+        } catch (e) {
+          console.error(e);
+        }
+      }
+
+      if (Object.keys(dailyRecords).length === 0) {
+        seedRealisticHistory();
+      }
+
+      if (!dailyRecords[todayKey]) {
+        dailyRecords[todayKey] = {
+          dayNum: 16,
+          weight: 75.0,
+          water: 3250,
+          sleep: 7.5,
+          split: 'Pull (Back & Bi)',
+          workoutDone: true,
+          workoutNotes: 'Weighted pull-ups 3x5 (+10kg), Incline DB curls 3x12',
+          meals: [
+            { id: 1, name: '3 Whole Eggs & Sourdough Toast', cal: 420, protein: 26, carbs: 34, fats: 16, time: '08:30' },
+            { id: 2, name: 'Whey Isolate & Cold Brew', cal: 140, protein: 27, carbs: 2, fats: 1, time: '11:45' },
+            { id: 3, name: 'Chicken Breast (200g) & Fragrant Rice', cal: 680, protein: 65, carbs: 76, fats: 17, time: '14:30' }
+          ]
+        };
+      }
+      persist();
+    }
+
+    function seedRealisticHistory() {
+      const samples = [
+        { day: 1,  weight: 76.2, water: 3500, cal: 1880, p: 144, split: 'Push', done: true },
+        { day: 2,  weight: 76.0, water: 3800, cal: 1820, p: 148, split: 'Pull', done: true },
+        { day: 3,  weight: 75.9, water: 4000, cal: 1790, p: 152, split: 'Legs', done: true },
+        { day: 4,  weight: 76.1, water: 3900, cal: 1900, p: 140, split: 'Cardio', done: true },
+        { day: 5,  weight: 75.8, water: 3600, cal: 1840, p: 145, split: 'Rest', done: false },
+        { day: 6,  weight: 75.7, water: 4000, cal: 1760, p: 154, split: 'Push', done: true },
+        { day: 7,  weight: 75.6, water: 4000, cal: 1810, p: 150, split: 'Pull', done: true },
+        { day: 8,  weight: 75.5, water: 4000, cal: 1780, p: 151, split: 'Legs', done: true },
+        { day: 9,  weight: 75.4, water: 3700, cal: 1860, p: 146, split: 'Active Walk', done: true },
+        { day: 10, weight: 75.5, water: 3800, cal: 1890, p: 142, split: 'Rest', done: false },
+        { day: 11, weight: 75.3, water: 4000, cal: 1770, p: 153, split: 'Push', done: true },
+        { day: 12, weight: 75.2, water: 4000, cal: 1820, p: 149, split: 'Pull', done: true },
+        { day: 13, weight: 75.3, water: 4000, cal: 1800, p: 150, split: 'Legs', done: true },
+        { day: 14, weight: 75.1, water: 3900, cal: 1750, p: 155, split: 'Cardio', done: true },
+        { day: 15, weight: 75.0, water: 4000, cal: 1780, p: 152, split: 'Rest', done: false }
+      ];
+
+      for (let i = 0; i < samples.length; i++) {
+        const d = new Date();
+        d.setDate(d.getDate() - (15 - i));
+        const key = d.toISOString().split('T')[0];
+        const s = samples[i];
+        dailyRecords[key] = {
+          dayNum: s.day,
+          weight: s.weight,
+          water: s.water,
+          sleep: 7.5,
+          split: s.split,
+          workoutDone: s.done,
+          workoutNotes: `Completed ${s.split} session as prescribed.`,
+          meals: [
+            { id: 1, name: 'Eggs & Oats Breakfast', cal: 450, protein: 32, carbs: 48, fats: 14, time: '08:30' },
+            { id: 2, name: 'Whey Protein Shake', cal: 150, protein: 27, carbs: 3, fats: 2, time: '12:00' },
+            { id: 3, name: 'Chicken & Sweet Potato', cal: 680, protein: 55, carbs: 65, fats: 16, time: '15:00' },
+            { id: 4, name: 'Evening Light Dinner', cal: s.cal - 1280, protein: s.p - 114, carbs: 40, fats: 10, time: '19:30' }
+          ]
+        };
+      }
+      persist();
+    }
+
+    function persist() {
+      localStorage.setItem(STORAGE_KEY_LOGS, JSON.stringify(dailyRecords));
+    }
+
+    function renderTodayView() {
+      const rec = dailyRecords[todayKey] || {};
+      const dayN = rec.dayNum || 16;
+      
+      const opts = { month: 'short', day: 'numeric' };
+      document.getElementById('todayDateStr').innerText = `Day ${dayN} of 50 • ${new Date().toLocaleDateString(undefined, opts)}`;
+
+      const pct = Math.round((dayN / PROTOCOL.totalDays) * 100);
+      document.getElementById('protocolProgressPct').innerText = `${pct}%`;
+      document.getElementById('protocolProgressBar').style.width = `${pct}%`;
+
+      document.getElementById('weightHeroInput').value = rec.weight || 75.0;
+
+      const meals = rec.meals || [];
+      const totalCal = meals.reduce((acc, m) => acc + (m.cal || 0), 0);
+      const totalP = meals.reduce((acc, m) => acc + (m.protein || 0), 0);
+      const totalC = meals.reduce((acc, m) => acc + (m.carbs || 0), 0);
+      const totalF = meals.reduce((acc, m) => acc + (m.fats || 0), 0);
+
+      document.getElementById('calCurrentDisplay').innerText = totalCal.toLocaleString();
+      document.getElementById('macroProteinToday').innerText = totalP;
+      document.getElementById('macroCarbsToday').innerText = totalC;
+      document.getElementById('macroFatsToday').innerText = totalF;
+
+      const calPct = Math.min(Math.round((totalCal / PROTOCOL.calCeiling) * 100), 100);
+      document.getElementById('calProgressBar').style.width = `${calPct}%`;
+
+      const remaining = PROTOCOL.calCeiling - totalCal;
+      const remBadge = document.getElementById('calRemainingBadge');
+      if (remaining >= 0) {
+        remBadge.innerText = `${remaining} kcal left`;
+        remBadge.className = 'text-xs font-mono font-bold px-3 py-1 rounded-lg bg-stone-100 dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-stone-800 dark:text-stone-200';
+      } else {
+        remBadge.innerText = `+${Math.abs(remaining)} over ceiling`;
+        remBadge.className = 'text-xs font-mono font-bold px-3 py-1 rounded-lg bg-red-100 dark:bg-red-950/60 border border-red-300 dark:border-red-800 text-red-600 dark:text-red-400';
+      }
+
+      renderTodayMealsList(meals);
+
+      const water = rec.water || 0;
+      document.getElementById('waterCurrentDisplay').innerText = (water / 1000).toFixed(2);
+      const waterPct = Math.min(Math.round((water / PROTOCOL.waterTarget) * 100), 100);
+      document.getElementById('waterPctBadge').innerText = `${waterPct}%`;
+      document.getElementById('waterProgressBar').style.width = `${waterPct}%`;
+
+      document.getElementById('todaySplitDisplay').innerText = rec.split || 'Pull Protocol';
+      document.getElementById('todayWorkoutCheckbox').checked = !!rec.workoutDone;
+      document.getElementById('todayWorkoutNotes').value = rec.workoutNotes || '';
+    }
+
+    function renderTodayMealsList(meals) {
+      const container = document.getElementById('todayMealsContainer');
+      if (!meals || meals.length === 0) {
+        container.innerHTML = `<div class="text-xs font-mono text-stone-400 py-2 italic text-center">No meals logged yet today.</div>`;
+        return;
+      }
+
+      container.innerHTML = meals.map(m => `
+        <div class="p-3 rounded-xl bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-800 flex items-center justify-between text-xs">
+          <div>
+            <div class="font-extrabold text-stone-900 dark:text-stone-100 flex items-center gap-2">
+              <span>${m.name}</span>
+              <span class="text-[10px] font-mono font-normal text-stone-400">${m.time || ''}</span>
+            </div>
+            <div class="text-[10px] font-mono font-bold text-stone-400 mt-0.5">
+              ${m.protein || 0}g P • ${m.carbs || 0}g C • ${m.fats || 0}g F
+            </div>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="font-mono font-extrabold text-stone-900 dark:text-stone-100">${m.cal} kcal</span>
+            <button onclick="removeMealItem(${m.id})" class="text-stone-400 hover:text-red-600 transition">
+              <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+            </button>
+          </div>
+        </div>
+      `).join('');
+      lucide.createIcons();
+    }
+
+    function removeMealItem(mealId) {
+      if (!dailyRecords[todayKey]) return;
+      dailyRecords[todayKey].meals = (dailyRecords[todayKey].meals || []).filter(m => m.id !== mealId);
+      persist();
+      renderTodayView();
+      showToast('Meal removed');
+    }
+
+    function saveHeroWeight(val) {
+      const w = parseFloat(val);
+      if (!dailyRecords[todayKey]) dailyRecords[todayKey] = {};
+      dailyRecords[todayKey].weight = w || 75.0;
+      persist();
+      showToast('Weight recorded');
+    }
+
+    function saveTodayNotes() {
+      const n = document.getElementById('todayWorkoutNotes').value;
+      if (!dailyRecords[todayKey]) dailyRecords[todayKey] = {};
+      dailyRecords[todayKey].workoutNotes = n;
+      persist();
+      showToast('Notes saved');
+    }
+
+    function toggleWorkoutCompleted() {
+      if (!dailyRecords[todayKey]) dailyRecords[todayKey] = {};
+      dailyRecords[todayKey].workoutDone = document.getElementById('todayWorkoutCheckbox').checked;
+      persist();
+    }
+
+    function setSplitPreset(name) {
+      if (!dailyRecords[todayKey]) dailyRecords[todayKey] = {};
+      dailyRecords[todayKey].split = name;
+      document.getElementById('todaySplitDisplay').innerText = name;
+      persist();
+      showToast(`Split: ${name}`);
+    }
+
+    function addWater(amount) {
+      if (!dailyRecords[todayKey]) dailyRecords[todayKey] = {};
+      const current = dailyRecords[todayKey].water || 0;
+      dailyRecords[todayKey].water = current + amount;
+      persist();
+      renderTodayView();
+      showToast(`+${amount}ml added`);
+    }
+
+    function resetWater() {
+      if (!dailyRecords[todayKey]) return;
+      dailyRecords[todayKey].water = 0;
+      persist();
+      renderTodayView();
+      showToast('Water reset');
+    }
+
+    function handleFoodImageSelected(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        stagedFoodBase64 = e.target.result;
+        const preview = document.getElementById('foodPhotoPreview');
+        preview.src = stagedFoodBase64;
+        preview.classList.remove('hidden');
+        document.getElementById('foodPlaceholderUI').classList.add('hidden');
+      };
+      reader.readAsDataURL(file);
+    }
+
+    async function runGeminiFoodAnalysis() {
+      const desc = document.getElementById('foodTextDescription').value.trim();
+      if (!stagedFoodBase64 && !desc) {
+        showToast('Please capture a photo or type meal info');
+        return;
+      }
+
+      const btn = document.getElementById('btnAnalyzeFood');
+      const originalHTML = btn.innerHTML;
+      btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Calculating macros...`;
+      btn.disabled = true;
+
+      const systemPrompt = `You are an elite sports nutritionist. Analyze the input food photo/text accurately for an athlete on a 1,900 kcal ceiling and 150g protein floor. Return pure JSON schema:
+{
+  "meal_name": "string",
+  "calories": number,
+  "protein_g": number,
+  "carbs_g": number,
+  "fats_g": number,
+  "notes": "string"
+}`;
+
+      const contentsParts = [];
+      contentsParts.push({ text: desc ? `Analyze this meal: "${desc}"` : `Identify meal from image and calculate macros.` });
+
+      if (stagedFoodBase64) {
+        const mime = stagedFoodBase64.substring(stagedFoodBase64.indexOf(':') + 1, stagedFoodBase64.indexOf(';'));
+        const base64Data = stagedFoodBase64.split(',')[1];
+        contentsParts.push({
+          inlineData: { mimeType: mime, data: base64Data }
+        });
+      }
+
+      const payload = {
+        contents: [{ parts: contentsParts }],
+        systemInstruction: { parts: [{ text: systemPrompt }] },
+        generationConfig: {
+          responseMimeType: "application/json",
+          responseSchema: {
+            type: "OBJECT",
+            properties: {
+              meal_name: { type: "STRING" },
+              calories: { type: "NUMBER" },
+              protein_g: { type: "NUMBER" },
+              carbs_g: { type: "NUMBER" },
+              fats_g: { type: "NUMBER" },
+              notes: { type: "STRING" }
+            },
+            required: ["meal_name", "calories", "protein_g", "carbs_g", "fats_g", "notes"]
+          }
+        }
+      };
+
+      try {
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey.trim()}`;
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        if (!response.ok) {
+          const errData = await response.json().catch(() => ({}));
+          throw new Error(errData.error?.message || `HTTP ${response.status}`);
+        }
+
+        const data = await response.json();
+        const rawJson = data.candidates?.[0]?.content?.parts?.[0]?.text;
+        const parsed = JSON.parse(rawJson);
+        stagedFoodData = parsed;
+        displayStagedFood(parsed);
+
+      } catch (err) {
+        console.error(err);
+        showToast(`AI Error: ${err.message}`);
+      } finally {
+        btn.innerHTML = originalHTML;
+        btn.disabled = false;
+        lucide.createIcons();
+      }
+    }
+
+    function displayStagedFood(data) {
+      document.getElementById('foodResName').innerText = data.meal_name || 'Estimated Meal';
+      document.getElementById('foodResCal').innerHTML = `${data.calories} <span class="text-xs font-normal text-stone-400">kcal</span>`;
+      document.getElementById('foodResProtein').innerText = `${data.protein_g}g`;
+      document.getElementById('foodResCarbs').innerText = `${data.carbs_g}g`;
+      document.getElementById('foodResFats').innerText = `${data.fats_g}g`;
+      document.getElementById('foodResNotes').innerText = data.notes || '';
+      document.getElementById('foodResultCard').classList.remove('hidden');
+    }
+
+    function discardFoodResult() {
+      stagedFoodData = null;
+      document.getElementById('foodResultCard').classList.add('hidden');
+    }
+
+    function commitFoodToLog() {
+      if (!stagedFoodData) return;
+      if (!dailyRecords[todayKey]) dailyRecords[todayKey] = { meals: [] };
+      if (!dailyRecords[todayKey].meals) dailyRecords[todayKey].meals = [];
+
+      const now = new Date();
+      const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+      dailyRecords[todayKey].meals.push({
+        id: Date.now(),
+        name: stagedFoodData.meal_name,
+        cal: Math.round(stagedFoodData.calories),
+        protein: Math.round(stagedFoodData.protein_g),
+        carbs: Math.round(stagedFoodData.carbs_g),
+        fats: Math.round(stagedFoodData.fats_g),
+        time: timeStr
+      });
+
+      persist();
+      discardFoodResult();
+      document.getElementById('foodTextDescription').value = '';
+      document.getElementById('foodFileInput').value = '';
+      document.getElementById('foodPhotoPreview').classList.add('hidden');
+      document.getElementById('foodPlaceholderUI').classList.remove('hidden');
+      stagedFoodBase64 = null;
+
+      switchTab('today');
+      showToast('Meal added to log');
+    }
+
+    function handleWorkoutImageSelected(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        stagedWorkoutBase64 = e.target.result;
+        const preview = document.getElementById('workoutPhotoPreview');
+        preview.src = stagedWorkoutBase64;
+        preview.classList.remove('hidden');
+        document.getElementById('workoutPlaceholderUI').classList.add('hidden');
+      };
+      reader.readAsDataURL(file);
+    }
+
+    async function runGeminiWorkoutAnalysis() {
+      if (!stagedWorkoutBase64) {
+        showToast('Please upload gym screenshot');
+        return;
+      }
+
+      const btn = document.getElementById('btnAnalyzeWorkout');
+      const originalHTML = btn.innerHTML;
+      btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Parsing screenshot...`;
+      btn.disabled = true;
+
+      const systemPrompt = `You are an elite strength coach. Parse this screenshot from a workout log app (e.g. Hevy, FitNotes, Strong).
+Extract split, muscle focus, total volume in kg, and individual exercises with sets/reps.
+Return pure JSON schema:
+{
+  "split": "string",
+  "muscle_focus": "string",
+  "total_volume_kg": number,
+  "exercises": [
+    {
+      "name": "string",
+      "sets_reps": "string"
+    }
+  ],
+  "summary": "string"
+}`;
+
+      const mime = stagedWorkoutBase64.substring(stagedWorkoutBase64.indexOf(':') + 1, stagedWorkoutBase64.indexOf(';'));
+      const base64Data = stagedWorkoutBase64.split(',')[1];
+
+      const payload = {
+        contents: [{
+          parts: [
+            { text: "Parse this gym screenshot and calculate total volume and exercises." },
+            { inlineData: { mimeType: mime, data: base64Data } }
+          ]
+        }],
+        systemInstruction: { parts: [{ text: systemPrompt }] },
+        generationConfig: {
+          responseMimeType: "application/json",
+          responseSchema: {
+            type: "OBJECT",
+            properties: {
+              split: { type: "STRING" },
+              muscle_focus: { type: "STRING" },
+              total_volume_kg: { type: "NUMBER" },
+              exercises: {
+                type: "ARRAY",
+                items: {
+                  type: "OBJECT",
+                  properties: {
+                    name: { type: "STRING" },
+                    sets_reps: { type: "STRING" }
+                  },
+                  required: ["name", "sets_reps"]
+                }
+              },
+              summary: { type: "STRING" }
+            },
+            required: ["split", "muscle_focus", "total_volume_kg", "exercises", "summary"]
+          }
+        }
+      };
+
+      try {
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey.trim()}`;
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        if (!response.ok) {
+          const errData = await response.json().catch(() => ({}));
+          throw new Error(errData.error?.message || `HTTP ${response.status}`);
+        }
+
+        const data = await response.json();
+        const rawJson = data.candidates?.[0]?.content?.parts?.[0]?.text;
+        const parsed = JSON.parse(rawJson);
+        stagedWorkoutData = parsed;
+        displayStagedWorkout(parsed);
+
+      } catch (err) {
+        console.error(err);
+        showToast(`AI Error: ${err.message}`);
+      } finally {
+        btn.innerHTML = originalHTML;
+        btn.disabled = false;
+        lucide.createIcons();
+      }
+    }
+
+    function displayStagedWorkout(data) {
+      document.getElementById('workoutResTitle').innerText = data.split || 'Workout';
+      document.getElementById('workoutResFocus').innerText = data.muscle_focus || '';
+      document.getElementById('workoutResVolume').innerText = `${(data.total_volume_kg || 0).toLocaleString()} kg`;
+      document.getElementById('workoutResSummary').innerText = data.summary || '';
+
+      const exContainer = document.getElementById('workoutResExercisesList');
+      if (data.exercises && data.exercises.length > 0) {
+        exContainer.innerHTML = data.exercises.map(ex => `
+          <div class="p-2.5 bg-stone-50 dark:bg-stone-900 rounded-xl border border-stone-200 dark:border-stone-800 text-xs">
+            <span class="font-extrabold text-stone-900 dark:text-stone-100 block">${ex.name}</span>
+            <span class="text-[10px] font-mono font-bold text-stone-400">${ex.sets_reps}</span>
+          </div>
+        `).join('');
+      } else {
+        exContainer.innerHTML = '';
+      }
+
+      document.getElementById('workoutResultCard').classList.remove('hidden');
+    }
+
+    function discardWorkoutResult() {
+      stagedWorkoutData = null;
+      document.getElementById('workoutResultCard').classList.add('hidden');
+    }
+
+    function commitWorkoutToLog() {
+      if (!stagedWorkoutData) return;
+      if (!dailyRecords[todayKey]) dailyRecords[todayKey] = {};
+
+      dailyRecords[todayKey].split = stagedWorkoutData.split;
+      dailyRecords[todayKey].workoutDone = true;
+
+      const notesList = (stagedWorkoutData.exercises || [])
+        .map(e => `${e.name}: ${e.sets_reps}`)
+        .join(' • ');
+
+      dailyRecords[todayKey].workoutNotes = `[${stagedWorkoutData.total_volume_kg}kg Volume] ${stagedWorkoutData.summary} — ${notesList}`;
+
+      persist();
+      discardWorkoutResult();
+      document.getElementById('workoutFileInput').value = '';
+      document.getElementById('workoutPhotoPreview').classList.add('hidden');
+      document.getElementById('workoutPlaceholderUI').classList.remove('hidden');
+      stagedWorkoutBase64 = null;
+
+      switchTab('today');
+      showToast('Workout saved');
+    }
+
+    function renderAnalyticsView() {
+      const dates = Object.keys(dailyRecords).sort();
+      const weights = [];
+      const calories = [];
+      let latestW = 76.2;
+
+      dates.forEach(d => {
+        const item = dailyRecords[d];
+        if (item.weight) {
+          weights.push({ date: d, weight: item.weight, day: item.dayNum });
+          latestW = item.weight;
+        }
+        const dayCal = (item.meals || []).reduce((acc, m) => acc + (m.cal || 0), 0);
+        calories.push({ date: d, cal: dayCal, day: item.dayNum });
+      });
+
+      document.getElementById('metricCurrentWeight').innerText = `${latestW.toFixed(1)} kg`;
+      const net = (latestW - PROTOCOL.startWeight).toFixed(1);
+      document.getElementById('metricNetLost').innerText = `${net > 0 ? '+' : ''}${net} kg`;
+      document.getElementById('metricToGoal').innerText = `${Math.max(0, (latestW - PROTOCOL.goalWeight)).toFixed(1)} kg`;
+
+      renderSvgWeightChart(weights);
+      renderSvgCalChart(calories);
+      renderHistoryLedger(dates);
+    }
+
+    function renderSvgWeightChart(data) {
+      const svg = document.getElementById('weightSvgChart');
+      if (!data || data.length === 0) return;
+
+      const w = svg.clientWidth || 340;
+      const h = svg.clientHeight || 176;
+      svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+
+      const minW = 69.5;
+      const maxW = 76.5;
+
+      const getX = (index) => 20 + (index / (data.length - 1 || 1)) * (w - 40);
+      const getY = (val) => h - 25 - ((val - minW) / (maxW - minW)) * (h - 45);
+
+      const targetY = getY(70.0);
+      let content = `
+        <line x1="15" y1="${targetY}" x2="${w - 15}" y2="${targetY}" stroke="#C85A32" stroke-dasharray="4,4" stroke-width="1.5" />
+        <text x="${w - 15}" y="${targetY - 6}" font-family="JetBrains Mono" font-size="10" font-weight="700" fill="#C85A32" text-anchor="end">70kg Goal</text>
+      `;
+
+      let pathD = '';
+      data.forEach((pt, i) => {
+        const x = getX(i);
+        const y = getY(pt.weight);
+        if (i === 0) pathD += `M ${x} ${y}`;
+        else pathD += ` L ${x} ${y}`;
+      });
+
+      const strokeColor = isDarkMode ? '#F4F4F5' : '#18181B';
+      content += `<path d="${pathD}" fill="none" stroke="${strokeColor}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />`;
+
+      data.forEach((pt, i) => {
+        const x = getX(i);
+        const y = getY(pt.weight);
+        content += `<circle cx="${x}" cy="${y}" r="3.5" fill="${isDarkMode ? '#161619' : '#FFFFFF'}" stroke="${strokeColor}" stroke-width="2" />`;
+      });
+
+      svg.innerHTML = content;
+    }
+
+    function renderSvgCalChart(data) {
+      const svg = document.getElementById('calSvgChart');
+      if (!data || data.length === 0) return;
+
+      const w = svg.clientWidth || 340;
+      const h = svg.clientHeight || 128;
+      svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+
+      const maxCal = 2200;
+      const ceilingY = h - 20 - (1900 / maxCal) * (h - 35);
+
+      let content = `
+        <line x1="15" y1="${ceilingY}" x2="${w - 15}" y2="${ceilingY}" stroke="${isDarkMode ? '#3F3F46' : '#E4E4E7'}" stroke-width="1.5" />
+      `;
+
+      const barWidth = Math.max(4, Math.floor((w - 40) / data.length) - 4);
+
+      data.forEach((pt, i) => {
+        const x = 20 + i * (barWidth + 4);
+        const barH = Math.min((pt.cal / maxCal) * (h - 35), h - 35);
+        const y = h - 20 - barH;
+        const color = pt.cal > 1900 ? '#C85A32' : (isDarkMode ? '#52525B' : '#A1A1AA');
+
+        content += `
+          <rect x="${x}" y="${y}" width="${barWidth}" height="${barH}" fill="${color}" rx="2" />
+        `;
+      });
+
+      svg.innerHTML = content;
+    }
+
+    function renderHistoryLedger(dates) {
+      const ledger = document.getElementById('historyEntriesLedger');
+      ledger.innerHTML = [...dates].reverse().map(d => {
+        const item = dailyRecords[d] || {};
+        const totalCal = (item.meals || []).reduce((acc, m) => acc + (m.cal || 0), 0);
+        return `
+          <div class="p-3 rounded-xl bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-800 flex items-center justify-between text-xs font-mono">
+            <div>
+              <div class="font-extrabold text-stone-900 dark:text-stone-100">Day ${item.dayNum || '--'} • ${d}</div>
+              <div class="text-[10px] font-bold text-stone-400 mt-0.5">${item.split || 'Rest'} • ${(item.water || 0)/1000}L</div>
+            </div>
+            <div class="text-right">
+              <div class="font-extrabold text-stone-900 dark:text-stone-100">${item.weight ? item.weight + ' kg' : '--'}</div>
+              <div class="text-[10px] font-bold ${totalCal > 1900 ? 'text-brand-terracotta' : 'text-stone-400'}">${totalCal} kcal</div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function switchTab(tabId) {
+      ['today', 'lens-food', 'lens-workout', 'trends', 'settings'].forEach(id => {
+        const section = document.getElementById(`view-${id}`);
+        if (section) section.classList.add('hidden');
+        
+        const navBtn = document.getElementById(`nav-btn-${id}`);
+        if (navBtn) {
+          navBtn.classList.remove('text-stone-900', 'dark:text-stone-100');
+          navBtn.classList.add('text-stone-400', 'dark:text-stone-500');
+        }
+      });
+
+      const targetSection = document.getElementById(`view-${tabId}`);
+      if (targetSection) targetSection.classList.remove('hidden');
+
+      const activeNav = document.getElementById(`nav-btn-${tabId}`);
+      if (activeNav) {
+        activeNav.classList.remove('text-stone-400', 'dark:text-stone-500');
+        activeNav.classList.add('text-stone-900', 'dark:text-stone-100');
+      }
+
+      if (tabId === 'trends') renderAnalyticsView();
+      if (tabId === 'today') renderTodayView();
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function updateApiKey(key) {
+      apiKey = key.trim();
+      localStorage.setItem(STORAGE_KEY_API_KEY, apiKey);
+      updateApiKeyUI();
+      showToast(apiKey ? 'Gemini API active' : 'API key removed');
+    }
+
+    function updateApiKeyUI() {
+      const statusText = document.getElementById('apiKeyStatusText');
+      const settingsInput = document.getElementById('settingsKeyInput');
+      if (settingsInput) settingsInput.value = apiKey;
+      if (apiKey) {
+        statusText.innerText = 'Connected';
+        statusText.className = 'text-emerald-600 dark:text-emerald-400 font-extrabold';
+      } else {
+        statusText.innerText = 'API Key';
+        statusText.className = 'text-stone-800 dark:text-stone-200';
+      }
+    }
+
+    function exportDataJSON() {
+      const blob = new Blob([JSON.stringify(dailyRecords, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `Apex50_Ledger_${todayKey}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast('Export downloaded');
+    }
+
+    function downloadSampleJSON() {
+      const sample = {
+        "2026-11-06": {
+          "dayNum": 16,
+          "weight": 75.0,
+          "water": 3250,
+          "sleep": 7.5,
+          "split": "Pull (Back & Biceps)",
+          "workoutDone": true,
+          "workoutNotes": "Weighted pull-ups 3x5, DB curls 3x12",
+          "meals": [
+            {
+              "id": 1,
+              "name": "Eggs & Toast",
+              "cal": 420,
+              "protein": 26,
+              "carbs": 34,
+              "fats": 16,
+              "time": "08:30"
+            }
+          ]
+        }
+      };
+      const blob = new Blob([JSON.stringify(sample, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `Apex50_Template.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast('Sample template downloaded');
+    }
+
+    function importDataJSON(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const parsed = JSON.parse(e.target.result);
+          dailyRecords = parsed;
+          persist();
+          renderTodayView();
+          showToast('Data imported successfully');
+        } catch (err) {
+          showToast('Invalid JSON file format');
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    let toastTimeout;
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toastMessage').innerText = msg;
+      toast.classList.remove('opacity-0', '-translate-y-2');
+      toast.classList.add('opacity-100', 'translate-y-0');
+      clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => {
+        toast.classList.remove('opacity-100', 'translate-y-0');
+        toast.classList.add('opacity-0', '-translate-y-2');
+      }, 2200);
+    }
+  </script>
+</body>
+</html>
