@@ -302,7 +302,7 @@
         <div class="flex items-center justify-between pb-1">
           <div>
             <h2 class="text-xl font-extrabold text-stone-900 dark:text-stone-100 tracking-tight">Food Lens</h2>
-            <p class="text-xs text-stone-400 font-medium">Gemini 2.5 Flash Nutrition Vision</p>
+            <p class="text-xs text-stone-400 font-medium">Gemini 3.8 Flash Nutrition Vision</p>
           </div>
           <button onclick="switchTab('today')" class="text-xs font-mono font-bold text-stone-500 hover:text-stone-900 dark:hover:text-stone-100">
             &larr; Today
@@ -510,7 +510,7 @@
         <div class="paper-card rounded-2xl p-4 sm:p-5 space-y-3.5">
           <div class="flex items-center gap-2">
             <i data-lucide="key" class="w-4 h-4 text-brand-terracotta shrink-0"></i>
-            <span class="text-xs font-mono font-bold text-stone-900 dark:text-stone-100 uppercase tracking-wider">Gemini 2.5 Flash API Key</span>
+            <span class="text-xs font-mono font-bold text-stone-900 dark:text-stone-100 uppercase tracking-wider">Gemini 3.8 Flash API Key</span>
           </div>
           <p class="text-xs text-stone-500 dark:text-stone-400 leading-relaxed">
             Direct client-side key for Food Lens analysis and Gym screenshot OCR. Stored exclusively in your phone's browser storage.
@@ -943,7 +943,7 @@
       };
 
       try {
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey.trim()}`;
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key=${apiKey.trim()}`;
         const response = await fetch(url, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -1096,7 +1096,7 @@ Return pure JSON schema:
       };
 
       try {
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey.trim()}`;
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key=${apiKey.trim()}`;
         const response = await fetch(url, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
