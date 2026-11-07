@@ -5,21 +5,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>Apex 50 — Protocol</title>
 
-  <!-- PWA Manifest & Android Standalone Settings -->
-  <link rel="manifest" href="manifest.json">
+  <!-- PWA Manifest & Standalone Settings -->
+  <link rel="manifest" href="./manifest.json">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="theme-color" content="#0d0f12">
 
-  <!-- Apple iOS Standalone Settings -->
+  <!-- iOS Standalone Settings -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Apex50">
-  <link rel="apple-touch-icon" href="icon-512.png">
+  <link rel="apple-touch-icon" href="./icon-512.png">
 
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw.js');
+        navigator.serviceWorker.register('./sw.js');
       });
     }
   </script>
@@ -106,6 +106,7 @@
 </head>
 <body class="flex justify-center min-h-screen">
 
+  <!-- Mobile Device Shell -->
   <div class="w-full max-w-md flex flex-col min-h-screen relative pb-28 border-x border-stone-200 dark:border-stone-800 shadow-2xl transition-colors duration-200">
     
     <!-- Top Fixed Clean Header -->
@@ -129,7 +130,7 @@
       </div>
     </header>
 
-    <!-- Main Content -->
+    <!-- Main Dynamic Screen Content -->
     <main class="flex-1 px-4 pt-4 space-y-4 overflow-y-auto custom-scroll">
 
       <!-- ================= VIEW 1: TODAY'S LOG ================= -->
@@ -153,7 +154,7 @@
               <span class="inline-block px-3 py-1 rounded-full text-xs font-mono font-bold bg-stone-100 dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-stone-900 dark:text-stone-200">
                 Target: 70.0 kg
               </span>
-              <p id="weightNetDeltaDisplay" class="text-xs font-mono font-bold text-emerald-600 dark:text-emerald-400 mt-1.5">-1.2 kg net</p>
+              <p class="text-xs font-mono font-bold text-emerald-600 dark:text-emerald-400 mt-1.5">-1.2 kg net</p>
             </div>
           </div>
 
@@ -214,7 +215,7 @@
             <div id="calProgressBar" class="h-full bg-brand-terracotta rounded-full transition-all duration-300" style="width: 65%;"></div>
           </div>
 
-          <!-- Macros Grid -->
+          <!-- High-Contrast Macros Grid -->
           <div class="grid grid-cols-3 gap-2 pt-2 border-t border-stone-100 dark:border-stone-800 text-center">
             <div class="py-1">
               <span class="text-[10px] font-mono font-bold uppercase text-stone-400 dark:text-stone-500">Protein</span>
@@ -259,51 +260,15 @@
             <div id="waterProgressBar" class="h-full bg-emerald-600 rounded-full transition-all duration-300" style="width: 81%;"></div>
           </div>
 
-          <!-- Preset Quantity Buttons -->
           <div class="grid grid-cols-4 gap-2 pt-1">
             <button onclick="addWater(250)" class="py-2 rounded-xl border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-800/60 font-mono text-xs font-bold text-stone-800 dark:text-stone-200 subtle-press hover:border-emerald-500 transition">+250ml</button>
             <button onclick="addWater(500)" class="py-2 rounded-xl border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-800/60 font-mono text-xs font-bold text-stone-800 dark:text-stone-200 subtle-press hover:border-emerald-500 transition">+500ml</button>
             <button onclick="addWater(1000)" class="py-2 rounded-xl border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-800/60 font-mono text-xs font-bold text-stone-800 dark:text-stone-200 subtle-press hover:border-emerald-500 transition">+1.0L</button>
             <button onclick="resetWater()" class="py-2 rounded-xl border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-800/60 font-mono text-xs font-bold text-stone-400 dark:text-stone-500 hover:text-red-600 subtle-press transition">Reset</button>
           </div>
-
-          <!-- Custom Hydration Input -->
-          <div class="pt-2 border-t border-stone-100 dark:border-stone-800 flex items-center gap-2">
-            <input type="number" id="customWaterInput" placeholder="Custom ml (e.g. 350)" class="flex-1 p-2 text-xs font-mono bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-700 rounded-xl text-stone-900 dark:text-stone-100 focus:outline-none focus:border-emerald-600">
-            <button onclick="addCustomWater()" class="px-4 py-2 bg-emerald-600 text-white rounded-xl text-xs font-mono font-bold subtle-press hover:opacity-90">
-              + Add
-            </button>
-          </div>
         </div>
 
-        <!-- Sleep Protocol Card with Time Inputs -->
-        <div class="paper-card rounded-2xl p-5 space-y-3.5">
-          <div class="flex items-center justify-between">
-            <div>
-              <div class="text-[11px] font-mono font-bold uppercase tracking-wider text-stone-400 dark:text-stone-500">Sleep Recovery (7-9h Target)</div>
-              <div class="flex items-baseline gap-1 mt-0.5">
-                <span id="sleepDurationDisplay" class="text-3xl font-extrabold font-mono text-stone-900 dark:text-stone-50 tracking-tight">7.5</span>
-                <span class="text-xs font-mono font-bold text-stone-400 dark:text-stone-500">hours slept</span>
-              </div>
-            </div>
-            <span id="sleepQualityBadge" class="text-xs font-mono font-bold px-3 py-1 rounded-lg bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800">
-              Optimal
-            </span>
-          </div>
-
-          <div class="grid grid-cols-2 gap-3 pt-1">
-            <div>
-              <label class="block text-[10px] font-mono uppercase tracking-wider text-stone-400 mb-1">Bedtime</label>
-              <input type="time" id="sleepBedtimeInput" value="23:30" class="w-full p-2.5 text-xs font-mono bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-700 rounded-xl text-stone-900 dark:text-stone-100" onchange="calculateSleepFromInputs()">
-            </div>
-            <div>
-              <label class="block text-[10px] font-mono uppercase tracking-wider text-stone-400 mb-1">Wake Time</label>
-              <input type="time" id="sleepWakeInput" value="07:00" class="w-full p-2.5 text-xs font-mono bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-700 rounded-xl text-stone-900 dark:text-stone-100" onchange="calculateSleepFromInputs()">
-            </div>
-          </div>
-        </div>
-
-        <!-- Workout Card -->
+        <!-- Workout of the Day Card -->
         <div class="paper-card rounded-2xl p-5 space-y-3.5">
           <div class="flex items-center justify-between">
             <div>
@@ -323,9 +288,9 @@
             <button onclick="setSplitPreset('Rest / Active')" class="py-1.5 text-xs font-mono font-bold rounded-lg border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-700 dark:text-stone-300 hover:border-stone-400">Rest</button>
           </div>
 
-          <textarea id="todayWorkoutNotes" rows="2" placeholder="Exercise notes, load, reps or AI parsed summaries..." class="w-full p-3 text-xs font-mono bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-700 rounded-xl text-stone-900 dark:text-stone-100 placeholder-stone-400 focus:outline-none" onchange="saveTodayNotes()"></textarea>
+          <textarea id="todayWorkoutNotes" rows="2" placeholder="Exercise notes, load, reps or AI parsed summaries..." class="w-full p-3 text-xs font-mono bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-700 rounded-xl text-stone-900 dark:text-stone-100 placeholder-stone-400 focus:outline-none focus:border-stone-800 dark:focus:border-stone-300" onchange="saveTodayNotes()"></textarea>
 
-          <button onclick="switchTab('lens-workout')" class="w-full py-2.5 rounded-xl border border-dashed border-stone-300 dark:border-stone-700 text-xs font-mono font-bold text-stone-500 dark:text-stone-400 hover:text-stone-900 flex items-center justify-center gap-2 subtle-press transition">
+          <button onclick="switchTab('lens-workout')" class="w-full py-2.5 rounded-xl border border-dashed border-stone-300 dark:border-stone-700 text-xs font-mono font-bold text-stone-500 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100 flex items-center justify-center gap-2 subtle-press transition">
             <i data-lucide="image" class="w-4 h-4 text-emerald-600"></i> Upload Hevy / Gym Screenshot
           </button>
         </div>
@@ -337,22 +302,11 @@
         <div class="flex items-center justify-between pb-1">
           <div>
             <h2 class="text-xl font-extrabold text-stone-900 dark:text-stone-100 tracking-tight">Food Lens</h2>
-            <p class="text-xs text-stone-400 font-medium">Gemini 3.8 Flash Vision</p>
+            <p class="text-xs text-stone-400 font-medium">Gemini 3.8 Flash Nutrition Vision</p>
           </div>
-          <button onclick="switchTab('today')" class="text-xs font-mono font-bold text-stone-500 hover:text-stone-900">
+          <button onclick="switchTab('today')" class="text-xs font-mono font-bold text-stone-500 hover:text-stone-900 dark:hover:text-stone-100">
             &larr; Today
           </button>
-        </div>
-
-        <!-- Historical Calorie Graph inside Food Tab -->
-        <div class="paper-card rounded-2xl p-4 space-y-2">
-          <div class="flex justify-between items-baseline">
-            <span class="text-xs font-mono font-bold uppercase tracking-wider text-stone-400">Caloric History Ledger</span>
-            <span class="text-[11px] font-mono font-bold text-stone-400">Ceiling: 1,900 kcal</span>
-          </div>
-          <div class="w-full h-28 relative">
-            <svg id="foodLensCalChart" class="w-full h-full overflow-visible"></svg>
-          </div>
         </div>
 
         <div class="paper-card rounded-2xl p-5 space-y-4">
@@ -370,7 +324,7 @@
 
           <div class="pt-2 border-t border-stone-100 dark:border-stone-800">
             <label class="block text-[11px] font-mono font-bold uppercase tracking-wider text-stone-400 dark:text-stone-500 mb-1.5">2. Or Describe Meal / Context</label>
-            <textarea id="foodTextDescription" rows="2.5" placeholder="e.g. 2 wheat rotis with ghee, 150g chicken breast, 1 bowl dal" class="w-full p-3 text-xs font-medium bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-700 rounded-xl text-stone-900 dark:text-stone-100 placeholder-stone-400 focus:outline-none"></textarea>
+            <textarea id="foodTextDescription" rows="2.5" placeholder="e.g. 2 wheat rotis with ghee, 150g grilled chicken breast, 1 bowl dal" class="w-full p-3 text-xs font-medium bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-700 rounded-xl text-stone-900 dark:text-stone-100 placeholder-stone-400 focus:outline-none focus:border-stone-900 dark:focus:border-stone-300"></textarea>
           </div>
 
           <button onclick="runGeminiFoodAnalysis()" id="btnAnalyzeFood" class="w-full py-3 rounded-xl bg-stone-900 dark:bg-stone-100 text-stone-50 dark:text-stone-900 text-xs font-mono font-bold uppercase tracking-wider subtle-press flex items-center justify-center gap-2 hover:opacity-90 transition">
@@ -378,11 +332,11 @@
           </button>
         </div>
 
-        <!-- Rendered AI Response Card -->
+        <!-- AI Food Review Card -->
         <div id="foodResultCard" class="hidden paper-card rounded-2xl p-5 border-2 border-brand-terracotta space-y-4">
           <div class="flex items-center justify-between border-b border-stone-100 dark:border-stone-800 pb-2.5">
             <div>
-              <span class="text-[10px] font-mono uppercase tracking-wider text-brand-terracotta font-extrabold">Gemini 3.8 Flash Analysis</span>
+              <span class="text-[10px] font-mono uppercase tracking-wider text-brand-terracotta font-extrabold">Gemini Nutrition Breakdown</span>
               <h3 id="foodResName" class="text-lg font-extrabold text-stone-900 dark:text-stone-100 mt-0.5">Meal Name</h3>
             </div>
             <span class="text-2xl font-extrabold font-mono text-stone-900 dark:text-stone-100" id="foodResCal">0 <span class="text-xs font-normal text-stone-400">kcal</span></span>
@@ -412,27 +366,27 @@
         </div>
       </section>
 
-      <!-- ================= VIEW 3: AI WORKOUT LENS ================= -->
+      <!-- ================= VIEW 3: AI WORKOUT SCREENSHOT LENS ================= -->
       <section id="view-lens-workout" class="hidden space-y-4">
         <div class="flex items-center justify-between pb-1">
           <div>
             <h2 class="text-xl font-extrabold text-stone-900 dark:text-stone-100 tracking-tight">Workout Lens</h2>
-            <p class="text-xs text-stone-400 font-medium">Gemini 3.8 Flash Workout OCR</p>
+            <p class="text-xs text-stone-400 font-medium">Hevy & Gym App Screenshot Parser</p>
           </div>
-          <button onclick="switchTab('today')" class="text-xs font-mono font-bold text-stone-500 hover:text-stone-900">
+          <button onclick="switchTab('today')" class="text-xs font-mono font-bold text-stone-500 hover:text-stone-900 dark:hover:text-stone-100">
             &larr; Today
           </button>
         </div>
 
         <div class="paper-card rounded-2xl p-5 space-y-4">
-          <div class="text-xs font-mono font-bold uppercase tracking-wider text-stone-400 dark:text-stone-500">Upload Gym App Screenshot</div>
+          <div class="text-xs font-mono font-bold uppercase tracking-wider text-stone-400 dark:text-stone-500">Upload Hevy / FitNotes Screenshot</div>
           
           <div id="workoutDropArea" class="border-2 border-dashed border-stone-300 dark:border-stone-700 rounded-xl p-5 flex flex-col items-center justify-center text-center cursor-pointer hover:border-emerald-500 bg-stone-50/50 dark:bg-stone-900/40 transition min-h-[140px]" onclick="document.getElementById('workoutFileInput').click()">
             <img id="workoutPhotoPreview" class="hidden w-full max-h-64 object-contain rounded-xl mb-2">
             <div id="workoutPlaceholderUI" class="space-y-1.5">
               <i data-lucide="dumbbell" class="w-7 h-7 text-emerald-600 mx-auto"></i>
-              <div class="text-sm font-bold text-stone-900 dark:text-stone-200">Tap to select screenshot</div>
-              <div class="text-[11px] text-stone-400 font-mono">Parses sets, reps & total kg</div>
+              <div class="text-sm font-bold text-stone-900 dark:text-stone-200">Tap to select gym screenshot</div>
+              <div class="text-[11px] text-stone-400 font-mono">Parses exercises, sets, reps & total kg</div>
             </div>
           </div>
           <input type="file" id="workoutFileInput" accept="image/*" class="hidden" onchange="handleWorkoutImageSelected(event)">
@@ -442,6 +396,7 @@
           </button>
         </div>
 
+        <!-- Workout Result Preview -->
         <div id="workoutResultCard" class="hidden paper-card rounded-2xl p-5 border-2 border-emerald-600 space-y-4">
           <div class="flex items-start justify-between border-b border-stone-100 dark:border-stone-800 pb-3">
             <div>
@@ -456,6 +411,7 @@
           </div>
 
           <div class="space-y-2" id="workoutResExercisesList"></div>
+
           <div class="p-3 bg-stone-50 dark:bg-stone-900 rounded-xl border border-stone-200 dark:border-stone-800 text-xs text-stone-700 dark:text-stone-300 font-mono" id="workoutResSummary"></div>
 
           <div class="flex gap-2 pt-1">
@@ -465,96 +421,147 @@
         </div>
       </section>
 
-      <!-- ================= VIEW 4: TRAJECTORY & TRENDS ================= -->
+      <!-- ================= VIEW 4: TRAJECTORY & ANALYTICS ================= -->
       <section id="view-trends" class="hidden space-y-4">
         <div class="pb-1">
           <h2 class="text-xl font-extrabold text-stone-900 dark:text-stone-100 tracking-tight">Trajectory</h2>
           <p class="text-xs text-stone-400 font-medium">50-Day challenge metrics & historical ledger</p>
         </div>
 
+        <!-- 3-Pill Summary -->
         <div class="paper-card rounded-2xl p-4 sm:p-5">
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 divide-y sm:divide-y-0 sm:divide-x divide-stone-100 dark:divide-stone-800 text-center">
             <div class="py-2 sm:py-0 sm:px-2 flex flex-col items-center justify-center">
               <span class="text-[10px] font-mono font-bold uppercase tracking-wider text-stone-400">Current Weight</span>
-              <div id="metricCurrentWeight" class="text-2xl font-extrabold text-stone-900 dark:text-stone-100 font-mono mt-1">75.0 kg</div>
+              <div id="metricCurrentWeight" class="text-2xl font-extrabold text-stone-900 dark:text-stone-100 font-mono mt-1 break-words">75.0 kg</div>
               <span class="text-[10px] font-mono font-medium text-stone-400 mt-0.5">Day 16 of 50</span>
             </div>
             <div class="py-2 sm:py-0 sm:px-2 flex flex-col items-center justify-center">
               <span class="text-[10px] font-mono font-bold uppercase tracking-wider text-stone-400">Net Delta</span>
-              <div id="metricNetLost" class="text-2xl font-extrabold text-emerald-600 dark:text-emerald-400 font-mono mt-1">-1.2 kg</div>
+              <div id="metricNetLost" class="text-2xl font-extrabold text-emerald-600 dark:text-emerald-400 font-mono mt-1 break-words">-1.2 kg</div>
               <span class="text-[10px] font-mono font-medium text-stone-400 mt-0.5">From 76.2 kg start</span>
             </div>
             <div class="py-2 sm:py-0 sm:px-2 flex flex-col items-center justify-center">
               <span class="text-[10px] font-mono font-bold uppercase tracking-wider text-stone-400">To Milestone</span>
-              <div id="metricToGoal" class="text-2xl font-extrabold text-brand-terracotta dark:text-brand-terracottaDark font-mono mt-1">5.0 kg</div>
+              <div id="metricToGoal" class="text-2xl font-extrabold text-brand-terracotta dark:text-brand-terracottaDark font-mono mt-1 break-words">5.0 kg</div>
               <span class="text-[10px] font-mono font-medium text-stone-400 mt-0.5">Target: 70.0 kg</span>
             </div>
           </div>
         </div>
 
+        <!-- Weight Line Chart -->
         <div class="paper-card rounded-2xl p-4 sm:p-5 space-y-3">
-          <div class="flex justify-between items-baseline">
+          <div class="flex flex-wrap items-baseline justify-between gap-2">
             <span class="text-xs font-mono font-bold uppercase tracking-wider text-stone-400">Fasted Weight Trajectory</span>
             <span class="text-xs font-mono font-bold text-brand-terracotta dark:text-brand-terracottaDark">Floor: 70.0 kg</span>
           </div>
           <div class="w-full h-48 relative min-w-0">
             <svg id="weightSvgChart" class="w-full h-full overflow-visible"></svg>
           </div>
+          <div class="flex justify-between text-[10px] font-mono font-medium text-stone-400 pt-2 border-t border-stone-100 dark:border-stone-800">
+            <span>Day 1 (76.2kg)</span>
+            <span>Day 16 (75.0kg)</span>
+            <span>Day 50 (70.0kg)</span>
+          </div>
         </div>
 
+        <!-- Calorie Adherence Bars -->
         <div class="paper-card rounded-2xl p-4 sm:p-5 space-y-3">
-          <div class="flex justify-between items-baseline">
+          <div class="flex flex-wrap items-baseline justify-between gap-2">
             <span class="text-xs font-mono font-bold uppercase tracking-wider text-stone-400">Caloric Adherence Ledger</span>
             <span class="text-xs font-mono font-bold text-stone-500">Ceiling: 1,900 kcal</span>
           </div>
           <div class="w-full h-36 relative min-w-0">
             <svg id="calSvgChart" class="w-full h-full overflow-visible"></svg>
           </div>
+          <div class="flex justify-between text-[10px] font-mono font-medium text-stone-400 pt-2 border-t border-stone-100 dark:border-stone-800">
+            <span>Historical Days</span>
+            <span class="text-brand-terracotta dark:text-brand-terracottaDark">• Red = Exceeded ceiling</span>
+          </div>
         </div>
 
+        <!-- Historical Ledger -->
         <div class="paper-card rounded-2xl p-4 sm:p-5 space-y-3">
           <div class="text-xs font-mono font-bold uppercase tracking-wider text-stone-400">Historical Log Entries</div>
           <div id="historyEntriesLedger" class="space-y-2.5 max-h-80 overflow-y-auto custom-scroll pr-1"></div>
         </div>
       </section>
 
-      <!-- ================= VIEW 5: CONFIG & SETTINGS ================= -->
+      <!-- ================= VIEW 5: CONFIG & DATA IMPORT/EXPORT ================= -->
       <section id="view-settings" class="hidden space-y-4">
         <div class="pb-1">
           <h2 class="text-xl font-extrabold text-stone-900 dark:text-stone-100 tracking-tight">Configuration & Data</h2>
           <p class="text-xs text-stone-400 font-medium">Theme, Gemini API key & Custom JSON Data</p>
         </div>
 
-        <div class="paper-card rounded-2xl p-4 sm:p-5 flex items-center justify-between gap-3">
-          <div>
+        <!-- Theme Mode Card -->
+        <div class="paper-card rounded-2xl p-4 sm:p-5 flex flex-wrap items-center justify-between gap-3">
+          <div class="min-w-0 flex-1">
             <div class="text-sm font-bold text-stone-900 dark:text-stone-100">Display Theme</div>
             <div class="text-xs text-stone-400 mt-0.5">Switch between Warm Editorial & Obsidian Dark</div>
           </div>
-          <button onclick="toggleAppTheme()" class="px-4 py-2.5 rounded-xl border border-stone-200 dark:border-stone-700 bg-stone-100 dark:bg-stone-800 text-xs font-mono font-bold flex items-center gap-2 subtle-press">
+          <button onclick="toggleAppTheme()" class="px-4 py-2.5 rounded-xl border border-stone-200 dark:border-stone-700 bg-stone-100 dark:bg-stone-800 text-xs font-mono font-bold flex items-center gap-2 subtle-press shrink-0">
             <i id="themeToggleBtnIcon" data-lucide="moon" class="w-4 h-4"></i>
             <span id="themeToggleBtnText">Dark</span>
           </button>
         </div>
 
+        <!-- Gemini API Key Card -->
         <div class="paper-card rounded-2xl p-4 sm:p-5 space-y-3.5">
           <div class="flex items-center gap-2">
             <i data-lucide="key" class="w-4 h-4 text-brand-terracotta shrink-0"></i>
             <span class="text-xs font-mono font-bold text-stone-900 dark:text-stone-100 uppercase tracking-wider">Gemini 3.8 Flash API Key</span>
           </div>
-          <input type="password" id="settingsKeyInput" placeholder="AIzaSy..." class="w-full p-3.5 text-xs font-mono bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-700 rounded-xl text-stone-900 dark:text-stone-100 focus:outline-none" onchange="updateApiKey(this.value)">
+          <p class="text-xs text-stone-500 dark:text-stone-400 leading-relaxed">
+            Direct client-side key for Food Lens analysis and Gym screenshot OCR. Stored exclusively in your phone's browser storage.
+          </p>
+          <input type="password" id="settingsKeyInput" placeholder="AIzaSy..." class="w-full p-3.5 text-xs font-mono bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-700 rounded-xl text-stone-900 dark:text-stone-100 focus:outline-none focus:border-stone-900 dark:focus:border-stone-200" onchange="updateApiKey(this.value)">
+          <div class="text-[11px] text-stone-400 font-mono">
+            Get your free key at <a href="https://aistudio.google.com/" target="_blank" class="underline text-brand-terracotta font-bold">Google AI Studio</a>.
+          </div>
         </div>
 
+        <!-- JSON Format & Import/Export -->
         <div class="paper-card rounded-2xl p-4 sm:p-5 space-y-4">
-          <div class="flex justify-between items-center">
-            <div class="text-xs font-mono font-bold uppercase tracking-wider text-stone-900 dark:text-stone-100">Data Import / Export</div>
-            <button onclick="downloadSampleJSON()" class="text-xs font-mono font-bold text-brand-terracotta hover:underline">Sample File</button>
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <div class="text-xs font-mono font-bold uppercase tracking-wider text-stone-900 dark:text-stone-100">Upload Your Own Data (JSON)</div>
+            <button onclick="downloadSampleJSON()" class="text-xs font-mono font-bold text-brand-terracotta dark:text-brand-terracottaDark hover:underline subtle-press">Sample File</button>
           </div>
-          <div class="grid grid-cols-2 gap-3 pt-1">
-            <button onclick="document.getElementById('importFilePicker').click()" class="w-full py-3 px-4 rounded-xl bg-brand-terracotta text-white text-xs font-mono font-bold subtle-press flex items-center justify-center gap-2">
-              <i data-lucide="upload" class="w-4 h-4"></i> Import
+          <p class="text-xs text-stone-500 dark:text-stone-400 leading-relaxed">
+            You can prepare your custom historical data in the format below and upload it directly to populate all 50 days instantly.
+          </p>
+
+          <div class="p-4 bg-stone-900 text-stone-200 rounded-xl text-[11px] font-mono leading-relaxed border border-stone-800 overflow-x-auto custom-scroll w-full">
+            <pre class="m-0 whitespace-pre"><code>{
+  "2026-11-06": {
+    "dayNum": 16,
+    "weight": 75.0,
+    "water": 3250,
+    "sleep": 7.5,
+    "split": "Pull (Back & Bi)",
+    "workoutDone": true,
+    "workoutNotes": "Heavy rows & pull-ups",
+    "meals": [
+      {
+        "id": 1,
+        "name": "Eggs & Toast",
+        "cal": 420,
+        "protein": 26,
+        "carbs": 34,
+        "fats": 16,
+        "time": "08:30"
+      }
+    ]
+  }
+}</code></pre>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+            <button onclick="document.getElementById('importFilePicker').click()" class="w-full py-3 px-4 rounded-xl bg-brand-terracotta dark:bg-brand-terracottaDark text-white text-xs font-mono font-bold subtle-press flex items-center justify-center gap-2 hover:opacity-90 transition">
+              <i data-lucide="upload" class="w-4 h-4"></i> Upload JSON
             </button>
-            <button onclick="exportDataJSON()" class="w-full py-3 px-4 rounded-xl border border-stone-200 dark:border-stone-700 bg-stone-100 dark:bg-stone-800 text-stone-800 dark:text-stone-200 text-xs font-mono font-bold subtle-press flex items-center justify-center gap-2">
-              <i data-lucide="download" class="w-4 h-4"></i> Export
+            <button onclick="exportDataJSON()" class="w-full py-3 px-4 rounded-xl border border-stone-200 dark:border-stone-700 bg-stone-100 dark:bg-stone-800 text-stone-800 dark:text-stone-200 text-xs font-mono font-bold subtle-press flex items-center justify-center gap-2 transition hover:border-stone-400">
+              <i data-lucide="download" class="w-4 h-4"></i> Export Backup
             </button>
           </div>
           <input type="file" id="importFilePicker" accept=".json" class="hidden" onchange="importDataJSON(event)">
@@ -563,7 +570,7 @@
 
     </main>
 
-    <!-- Bottom Navigation Bar -->
+    <!-- Bottom Mobile Nav Bar -->
     <nav class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-inherit/95 backdrop-blur-md border-t border-stone-200 dark:border-stone-800 safe-bottom z-40 px-3 py-2 flex justify-around items-center">
       <button onclick="switchTab('today')" id="nav-btn-today" class="flex flex-col items-center gap-1 text-stone-900 dark:text-stone-100 subtle-press transition">
         <i data-lucide="calendar" class="w-4 h-4"></i>
@@ -629,7 +636,6 @@
       initDatabase();
       updateApiKeyUI();
       renderTodayView();
-      renderFoodLensChart();
       lucide.createIcons();
     });
 
@@ -657,29 +663,41 @@
     function initDatabase() {
       const stored = localStorage.getItem(STORAGE_KEY_LOGS);
       if (stored) {
-        try { dailyRecords = JSON.parse(stored); } catch (e) { console.error(e); }
+        try {
+          dailyRecords = JSON.parse(stored);
+        } catch (e) {
+          console.error(e);
+        }
       }
 
       if (Object.keys(dailyRecords).length === 0) {
         seedRealisticHistory();
       }
 
+      // Auto-initialize new day: calories, water, sleep at 0, weight carried over from latest logged day
       if (!dailyRecords[todayKey]) {
+        const sortedDates = Object.keys(dailyRecords).sort();
+        let lastRecordedWeight = PROTOCOL.startWeight;
+        let lastDayNum = 0;
+
+        if (sortedDates.length > 0) {
+          const prevDate = sortedDates[sortedDates.length - 1];
+          const prevRecord = dailyRecords[prevDate];
+          if (prevRecord) {
+            if (prevRecord.weight) lastRecordedWeight = prevRecord.weight;
+            if (prevRecord.dayNum) lastDayNum = prevRecord.dayNum;
+          }
+        }
+
         dailyRecords[todayKey] = {
-          dayNum: 16,
-          weight: 75.0,
-          water: 3250,
-          sleep: 7.5,
-          bedtime: '23:30',
-          wakeTime: '07:00',
-          split: 'Pull (Back & Bi)',
-          workoutDone: true,
-          workoutNotes: 'Weighted pull-ups 3x5 (+10kg), Incline DB curls 3x12',
-          meals: [
-            { id: 1, name: '3 Whole Eggs & Sourdough Toast', cal: 420, protein: 26, carbs: 34, fats: 16, time: '08:30' },
-            { id: 2, name: 'Whey Isolate & Cold Brew', cal: 140, protein: 27, carbs: 2, fats: 1, time: '11:45' },
-            { id: 3, name: 'Chicken Breast (200g) & Fragrant Rice', cal: 680, protein: 65, carbs: 76, fats: 17, time: '14:30' }
-          ]
+          dayNum: Math.min(PROTOCOL.totalDays, lastDayNum + 1 || 1),
+          weight: lastRecordedWeight,
+          water: 0,
+          sleep: 0,
+          split: 'Push',
+          workoutDone: false,
+          workoutNotes: '',
+          meals: []
         };
       }
       persist();
@@ -714,8 +732,6 @@
           weight: s.weight,
           water: s.water,
           sleep: 7.5,
-          bedtime: '23:30',
-          wakeTime: '07:00',
           split: s.split,
           workoutDone: s.done,
           workoutNotes: `Completed ${s.split} session as prescribed.`,
@@ -745,10 +761,7 @@
       document.getElementById('protocolProgressPct').innerText = `${pct}%`;
       document.getElementById('protocolProgressBar').style.width = `${pct}%`;
 
-      const w = rec.weight || 75.0;
-      document.getElementById('weightHeroInput').value = w;
-      const netDelta = (w - PROTOCOL.startWeight).toFixed(1);
-      document.getElementById('weightNetDeltaDisplay').innerText = `${netDelta > 0 ? '+' : ''}${netDelta} kg net`;
+      document.getElementById('weightHeroInput').value = (rec.weight !== undefined && rec.weight !== null) ? rec.weight : '';
 
       const meals = rec.meals || [];
       const totalCal = meals.reduce((acc, m) => acc + (m.cal || 0), 0);
@@ -782,10 +795,6 @@
       document.getElementById('waterPctBadge').innerText = `${waterPct}%`;
       document.getElementById('waterProgressBar').style.width = `${waterPct}%`;
 
-      document.getElementById('sleepDurationDisplay').innerText = (rec.sleep || 7.5).toFixed(1);
-      if (rec.bedtime) document.getElementById('sleepBedtimeInput').value = rec.bedtime;
-      if (rec.wakeTime) document.getElementById('sleepWakeInput').value = rec.wakeTime;
-
       document.getElementById('todaySplitDisplay').innerText = rec.split || 'Pull Protocol';
       document.getElementById('todayWorkoutCheckbox').checked = !!rec.workoutDone;
       document.getElementById('todayWorkoutNotes').value = rec.workoutNotes || '';
@@ -799,19 +808,19 @@
       }
 
       container.innerHTML = meals.map(m => `
-        <div class="p-3 rounded-xl bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-800 flex items-center justify-between text-xs gap-3">
-          <div class="min-w-0 flex-1">
-            <div class="flex items-center gap-2 flex-wrap">
-              <span class="font-extrabold text-stone-900 dark:text-stone-100 truncate">${m.name}</span>
-              <span class="text-[10px] font-mono text-stone-400 bg-stone-200/50 dark:bg-stone-800 px-1.5 py-0.5 rounded">${m.time || ''}</span>
+        <div class="p-3 rounded-xl bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-800 flex items-center justify-between text-xs">
+          <div>
+            <div class="font-extrabold text-stone-900 dark:text-stone-100 flex items-center gap-2">
+              <span>${m.name}</span>
+              <span class="text-[10px] font-mono font-normal text-stone-400">${m.time || ''}</span>
             </div>
-            <div class="text-[10px] font-mono font-bold text-stone-400 mt-1">
+            <div class="text-[10px] font-mono font-bold text-stone-400 mt-0.5">
               ${m.protein || 0}g P • ${m.carbs || 0}g C • ${m.fats || 0}g F
             </div>
           </div>
-          <div class="flex items-center gap-2 shrink-0">
-            <span class="font-mono font-extrabold text-stone-900 dark:text-stone-100 text-sm whitespace-nowrap">${m.cal} kcal</span>
-            <button onclick="removeMealItem(${m.id})" class="text-stone-400 hover:text-red-600 p-1">
+          <div class="flex items-center gap-3">
+            <span class="font-mono font-extrabold text-stone-900 dark:text-stone-100">${m.cal} kcal</span>
+            <button onclick="removeMealItem(${m.id})" class="text-stone-400 hover:text-red-600 transition">
               <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
             </button>
           </div>
@@ -820,55 +829,12 @@
       lucide.createIcons();
     }
 
-    function calculateSleepFromInputs() {
-      const bed = document.getElementById('sleepBedtimeInput').value;
-      const wake = document.getElementById('sleepWakeInput').value;
-      if (!bed || !wake) return;
-
-      const [bH, bM] = bed.split(':').map(Number);
-      const [wH, wM] = wake.split(':').map(Number);
-
-      let bMinutes = bH * 60 + bM;
-      let wMinutes = wH * 60 + wM;
-      if (wMinutes < bMinutes) wMinutes += 24 * 60;
-
-      const durationHours = Math.round(((wMinutes - bMinutes) / 60) * 10) / 10;
-      if (!dailyRecords[todayKey]) dailyRecords[todayKey] = {};
-      dailyRecords[todayKey].sleep = durationHours;
-      dailyRecords[todayKey].bedtime = bed;
-      dailyRecords[todayKey].wakeTime = wake;
-
-      document.getElementById('sleepDurationDisplay').innerText = durationHours.toFixed(1);
-      persist();
-      showToast(`Sleep: ${durationHours} hrs recorded`);
-    }
-
-    function addCustomWater() {
-      const input = document.getElementById('customWaterInput');
-      const val = parseInt(input.value, 10);
-      if (isNaN(val) || val <= 0) {
-        showToast('Enter valid ml amount');
-        return;
-      }
-      addWater(val);
-      input.value = '';
-    }
-
-    function addWater(amount) {
-      if (!dailyRecords[todayKey]) dailyRecords[todayKey] = {};
-      const current = dailyRecords[todayKey].water || 0;
-      dailyRecords[todayKey].water = current + amount;
-      persist();
-      renderTodayView();
-      showToast(`+${amount}ml added`);
-    }
-
-    function resetWater() {
+    function removeMealItem(mealId) {
       if (!dailyRecords[todayKey]) return;
-      dailyRecords[todayKey].water = 0;
+      dailyRecords[todayKey].meals = (dailyRecords[todayKey].meals || []).filter(m => m.id !== mealId);
       persist();
       renderTodayView();
-      showToast('Water reset');
+      showToast('Meal removed');
     }
 
     function saveHeroWeight(val) {
@@ -876,7 +842,6 @@
       if (!dailyRecords[todayKey]) dailyRecords[todayKey] = {};
       dailyRecords[todayKey].weight = w || 75.0;
       persist();
-      renderTodayView();
       showToast('Weight recorded');
     }
 
@@ -902,18 +867,23 @@
       showToast(`Split: ${name}`);
     }
 
-    function removeMealItem(mealId) {
-      if (!dailyRecords[todayKey]) return;
-      dailyRecords[todayKey].meals = (dailyRecords[todayKey].meals || []).filter(m => m.id !== mealId);
+    function addWater(amount) {
+      if (!dailyRecords[todayKey]) dailyRecords[todayKey] = {};
+      const current = dailyRecords[todayKey].water || 0;
+      dailyRecords[todayKey].water = current + amount;
       persist();
       renderTodayView();
-      renderFoodLensChart();
-      showToast('Meal removed');
+      showToast(`+${amount}ml added`);
     }
 
-    /* ========================================================
-       GEMINI 3.8 FLASH VISION & OCR RUNNERS
-       ======================================================== */
+    function resetWater() {
+      if (!dailyRecords[todayKey]) return;
+      dailyRecords[todayKey].water = 0;
+      persist();
+      renderTodayView();
+      showToast('Water reset');
+    }
+
     function handleFoodImageSelected(event) {
       const file = event.target.files[0];
       if (!file) return;
@@ -1018,10 +988,7 @@
       document.getElementById('foodResCarbs').innerText = `${data.carbs_g}g`;
       document.getElementById('foodResFats').innerText = `${data.fats_g}g`;
       document.getElementById('foodResNotes').innerText = data.notes || '';
-      
-      const card = document.getElementById('foodResultCard');
-      card.classList.remove('hidden');
-      card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      document.getElementById('foodResultCard').classList.remove('hidden');
     }
 
     function discardFoodResult() {
@@ -1055,7 +1022,6 @@
       document.getElementById('foodPlaceholderUI').classList.remove('hidden');
       stagedFoodBase64 = null;
 
-      renderFoodLensChart();
       switchTab('today');
       showToast('Meal added to log');
     }
@@ -1186,9 +1152,7 @@ Return pure JSON schema:
         exContainer.innerHTML = '';
       }
 
-      const card = document.getElementById('workoutResultCard');
-      card.classList.remove('hidden');
-      card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      document.getElementById('workoutResultCard').classList.remove('hidden');
     }
 
     function discardWorkoutResult() {
@@ -1220,39 +1184,6 @@ Return pure JSON schema:
       showToast('Workout saved');
     }
 
-    /* ========================================================
-       CHARTS & ANALYTICS RENDERING
-       ======================================================== */
-    function renderFoodLensChart() {
-      const svg = document.getElementById('foodLensCalChart');
-      if (!svg) return;
-      const dates = Object.keys(dailyRecords).sort().slice(-14);
-      const calories = dates.map(d => {
-        const item = dailyRecords[d];
-        const dayCal = (item.meals || []).reduce((acc, m) => acc + (m.cal || 0), 0);
-        return { date: d, cal: dayCal };
-      });
-
-      const w = svg.clientWidth || 340;
-      const h = svg.clientHeight || 112;
-      svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
-
-      const maxCal = 2400;
-      const ceilingY = h - 16 - (1900 / maxCal) * (h - 28);
-
-      let content = `<line x1="10" y1="${ceilingY}" x2="${w - 10}" y2="${ceilingY}" stroke="#C85A32" stroke-dasharray="3,3" stroke-width="1.5" />`;
-      const barWidth = Math.max(6, Math.floor((w - 20) / calories.length) - 4);
-
-      calories.forEach((pt, i) => {
-        const x = 12 + i * (barWidth + 4);
-        const barH = Math.min((pt.cal / maxCal) * (h - 28), h - 28);
-        const y = h - 16 - barH;
-        const color = pt.cal > 1900 ? '#C85A32' : (isDarkMode ? '#3F3F46' : '#A1A1AA');
-        content += `<rect x="${x}" y="${y}" width="${barWidth}" height="${barH}" fill="${color}" rx="2" />`;
-      });
-      svg.innerHTML = content;
-    }
-
     function renderAnalyticsView() {
       const dates = Object.keys(dailyRecords).sort();
       const weights = [];
@@ -1277,7 +1208,6 @@ Return pure JSON schema:
       renderSvgWeightChart(weights);
       renderSvgCalChart(calories);
       renderHistoryLedger(dates);
-      renderFoodLensChart();
     }
 
     function renderSvgWeightChart(data) {
@@ -1360,7 +1290,7 @@ Return pure JSON schema:
           <div class="p-3 rounded-xl bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-800 flex items-center justify-between text-xs font-mono">
             <div>
               <div class="font-extrabold text-stone-900 dark:text-stone-100">Day ${item.dayNum || '--'} • ${d}</div>
-              <div class="text-[10px] font-bold text-stone-400 mt-0.5">${item.split || 'Rest'} • ${(item.water || 0)/1000}L • ${item.sleep || '--'}h sleep</div>
+              <div class="text-[10px] font-bold text-stone-400 mt-0.5">${item.split || 'Rest'} • ${(item.water || 0)/1000}L</div>
             </div>
             <div class="text-right">
               <div class="font-extrabold text-stone-900 dark:text-stone-100">${item.weight ? item.weight + ' kg' : '--'}</div>
@@ -1371,9 +1301,6 @@ Return pure JSON schema:
       }).join('');
     }
 
-    /* ========================================================
-       TAB ROUTING & EXPORT UTILITIES
-       ======================================================== */
     function switchTab(tabId) {
       ['today', 'lens-food', 'lens-workout', 'trends', 'settings'].forEach(id => {
         const section = document.getElementById(`view-${id}`);
@@ -1397,7 +1324,6 @@ Return pure JSON schema:
 
       if (tabId === 'trends') renderAnalyticsView();
       if (tabId === 'today') renderTodayView();
-      if (tabId === 'lens-food') renderFoodLensChart();
 
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
@@ -1406,7 +1332,7 @@ Return pure JSON schema:
       apiKey = key.trim();
       localStorage.setItem(STORAGE_KEY_API_KEY, apiKey);
       updateApiKeyUI();
-      showToast(apiKey ? 'Gemini 3.8 active' : 'API key removed');
+      showToast(apiKey ? 'Gemini API active' : 'API key removed');
     }
 
     function updateApiKeyUI() {
@@ -1440,8 +1366,6 @@ Return pure JSON schema:
           "weight": 75.0,
           "water": 3250,
           "sleep": 7.5,
-          "bedtime": "23:30",
-          "wakeTime": "07:00",
           "split": "Pull (Back & Biceps)",
           "workoutDone": true,
           "workoutNotes": "Weighted pull-ups 3x5, DB curls 3x12",
@@ -1478,7 +1402,6 @@ Return pure JSON schema:
           dailyRecords = parsed;
           persist();
           renderTodayView();
-          renderFoodLensChart();
           showToast('Data imported successfully');
         } catch (err) {
           showToast('Invalid JSON file format');
