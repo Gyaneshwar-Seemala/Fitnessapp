@@ -268,6 +268,34 @@
           </div>
         </div>
 
+        
+        <!-- Sleep Recovery Protocol Card -->
+        <div class="paper-card rounded-2xl p-5 space-y-4">
+          <div class="flex items-center justify-between">
+            <div>
+              <div class="text-[11px] font-mono font-bold uppercase tracking-wider text-stone-400 dark:text-stone-500">Sleep & Recovery (8.0h Target)</div>
+              <div class="flex items-baseline gap-1.5 mt-0.5">
+                <input type="number" step="0.5" min="0" max="24" id="sleepHeroInput" class="w-16 bg-transparent text-3xl font-extrabold font-mono text-stone-900 dark:text-stone-50 tracking-tight focus:outline-none focus:border-b-2 border-indigo-500" onchange="saveTodaySleep(this.value)">
+                <span class="text-xs font-mono font-bold text-stone-400 dark:text-stone-500">/ 8.0 hrs</span>
+              </div>
+            </div>
+            <span id="sleepQualityBadge" class="text-xs font-mono font-bold px-3 py-1 rounded-lg bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800">
+              0%
+            </span>
+          </div>
+
+          <div class="w-full h-2 bg-stone-100 dark:bg-stone-800 rounded-full overflow-hidden">
+            <div id="sleepProgressBar" class="h-full bg-indigo-500 rounded-full transition-all duration-300" style="width: 0%;"></div>
+          </div>
+
+          <div class="grid grid-cols-4 gap-2 pt-1">
+            <button onclick="adjustSleep(6)" class="py-2 rounded-xl border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-800/60 font-mono text-xs font-bold text-stone-800 dark:text-stone-200 subtle-press hover:border-indigo-500 transition">6.0h</button>
+            <button onclick="adjustSleep(7)" class="py-2 rounded-xl border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-800/60 font-mono text-xs font-bold text-stone-800 dark:text-stone-200 subtle-press hover:border-indigo-500 transition">7.0h</button>
+            <button onclick="adjustSleep(8)" class="py-2 rounded-xl border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-800/60 font-mono text-xs font-bold text-stone-800 dark:text-stone-200 subtle-press hover:border-indigo-500 transition">8.0h</button>
+            <button onclick="adjustSleep(0.5, true)" class="py-2 rounded-xl border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-800/60 font-mono text-xs font-bold text-indigo-600 dark:text-indigo-400 subtle-press hover:border-indigo-500 transition">+0.5h</button>
+          </div>
+        </div>
+
         <!-- Workout of the Day Card -->
         <div class="paper-card rounded-2xl p-5 space-y-3.5">
           <div class="flex items-center justify-between">
@@ -795,6 +823,25 @@
       document.getElementById('waterPctBadge').innerText = `${waterPct}%`;
       document.getElementById('waterProgressBar').style.width = `${waterPct}%`;
 
+      const sleepHours = rec.sleep !== undefined ? rec.sleep : 0;
+      document.getElementById('sleepHeroInput').value = sleepHours;
+      const sleepPct = Math.min(Math.round((sleepHours / 8.0) * 100), 100);
+      document.getElementById('sleepProgressBar').style.width = `${sleepPct}%`;
+      const sleepBadge = document.getElementById('sleepQualityBadge');
+      if (sleepHours >= 7.5) {
+        sleepBadge.innerText = 'Optimal';
+        sleepBadge.className = 'text-xs font-mono font-bold px-3 py-1 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800';
+      } else if (sleepHours >= 6.0) {
+        sleepBadge.innerText = 'Moderate';
+        sleepBadge.className = 'text-xs font-mono font-bold px-3 py-1 rounded-lg bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800';
+      } else if (sleepHours > 0) {
+        sleepBadge.innerText = 'Deficit';
+        sleepBadge.className = 'text-xs font-mono font-bold px-3 py-1 rounded-lg bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800';
+      } else {
+        sleepBadge.innerText = '0 hrs';
+        sleepBadge.className = 'text-xs font-mono font-bold px-3 py-1 rounded-lg bg-stone-100 dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-stone-500';
+      }
+
       document.getElementById('todaySplitDisplay').innerText = rec.split || 'Pull Protocol';
       document.getElementById('todayWorkoutCheckbox').checked = !!rec.workoutDone;
       document.getElementById('todayWorkoutNotes').value = rec.workoutNotes || '';
@@ -874,6 +921,26 @@
       persist();
       renderTodayView();
       showToast(`+${amount}ml added`);
+    }
+
+    
+    function saveTodaySleep(val) {
+      const s = Math.max(0, parseFloat(val) || 0);
+      if (!dailyRecords[todayKey]) dailyRecords[todayKey] = {};
+      dailyRecords[todayKey].sleep = s;
+      persist();
+      renderTodayView();
+      showToast(`Sleep logged: ${s}h`);
+    }
+
+    function adjustSleep(val, isDelta = false) {
+      if (!dailyRecords[todayKey]) dailyRecords[todayKey] = {};
+      const cur = dailyRecords[todayKey].sleep || 0;
+      const target = isDelta ? cur + val : val;
+      dailyRecords[todayKey].sleep = Math.max(0, Math.round(target * 10) / 10);
+      persist();
+      renderTodayView();
+      showToast(`Sleep updated: ${dailyRecords[todayKey].sleep}h`);
     }
 
     function resetWater() {
@@ -1290,7 +1357,7 @@ Return pure JSON schema:
           <div class="p-3 rounded-xl bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-800 flex items-center justify-between text-xs font-mono">
             <div>
               <div class="font-extrabold text-stone-900 dark:text-stone-100">Day ${item.dayNum || '--'} • ${d}</div>
-              <div class="text-[10px] font-bold text-stone-400 mt-0.5">${item.split || 'Rest'} • ${(item.water || 0)/1000}L</div>
+              <div class="text-[10px] font-bold text-stone-400 mt-0.5">${item.split || 'Rest'} • ${(item.water || 0)/1000}L • ${item.sleep || 0}h sleep</div>
             </div>
             <div class="text-right">
               <div class="font-extrabold text-stone-900 dark:text-stone-100">${item.weight ? item.weight + ' kg' : '--'}</div>
