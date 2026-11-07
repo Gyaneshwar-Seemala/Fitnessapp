@@ -346,7 +346,7 @@
         <div class="flex items-center justify-between pb-1">
           <div>
             <h2 class="text-xl font-extrabold text-stone-900 dark:text-stone-100 tracking-tight">Food Lens</h2>
-            <p class="text-xs text-stone-400 font-medium">Gemini 3.8 Flash Nutrition Vision</p>
+            <p class="text-xs text-stone-400 font-medium">Gemini AI Nutrition Vision</p>
           </div>
           <button onclick="switchTab('today')" class="text-xs font-mono font-bold text-stone-500 hover:text-stone-900 dark:hover:text-stone-100">
             &larr; Today
@@ -550,26 +550,36 @@
           </button>
         </div>
 
-        <!-- Gemini API Key Card & Model Selector -->
-        <div class="paper-card rounded-2xl p-4 sm:p-5 space-y-3.5">
-          <div class="flex items-center justify-between">
+        <!-- Gemini API Key Card & Model Selector (Clean Stacked Layout) -->
+        <div class="paper-card rounded-2xl p-4 sm:p-5 space-y-4">
+          <div class="flex items-center justify-between pb-1 border-b border-stone-100 dark:border-stone-800">
             <div class="flex items-center gap-2">
               <i data-lucide="key" class="w-4 h-4 text-brand-terracotta shrink-0"></i>
               <span class="text-xs font-mono font-bold text-stone-900 dark:text-stone-100 uppercase tracking-wider">Gemini API Key</span>
             </div>
-            <select id="modelSelectorDropdown" class="bg-stone-100 dark:bg-stone-800 border border-stone-200 dark:border-stone-700 rounded-lg px-2.5 py-1 text-xs font-mono text-stone-900 dark:text-stone-100 focus:outline-none" onchange="changeActiveModel(this.value)">
-              <option value="gemini-2.5-flash">Gemini 2.5 Flash (Recommended)</option>
-              <option value="gemini-2.0-flash">Gemini 2.0 Flash</option>
-              <option value="gemini-1.5-flash">Gemini 1.5 Flash</option>
-              <option value="gemini-1.5-flash-8b">Gemini 1.5 Flash 8B (High Speed)</option>
-            </select>
+            <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-stone-100 dark:bg-stone-800 text-stone-500 font-semibold">Client-Side</span>
           </div>
-          <p class="text-xs text-stone-500 dark:text-stone-400 leading-relaxed">
-            Client-side API key for Vision food logging and workout OCR. Includes automatic failover routing if Google servers experience high traffic spikes.
-          </p>
-          <input type="password" id="settingsKeyInput" placeholder="AIzaSy..." class="w-full p-3.5 text-xs font-mono bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-700 rounded-xl text-stone-900 dark:text-stone-100 focus:outline-none focus:border-stone-900 dark:focus:border-stone-200" onchange="updateApiKey(this.value)">
-          <div class="text-[11px] text-stone-400 font-mono">
-            Free tier keys at <a href="https://aistudio.google.com/" target="_blank" class="underline text-brand-terracotta font-bold">Google AI Studio</a>.
+
+          <!-- API Key Input -->
+          <div class="space-y-1.5">
+            <label class="block text-[10px] font-mono font-bold uppercase text-stone-400 dark:text-stone-500">API Key</label>
+            <input type="password" id="settingsKeyInput" placeholder="AIzaSy..." class="w-full p-3 text-xs font-mono bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-xl text-stone-900 dark:text-stone-100 focus:outline-none focus:border-brand-terracotta" onchange="updateApiKey(this.value)">
+            <div class="text-[11px] text-stone-400 font-mono">
+              Get key at <a href="https://aistudio.google.com/" target="_blank" class="underline text-brand-terracotta font-bold">Google AI Studio</a>
+            </div>
+          </div>
+
+          <!-- Model Selector Row -->
+          <div class="pt-2 border-t border-stone-100 dark:border-stone-800 space-y-1.5">
+            <div class="flex items-center justify-between">
+              <label class="text-[10px] font-mono font-bold uppercase text-stone-400 dark:text-stone-500">Active Model</label>
+              <span class="text-[10px] font-mono text-emerald-600 dark:text-emerald-400 font-semibold">Auto-Failover Active</span>
+            </div>
+            <select id="modelSelectorDropdown" class="w-full bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-xl p-2.5 text-xs font-mono text-stone-900 dark:text-stone-100 focus:outline-none focus:border-brand-terracotta" onchange="changeActiveModel(this.value)">
+              <option value="gemini-2.0-flash">Gemini 2.0 Flash (Fastest & Most Reliable)</option>
+              <option value="gemini-1.5-flash">Gemini 1.5 Flash (Stable Standard)</option>
+              <option value="gemini-1.5-flash-latest">Gemini 1.5 Flash Latest</option>
+            </select>
           </div>
         </div>
 
@@ -651,7 +661,7 @@
     </nav>
 
     <!-- Toast Notification -->
-    <div id="toast" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 bg-stone-900 dark:bg-stone-100 text-stone-50 dark:text-stone-900 text-xs font-mono font-bold px-4 py-2 rounded-full shadow-2xl pointer-events-none transition-all duration-200 opacity-0 transform -translate-y-2">
+    <div id="toast" class="fixed top-5 left-1/2 -translate-x-1/2 z-50 max-w-[90vw] sm:max-w-md px-4 py-2.5 rounded-2xl bg-stone-900/95 dark:bg-stone-100/95 text-stone-50 dark:text-stone-900 text-xs font-mono font-semibold shadow-2xl border border-stone-700/50 dark:border-stone-300/50 backdrop-blur-md pointer-events-none transition-all duration-300 opacity-0 transform -translate-y-2 text-center leading-relaxed">
       <span id="toastMessage">Updated</span>
     </div>
 
@@ -1018,16 +1028,19 @@
     }
 
     
-    // Robust multi-model fallback chain when Google throttles or experiences usage spikes
+    // Production Google Generative AI Models (Guaranteed available on v1beta)
     const FALLBACK_MODELS = [
-      'gemini-2.5-flash',
       'gemini-2.0-flash',
       'gemini-1.5-flash',
-      'gemini-1.5-flash-8b'
+      'gemini-1.5-flash-latest'
     ];
 
     async function callGeminiWithFallback(payload) {
-      const selectedModel = localStorage.getItem('apex50_selected_model') || 'gemini-2.5-flash';
+      if (!apiKey || !apiKey.trim()) {
+        throw new Error('Please enter your Gemini API Key in the Config tab.');
+      }
+
+      const selectedModel = localStorage.getItem('apex50_selected_model') || 'gemini-2.0-flash';
       const modelsToTry = [selectedModel, ...FALLBACK_MODELS.filter(m => m !== selectedModel)];
       
       let lastError = null;
@@ -1044,26 +1057,32 @@
             const data = await response.json();
             const rawJson = data.candidates?.[0]?.content?.parts?.[0]?.text;
             if (rawJson) {
-              return JSON.parse(rawJson);
+              // Strip code fences if present (```json ... ```)
+              const cleanJson = rawJson.replace(/```json/gi, '').replace(/```/g, '').trim();
+              return JSON.parse(cleanJson);
             }
           }
 
           const errData = await response.json().catch(() => ({}));
           const errMsg = errData.error?.message || `HTTP ${response.status}`;
-          lastError = new Error(`[${model}] ${errMsg}`);
+          lastError = new Error(errMsg);
 
-          // If throttled (429), overloaded (503), or not found (404), continue to next model in chain
-          if ([429, 503, 404].includes(response.status) || errMsg.toLowerCase().includes('spike') || errMsg.toLowerCase().includes('overloaded')) {
-            console.warn(`Model ${model} unavailable (${errMsg}), falling back to next model...`);
-            continue;
-          } else {
-            throw lastError;
-          }
+          // If rate limited (429), overloaded (503), not found (404), or general error, try next stable model
+          console.warn(`Model ${model} issue (${errMsg}), trying fallback...`);
+          continue;
         } catch (e) {
           lastError = e;
         }
       }
-      throw lastError || new Error('All Gemini models are temporarily busy. Please wait a moment.');
+      
+      // Clean up error message for the user
+      let msg = lastError?.message || 'Server busy';
+      if (msg.includes('API_KEY_INVALID') || msg.includes('invalid') || msg.includes('400')) {
+        msg = 'Invalid API Key. Please verify in Config.';
+      } else if (msg.includes('quota') || msg.includes('429') || msg.includes('spike')) {
+        msg = 'Gemini quota reached. Please try in 1 minute.';
+      }
+      throw new Error(msg);
     }
 
     async function runGeminiFoodAnalysis() {
@@ -1482,7 +1501,7 @@ Return pure JSON schema:
       const settingsInput = document.getElementById('settingsKeyInput');
       const modelDropdown = document.getElementById('modelSelectorDropdown');
       
-      const savedModel = localStorage.getItem('apex50_selected_model') || 'gemini-2.5-flash';
+      const savedModel = localStorage.getItem('apex50_selected_model') || 'gemini-2.0-flash';
       if (modelDropdown) modelDropdown.value = savedModel;
 
       if (settingsInput) settingsInput.value = apiKey;
@@ -1560,14 +1579,20 @@ Return pure JSON schema:
     let toastTimeout;
     function showToast(msg) {
       const toast = document.getElementById('toast');
-      document.getElementById('toastMessage').innerText = msg;
+      const textElem = document.getElementById('toastMessage');
+      if (!toast || !textElem) return;
+
+      // Clean message: truncate if unexpectedly long
+      const cleanMsg = typeof msg === 'string' && msg.length > 90 ? msg.substring(0, 90) + '...' : msg;
+      textElem.innerText = cleanMsg;
+      
       toast.classList.remove('opacity-0', '-translate-y-2');
       toast.classList.add('opacity-100', 'translate-y-0');
       clearTimeout(toastTimeout);
       toastTimeout = setTimeout(() => {
         toast.classList.remove('opacity-100', 'translate-y-0');
         toast.classList.add('opacity-0', '-translate-y-2');
-      }, 2200);
+      }, 3000);
     }
   </script>
 </body>
