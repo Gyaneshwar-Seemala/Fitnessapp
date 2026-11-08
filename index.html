@@ -136,9 +136,9 @@
       <!-- ================= VIEW 1: TODAY'S LOG ================= -->
       <section id="view-today" class="space-y-4">
         
-                                <!-- Fasted Weight & Day Hero Card (Pre- & Post-Workout Weigh-Ins) -->
+                                        <!-- Fasted Weight & Day Hero Card (Single Field + OK Button) -->
         <div class="paper-card rounded-2xl p-5 space-y-4">
-          <!-- Header info + Mode Toggle -->
+          <!-- Header info -->
           <div class="flex justify-between items-start gap-2">
             <div class="min-w-0 flex-1">
               <div class="text-[11px] font-mono font-bold uppercase tracking-wider text-stone-400 dark:text-stone-500 flex flex-wrap items-center gap-1.5">
@@ -164,20 +164,16 @@
             </button>
           </div>
 
-          <!-- Numeric Kg & Gm Display + Delta -->
-          <div class="flex items-baseline justify-between gap-3 pt-0.5">
-            <div class="flex items-baseline gap-2">
-              <div class="relative inline-flex items-baseline border-b-2 border-stone-300 dark:border-stone-700 focus-within:border-brand-terracotta transition">
-                <input type="number" min="30" max="250" id="weightKgInput" placeholder="75" class="w-16 bg-transparent text-4xl font-extrabold text-stone-900 dark:text-stone-50 tracking-tight focus:outline-none text-right font-mono" oninput="handleDualWeightChange()">
+          <!-- Single Weight Input + OK Button -->
+          <div class="flex items-center justify-between gap-3 pt-1">
+            <div class="flex items-center gap-2.5 flex-1 min-w-0">
+              <div class="relative flex-1 max-w-[180px] flex items-baseline border-b-2 border-stone-300 dark:border-stone-700 focus-within:border-brand-terracotta transition pb-0.5">
+                <input type="number" step="0.01" min="30" max="250" id="singleWeightInput" placeholder="74.9" class="w-full bg-transparent text-3xl font-extrabold text-stone-900 dark:text-stone-50 tracking-tight focus:outline-none font-mono" onkeydown="if(event.key==='Enter') applySingleWeight()">
                 <span class="text-xs font-mono font-bold text-stone-400 dark:text-stone-500 ml-1">kg</span>
               </div>
-              
-              <span class="text-2xl font-extrabold text-stone-300 dark:text-stone-700">.</span>
-
-              <div class="relative inline-flex items-baseline border-b-2 border-stone-300 dark:border-stone-700 focus-within:border-brand-terracotta transition">
-                <input type="number" min="0" max="995" step="5" id="weightGmInput" placeholder="200" class="w-20 bg-transparent text-4xl font-extrabold text-stone-900 dark:text-stone-50 tracking-tight focus:outline-none font-mono" oninput="handleDualWeightChange()">
-                <span class="text-xs font-mono font-bold text-stone-400 dark:text-stone-500 ml-1">gm</span>
-              </div>
+              <button type="button" onclick="applySingleWeight()" class="px-4 py-2 rounded-xl bg-stone-900 dark:bg-stone-100 text-stone-50 dark:text-stone-900 font-mono text-xs font-extrabold uppercase subtle-press hover:opacity-90 transition shrink-0">
+                OK
+              </button>
             </div>
 
             <!-- Dynamic Session / Net Delta Badges -->
@@ -185,14 +181,6 @@
               <p id="heroNetDeltaBadge" class="text-xs font-mono font-bold text-emerald-600 dark:text-emerald-400 whitespace-nowrap">-1.00 kg net</p>
               <p id="workoutSweatDeltaBadge" class="hidden text-[10px] font-mono font-semibold text-stone-400 mt-0.5 whitespace-nowrap"></p>
             </div>
-          </div>
-
-          <!-- Quick Gram & Kg Stepper Buttons -->
-          <div class="grid grid-cols-4 gap-2 pt-1 border-t border-stone-100 dark:border-stone-800">
-            <button onclick="adjustWeightGrams(-100)" class="py-1.5 rounded-xl border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-800/60 font-mono text-xs font-bold text-stone-700 dark:text-stone-300 subtle-press hover:border-brand-terracotta transition">-100g</button>
-            <button onclick="adjustWeightGrams(-50)" class="py-1.5 rounded-xl border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-800/60 font-mono text-xs font-bold text-stone-700 dark:text-stone-300 subtle-press hover:border-brand-terracotta transition">-50g</button>
-            <button onclick="adjustWeightGrams(50)" class="py-1.5 rounded-xl border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-800/60 font-mono text-xs font-bold text-stone-700 dark:text-stone-300 subtle-press hover:border-brand-terracotta transition">+50g</button>
-            <button onclick="adjustWeightGrams(100)" class="py-1.5 rounded-xl border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-800/60 font-mono text-xs font-bold text-stone-700 dark:text-stone-300 subtle-press hover:border-brand-terracotta transition">+100g</button>
           </div>
 
           <!-- 50-Day Trajectory Bar -->
@@ -1004,7 +992,7 @@
       showToast('Meal removed');
     }
 
-        let currentWeighMode = 'pre'; // 'pre' or 'post'
+            let currentWeighMode = 'pre'; // 'pre' or 'post'
 
     function setWeighMode(mode) {
       currentWeighMode = mode;
@@ -1030,31 +1018,31 @@
         w = (rec.weightPost !== undefined && rec.weightPost !== null) ? rec.weightPost : (rec.weight || PROTOCOL.startWeight);
       }
 
-      const kgPart = Math.floor(w);
-      const gmPart = Math.round((w - kgPart) * 1000);
-      if (document.getElementById('weightKgInput')) document.getElementById('weightKgInput').value = kgPart;
-      if (document.getElementById('weightGmInput')) document.getElementById('weightGmInput').value = gmPart;
+      const input = document.getElementById('singleWeightInput');
+      if (input) input.value = w ? Number(w).toFixed(2).replace(/\.?0+$/, '') : '';
       updateHeroDeltaBadge(w);
     }
 
-    function handleDualWeightChange() {
-      const kg = parseInt(document.getElementById('weightKgInput').value) || 0;
-      let gm = parseInt(document.getElementById('weightGmInput').value) || 0;
-      if (gm < 0) gm = 0;
-      if (gm > 999) gm = 999;
+    function applySingleWeight() {
+      const input = document.getElementById('singleWeightInput');
+      const val = parseFloat(input.value);
       
-      if (kg > 0) {
-        const totalW = Math.round((kg + gm / 1000) * 1000) / 1000;
+      if (!isNaN(val) && val >= 30 && val <= 250) {
+        const rounded = Math.round(val * 100) / 100;
         if (!dailyRecords[todayKey]) dailyRecords[todayKey] = {};
         
         if (currentWeighMode === 'pre') {
-          dailyRecords[todayKey].weight = totalW;
+          dailyRecords[todayKey].weight = rounded;
         } else {
-          dailyRecords[todayKey].weightPost = totalW;
+          dailyRecords[todayKey].weightPost = rounded;
         }
 
         persist();
-        updateHeroDeltaBadge(totalW);
+        input.value = rounded;
+        updateHeroDeltaBadge(rounded);
+        showToast(`${currentWeighMode === 'pre' ? 'Pre-workout' : 'Post-workout'} fixed: ${rounded} kg`);
+      } else {
+        showToast('Please enter a valid weight (e.g. 74.9)');
       }
     }
 
@@ -1089,31 +1077,6 @@
           sweatElem.classList.add('hidden');
         }
       }
-    }
-
-    function adjustWeightGrams(deltaGm) {
-      if (!dailyRecords[todayKey]) dailyRecords[todayKey] = {};
-      const rec = dailyRecords[todayKey];
-      const cur = (currentWeighMode === 'pre') 
-        ? (rec.weight || PROTOCOL.startWeight)
-        : (rec.weightPost || rec.weight || PROTOCOL.startWeight);
-
-      const next = Math.max(30, Math.round((cur + deltaGm / 1000) * 1000) / 1000);
-      
-      if (currentWeighMode === 'pre') {
-        rec.weight = next;
-      } else {
-        rec.weightPost = next;
-      }
-
-      const kgPart = Math.floor(next);
-      const gmPart = Math.round((next - kgPart) * 1000);
-      if (document.getElementById('weightKgInput')) document.getElementById('weightKgInput').value = kgPart;
-      if (document.getElementById('weightGmInput')) document.getElementById('weightGmInput').value = gmPart;
-      
-      persist();
-      updateHeroDeltaBadge(next);
-      showToast(`${currentWeighMode === 'pre' ? 'Pre-WOD' : 'Post-WOD'}: ${kgPart} kg ${gmPart} g`);
     }
 
     function saveTodayNotes() {
