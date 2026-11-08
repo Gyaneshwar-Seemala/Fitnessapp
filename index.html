@@ -136,7 +136,7 @@
       <!-- ================= VIEW 1: TODAY'S LOG ================= -->
       <section id="view-today" class="space-y-4">
         
-                                        <!-- Fasted Weight & Day Hero Card (Single Field + OK Button) -->
+                                                <!-- Fasted Weight & Day Hero Card (Frozen Display + Edit/OK Commit) -->
         <div class="paper-card rounded-2xl p-5 space-y-4">
           <!-- Header info -->
           <div class="flex justify-between items-start gap-2">
@@ -154,32 +154,36 @@
             </div>
           </div>
 
-          <!-- Pre / Post Weigh-In Pill Selector -->
-          <div class="flex items-center p-1 bg-stone-100 dark:bg-stone-900 rounded-xl border border-stone-200 dark:border-stone-800 text-xs font-mono font-bold">
-            <button type="button" id="weighModePreBtn" onclick="setWeighMode('pre')" class="flex-1 py-1.5 rounded-lg subtle-press transition text-center bg-stone-900 dark:bg-stone-100 text-stone-50 dark:text-stone-900 shadow-sm">
-              Pre-Workout
-            </button>
-            <button type="button" id="weighModePostBtn" onclick="setWeighMode('post')" class="flex-1 py-1.5 rounded-lg subtle-press transition text-center text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100">
-              Post-Workout
-            </button>
-          </div>
-
-          <!-- Single Weight Input + OK Button -->
+          <!-- Weight Display & Inline Editing -->
           <div class="flex items-center justify-between gap-3 pt-1">
-            <div class="flex items-center gap-2.5 flex-1 min-w-0">
-              <div class="relative flex-1 max-w-[180px] flex items-baseline border-b-2 border-stone-300 dark:border-stone-700 focus-within:border-brand-terracotta transition pb-0.5">
-                <input type="number" step="0.01" min="30" max="250" id="singleWeightInput" placeholder="74.9" class="w-full bg-transparent text-3xl font-extrabold text-stone-900 dark:text-stone-50 tracking-tight focus:outline-none font-mono" onkeydown="if(event.key==='Enter') applySingleWeight()">
-                <span class="text-xs font-mono font-bold text-stone-400 dark:text-stone-500 ml-1">kg</span>
+            <!-- View Mode (Frozen by default) -->
+            <div id="weightFrozenView" class="flex items-center gap-3">
+              <div class="flex items-baseline gap-1.5">
+                <span id="weightFrozenDisplay" class="text-4xl font-extrabold text-stone-900 dark:text-stone-50 tracking-tight font-mono">74.9</span>
+                <span class="text-sm font-bold text-stone-400 dark:text-stone-500 font-mono">kg</span>
               </div>
-              <button type="button" onclick="applySingleWeight()" class="px-4 py-2 rounded-xl bg-stone-900 dark:bg-stone-100 text-stone-50 dark:text-stone-900 font-mono text-xs font-extrabold uppercase subtle-press hover:opacity-90 transition shrink-0">
-                OK
+              <button type="button" onclick="enableWeightEdit()" class="px-3 py-1.5 rounded-xl border border-stone-200 dark:border-stone-700 bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 font-mono text-xs font-bold flex items-center gap-1.5 subtle-press hover:border-brand-terracotta transition">
+                <i data-lucide="edit-3" class="w-3.5 h-3.5 text-brand-terracotta"></i> Edit
               </button>
             </div>
 
-            <!-- Dynamic Session / Net Delta Badges -->
+            <!-- Edit Mode (Hidden until Edit is clicked) -->
+            <div id="weightEditView" class="hidden flex items-center gap-2 flex-1 min-w-0 max-w-[240px]">
+              <div class="relative flex-1 flex items-baseline border-b-2 border-brand-terracotta transition pb-0.5">
+                <input type="number" step="0.01" min="30" max="250" id="singleWeightInput" placeholder="74.9" class="w-full bg-transparent text-3xl font-extrabold text-stone-900 dark:text-stone-50 tracking-tight focus:outline-none font-mono" onkeydown="if(event.key==='Enter') saveAndCommitWeight(); if(event.key==='Escape') cancelWeightEdit();">
+                <span class="text-xs font-mono font-bold text-stone-400 dark:text-stone-500 ml-1">kg</span>
+              </div>
+              <button type="button" onclick="saveAndCommitWeight()" class="px-3.5 py-2 rounded-xl bg-stone-900 dark:bg-stone-100 text-stone-50 dark:text-stone-900 font-mono text-xs font-extrabold uppercase subtle-press hover:opacity-90 transition shrink-0">
+                OK
+              </button>
+              <button type="button" onclick="cancelWeightEdit()" class="px-2.5 py-2 rounded-xl border border-stone-200 dark:border-stone-700 text-stone-400 hover:text-stone-600 font-mono text-xs subtle-press shrink-0">
+                ✕
+              </button>
+            </div>
+
+            <!-- Dynamic Net Delta Badge -->
             <div class="text-right shrink-0">
-              <p id="heroNetDeltaBadge" class="text-xs font-mono font-bold text-emerald-600 dark:text-emerald-400 whitespace-nowrap">-1.00 kg net</p>
-              <p id="workoutSweatDeltaBadge" class="hidden text-[10px] font-mono font-semibold text-stone-400 mt-0.5 whitespace-nowrap"></p>
+              <p id="heroNetDeltaBadge" class="text-xs font-mono font-bold text-emerald-600 dark:text-emerald-400 whitespace-nowrap">-1.30 kg net</p>
             </div>
           </div>
 
@@ -992,90 +996,81 @@
       showToast('Meal removed');
     }
 
-            let currentWeighMode = 'pre'; // 'pre' or 'post'
-
-    function setWeighMode(mode) {
-      currentWeighMode = mode;
-      const preBtn = document.getElementById('weighModePreBtn');
-      const postBtn = document.getElementById('weighModePostBtn');
-      
-      if (mode === 'pre') {
-        preBtn.className = 'flex-1 py-1.5 rounded-lg subtle-press transition text-center bg-stone-900 dark:bg-stone-100 text-stone-50 dark:text-stone-900 shadow-sm';
-        postBtn.className = 'flex-1 py-1.5 rounded-lg subtle-press transition text-center text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100';
-      } else {
-        postBtn.className = 'flex-1 py-1.5 rounded-lg subtle-press transition text-center bg-stone-900 dark:bg-stone-100 text-stone-50 dark:text-stone-900 shadow-sm';
-        preBtn.className = 'flex-1 py-1.5 rounded-lg subtle-press transition text-center text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100';
-      }
-      renderActiveWeightDisplay();
+                function getTodayWeight() {
+      const rec = dailyRecords[todayKey] || {};
+      return (rec.weight !== undefined && rec.weight !== null) ? rec.weight : PROTOCOL.startWeight;
     }
 
     function renderActiveWeightDisplay() {
-      const rec = dailyRecords[todayKey] || {};
-      let w = 0;
-      if (currentWeighMode === 'pre') {
-        w = (rec.weight !== undefined && rec.weight !== null) ? rec.weight : PROTOCOL.startWeight;
-      } else {
-        w = (rec.weightPost !== undefined && rec.weightPost !== null) ? rec.weightPost : (rec.weight || PROTOCOL.startWeight);
+      const w = getTodayWeight();
+      const displayElem = document.getElementById('weightFrozenDisplay');
+      if (displayElem) {
+        displayElem.innerText = Number(w).toFixed(2).replace(/\.?0+$/, '');
       }
 
       const input = document.getElementById('singleWeightInput');
-      if (input) input.value = w ? Number(w).toFixed(2).replace(/\.?0+$/, '') : '';
+      if (input) {
+        input.value = Number(w).toFixed(2).replace(/\.?0+$/, '');
+      }
+
       updateHeroDeltaBadge(w);
     }
 
-    function applySingleWeight() {
+    function enableWeightEdit() {
+      document.getElementById('weightFrozenView').classList.add('hidden');
+      const editView = document.getElementById('weightEditView');
+      editView.classList.remove('hidden');
+      const input = document.getElementById('singleWeightInput');
+      input.value = getTodayWeight();
+      input.focus();
+      input.select();
+    }
+
+    function cancelWeightEdit() {
+      document.getElementById('weightEditView').classList.add('hidden');
+      document.getElementById('weightFrozenView').classList.remove('hidden');
+    }
+
+    function saveAndCommitWeight() {
       const input = document.getElementById('singleWeightInput');
       const val = parseFloat(input.value);
-      
+
       if (!isNaN(val) && val >= 30 && val <= 250) {
         const rounded = Math.round(val * 100) / 100;
         if (!dailyRecords[todayKey]) dailyRecords[todayKey] = {};
         
-        if (currentWeighMode === 'pre') {
-          dailyRecords[todayKey].weight = rounded;
-        } else {
-          dailyRecords[todayKey].weightPost = rounded;
+        // Commit single weight to record
+        dailyRecords[todayKey].weight = rounded;
+        delete dailyRecords[todayKey].weightPost; // eliminate pre/post distinction
+        
+        persist();
+
+        // Freeze back to display view
+        document.getElementById('weightEditView').classList.add('hidden');
+        document.getElementById('weightFrozenView').classList.remove('hidden');
+        document.getElementById('weightFrozenDisplay').innerText = rounded;
+
+        // Recalculate deltas and UI immediately
+        renderTodayView();
+        
+        // Re-render graphs & analytics in background
+        if (typeof renderAnalyticsView === 'function') {
+          renderAnalyticsView();
         }
 
-        persist();
-        input.value = rounded;
-        updateHeroDeltaBadge(rounded);
-        showToast(`${currentWeighMode === 'pre' ? 'Pre-workout' : 'Post-workout'} fixed: ${rounded} kg`);
+        showToast(`Weight committed: ${rounded} kg`);
       } else {
         showToast('Please enter a valid weight (e.g. 74.9)');
       }
     }
 
     function updateHeroDeltaBadge(w) {
-      const rec = dailyRecords[todayKey] || {};
-      const preW = (rec.weight !== undefined && rec.weight !== null) ? rec.weight : PROTOCOL.startWeight;
-      const netHeroDelta = (preW - PROTOCOL.startWeight).toFixed(2);
-      
+      const netHeroDelta = (w - PROTOCOL.startWeight).toFixed(2);
       const heroDeltaElem = document.getElementById('heroNetDeltaBadge');
-      const sweatElem = document.getElementById('workoutSweatDeltaBadge');
 
       if (heroDeltaElem) {
         heroDeltaElem.innerText = `${netHeroDelta > 0 ? '+' : ''}${netHeroDelta} kg net`;
         heroDeltaElem.className = `text-xs font-mono font-bold whitespace-nowrap ${netHeroDelta <= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-brand-terracotta dark:text-brand-terracottaDark'}`;
-      }
-
-      if (sweatElem) {
-        if (rec.weightPost) {
-          const diffGm = Math.round((rec.weightPost - preW) * 1000);
-          sweatElem.classList.remove('hidden');
-          if (diffGm < 0) {
-            sweatElem.innerText = `${diffGm}g workout loss`;
-            sweatElem.className = 'text-[10px] font-mono font-semibold text-blue-500 dark:text-blue-400 mt-0.5 whitespace-nowrap';
-          } else if (diffGm > 0) {
-            sweatElem.innerText = `+${diffGm}g hydrated`;
-            sweatElem.className = 'text-[10px] font-mono font-semibold text-emerald-500 mt-0.5 whitespace-nowrap';
-          } else {
-            sweatElem.innerText = '0g delta';
-            sweatElem.className = 'text-[10px] font-mono font-semibold text-stone-400 mt-0.5 whitespace-nowrap';
-          }
-        } else {
-          sweatElem.classList.add('hidden');
-        }
       }
     }
 
@@ -1658,7 +1653,7 @@ Output strict JSON with format:
                 ${item.weight ? Number(item.weight).toFixed(2) + ' kg' : '--'}
               </div>
               <div class="text-[10px] font-bold text-stone-400 whitespace-nowrap mt-0.5">
-                ${item.weightPost ? 'Post: ' + Number(item.weightPost).toFixed(2) + ' kg' : (totalCal + ' kcal')}
+                ${totalCal} kcal
               </div>
             </div>
           </div>
