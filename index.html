@@ -385,15 +385,36 @@
         <div class="paper-card rounded-2xl p-5 space-y-4">
           <div class="text-xs font-mono font-bold uppercase tracking-wider text-stone-400 dark:text-stone-500">1. Meal Photo</div>
           
-          <div id="mealImageDropArea" class="border-2 border-dashed border-stone-300 dark:border-stone-700 rounded-xl p-5 flex flex-col items-center justify-center text-center cursor-pointer hover:border-brand-terracotta bg-stone-50/50 dark:bg-stone-900/40 transition min-h-[140px]" onclick="document.getElementById('foodFileInput').click()">
-            <img id="foodPhotoPreview" class="hidden w-full h-48 object-cover rounded-xl mb-2">
-            <div id="foodPlaceholderUI" class="space-y-1.5">
-              <i data-lucide="camera" class="w-7 h-7 text-brand-terracotta mx-auto"></i>
-              <div class="text-sm font-bold text-stone-900 dark:text-stone-200">Tap to snap or upload meal</div>
-              <div class="text-[11px] text-stone-400 font-mono">JPG, PNG, HEIC</div>
-            </div>
+          <!-- Image Preview (Shown when image loaded) -->
+          <div id="foodPhotoPreviewContainer" class="hidden relative rounded-xl overflow-hidden border border-stone-200 dark:border-stone-800 bg-black">
+            <img id="foodPhotoPreview" class="w-full h-48 object-cover">
+            <button type="button" onclick="clearFoodPhoto()" class="absolute top-2 right-2 px-3 py-1.5 rounded-lg bg-stone-900/80 text-stone-100 text-xs font-mono font-bold backdrop-blur-md subtle-press border border-stone-700">
+              ✕ Retake / Change
+            </button>
           </div>
-          <input type="file" id="foodFileInput" accept="image/*" class="hidden" onchange="handleFoodImageSelected(event)">
+
+          <!-- Dual Camera vs Gallery Buttons -->
+          <div id="foodPickerButtons" class="grid grid-cols-2 gap-2.5">
+            <button type="button" onclick="document.getElementById('foodCameraInput').click()" class="py-4 px-3 rounded-xl border border-stone-200 dark:border-stone-800 bg-stone-50 dark:bg-stone-900/80 hover:border-brand-terracotta subtle-press flex flex-col items-center justify-center gap-1.5 transition">
+              <div class="w-9 h-9 rounded-full bg-orange-100 dark:bg-orange-950/60 flex items-center justify-center text-brand-terracotta">
+                <i data-lucide="camera" class="w-4 h-4"></i>
+              </div>
+              <span class="text-xs font-mono font-bold text-stone-900 dark:text-stone-100">Take Photo</span>
+              <span class="text-[10px] text-stone-400 font-mono">Open Live Camera</span>
+            </button>
+
+            <button type="button" onclick="document.getElementById('foodGalleryInput').click()" class="py-4 px-3 rounded-xl border border-stone-200 dark:border-stone-800 bg-stone-50 dark:bg-stone-900/80 hover:border-brand-terracotta subtle-press flex flex-col items-center justify-center gap-1.5 transition">
+              <div class="w-9 h-9 rounded-full bg-stone-200 dark:bg-stone-800 flex items-center justify-center text-stone-700 dark:text-stone-300">
+                <i data-lucide="image" class="w-4 h-4"></i>
+              </div>
+              <span class="text-xs font-mono font-bold text-stone-900 dark:text-stone-100">Photo Library</span>
+              <span class="text-[10px] text-stone-400 font-mono">Choose from Gallery</span>
+            </button>
+          </div>
+
+          <!-- Hidden inputs with environment capture for direct camera shutter -->
+          <input type="file" id="foodCameraInput" accept="image/*" capture="environment" class="hidden" onchange="handleFoodImageSelected(event)">
+          <input type="file" id="foodGalleryInput" accept="image/*" class="hidden" onchange="handleFoodImageSelected(event)">
 
           <div class="pt-2 border-t border-stone-100 dark:border-stone-800">
             <label class="block text-[11px] font-mono font-bold uppercase tracking-wider text-stone-400 dark:text-stone-500 mb-1.5">2. Or Describe Meal / Context</label>
@@ -1165,11 +1186,23 @@
       reader.onload = (e) => {
         stagedFoodBase64 = e.target.result;
         const preview = document.getElementById('foodPhotoPreview');
+        const container = document.getElementById('foodPhotoPreviewContainer');
+        const buttons = document.getElementById('foodPickerButtons');
+        
         preview.src = stagedFoodBase64;
-        preview.classList.remove('hidden');
-        document.getElementById('foodPlaceholderUI').classList.add('hidden');
+        container.classList.remove('hidden');
+        buttons.classList.add('hidden');
+        showToast('Photo loaded');
       };
       reader.readAsDataURL(file);
+    }
+
+    function clearFoodPhoto() {
+      stagedFoodBase64 = null;
+      document.getElementById('foodCameraInput').value = '';
+      document.getElementById('foodGalleryInput').value = '';
+      document.getElementById('foodPhotoPreviewContainer').classList.add('hidden');
+      document.getElementById('foodPickerButtons').classList.remove('hidden');
     }
 
     
@@ -1426,10 +1459,7 @@
       persist();
       discardFoodResult();
       document.getElementById('foodTextDescription').value = '';
-      document.getElementById('foodFileInput').value = '';
-      document.getElementById('foodPhotoPreview').classList.add('hidden');
-      document.getElementById('foodPlaceholderUI').classList.remove('hidden');
-      stagedFoodBase64 = null;
+      clearFoodPhoto();
 
       switchTab('today');
       showToast('Meal added to log');
