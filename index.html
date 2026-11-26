@@ -1,1918 +1,2158 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>Apex 50 — Protocol</title>
-
-  <!-- PWA Manifest & Standalone Settings -->
-  <link rel="manifest" href="./manifest.json">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="theme-color" content="#0d0f12">
-
-  <!-- iOS Standalone Settings -->
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Apex50">
-  <link rel="apple-touch-icon" href="./icon-512.png">
-
-  <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js');
-      });
-    }
-  </script>
-
-  <!-- Tailwind CSS -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Lucide Icons -->
-  <script src="https://unpkg.com/lucide@latest"></script>
-  <!-- Google Fonts: Plus Jakarta Sans for UI + JetBrains Mono for metrics -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
-
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ['"Plus Jakarta Sans"', '-apple-system', 'sans-serif'],
-            mono: ['"JetBrains Mono"', 'monospace']
-          },
-          colors: {
-            brand: {
-              terracotta: '#C85A32',
-              terracottaDark: '#E06B43',
-              olive: '#47634E',
-              oliveLight: '#5E8266'
-            }
-          }
-        }
-      }
-    }
-  </script>
-
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#141311" id="metaThemeColor" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>Apex 50 Protocol — Material You</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" type="image/svg+xml" href="icon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,400..600,0..1,0" rel="stylesheet" />
   <style>
-    :root {
-      --bg-page: #F7F5F0;
-      --card-bg: #FFFFFF;
-      --border-color: #E8E2D8;
-      --text-primary: #18181B;
-      --text-muted: #71717A;
+    /* ==========================================================================
+       MATERIAL DESIGN 3 (MATERIAL YOU) — DUAL TONAL PALETTES
+       1) Warm Editorial Parchment (Light)
+       2) Minimalist Obsidian Dark (Dark)
+       ========================================================================== */
+    :root[data-theme="light"] {
+      --md-sys-color-background: #F6F3EC;
+      --md-sys-color-on-background: #1F1B16;
+      --md-sys-color-surface: #F6F3EC;
+      --md-sys-color-surface-container-lowest: #FFFFFF;
+      --md-sys-color-surface-container-low: #F0ECE3;
+      --md-sys-color-surface-container: #EAE4D9;
+      --md-sys-color-surface-container-high: #E3DDD0;
+      --md-sys-color-surface-container-highest: #DDD6C8;
+      --md-sys-color-on-surface: #1F1B16;
+      --md-sys-color-on-surface-variant: #52443C;
+      --md-sys-color-outline: #85746B;
+      --md-sys-color-outline-variant: #D7C3B8;
+
+      --md-sys-color-primary: #9E4220;
+      --md-sys-color-on-primary: #FFFFFF;
+      --md-sys-color-primary-container: #FFDBD0;
+      --md-sys-color-on-primary-container: #390C00;
+
+      --md-sys-color-secondary: #76574B;
+      --md-sys-color-on-secondary: #FFFFFF;
+      --md-sys-color-secondary-container: #FFDBD0;
+      --md-sys-color-on-secondary-container: #2C160D;
+
+      --md-sys-color-tertiary: #5E6135;
+      --md-sys-color-on-tertiary: #FFFFFF;
+      --md-sys-color-tertiary-container: #E4E7AE;
+      --md-sys-color-on-tertiary-container: #1B1D00;
+
+      --md-sys-color-error: #BA1A1A;
+      --md-sys-color-error-container: #FFDAD6;
+      --md-sys-color-on-error-container: #410002;
+
+      /* Split Tonal Chips */
+      --chip-push-bg: #FFDBD0;
+      --chip-push-fg: #5D1900;
+      --chip-pull-bg: #D5E4F7;
+      --chip-pull-fg: #0D1D2A;
+      --chip-legs-bg: #E4E7AE;
+      --chip-legs-fg: #1B1D00;
+      --chip-rest-bg: #E3DDD0;
+      --chip-rest-fg: #52443C;
+
+      --md-elevation-1: 0 1px 3px 1px rgba(31, 27, 22, 0.08), 0 1px 2px 0 rgba(31, 27, 22, 0.12);
+      --md-elevation-2: 0 2px 6px 2px rgba(31, 27, 22, 0.10), 0 1px 2px 0 rgba(31, 27, 22, 0.14);
+      --md-elevation-3: 0 6px 16px 4px rgba(31, 27, 22, 0.14);
     }
-    .dark {
-      --bg-page: #0C0C0E;
-      --card-bg: #161619;
-      --border-color: #27272A;
-      --text-primary: #F4F4F5;
-      --text-muted: #A1A1AA;
+
+    :root[data-theme="dark"] {
+      --md-sys-color-background: #0F0E0D;
+      --md-sys-color-on-background: #ECE1D9;
+      --md-sys-color-surface: #0F0E0D;
+      --md-sys-color-surface-container-lowest: #0A0908;
+      --md-sys-color-surface-container-low: #171513;
+      --md-sys-color-surface-container: #1D1B18;
+      --md-sys-color-surface-container-high: #282521;
+      --md-sys-color-surface-container-highest: #332F2B;
+      --md-sys-color-on-surface: #ECE1D9;
+      --md-sys-color-on-surface-variant: #D5C3B8;
+      --md-sys-color-outline: #9E8E83;
+      --md-sys-color-outline-variant: #51443C;
+
+      --md-sys-color-primary: #FFB59D;
+      --md-sys-color-on-primary: #5B1A00;
+      --md-sys-color-primary-container: #7E2B0A;
+      --md-sys-color-on-primary-container: #FFDBD0;
+
+      --md-sys-color-secondary: #E7BDB0;
+      --md-sys-color-on-secondary: #442A21;
+      --md-sys-color-secondary-container: #5D4036;
+      --md-sys-color-on-secondary-container: #FFDBD0;
+
+      --md-sys-color-tertiary: #C7CA94;
+      --md-sys-color-on-tertiary: #30330B;
+      --md-sys-color-tertiary-container: #464920;
+      --md-sys-color-on-tertiary-container: #E4E7AE;
+
+      --md-sys-color-error: #FFB4AB;
+      --md-sys-color-error-container: #93000A;
+      --md-sys-color-on-error-container: #FFDAD6;
+
+      /* Split Tonal Chips */
+      --chip-push-bg: #5D210B;
+      --chip-push-fg: #FFDBD0;
+      --chip-pull-bg: #1F3447;
+      --chip-pull-fg: #D5E4F7;
+      --chip-legs-bg: #363916;
+      --chip-legs-fg: #E4E7AE;
+      --chip-rest-bg: #282521;
+      --chip-rest-fg: #D5C3B8;
+
+      --md-elevation-1: 0 1px 3px 1px rgba(0, 0, 0, 0.35), 0 1px 2px 0 rgba(0, 0, 0, 0.5);
+      --md-elevation-2: 0 3px 8px 2px rgba(0, 0, 0, 0.45), 0 1px 3px 0 rgba(0, 0, 0, 0.55);
+      --md-elevation-3: 0 8px 24px 4px rgba(0, 0, 0, 0.65);
     }
-    body {
-      background-color: var(--bg-page);
-      color: var(--text-primary);
-      font-family: 'Plus Jakarta Sans', sans-serif;
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
       -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--md-sys-color-background);
+      color: var(--md-sys-color-on-background);
+      min-height: 100vh;
+      padding-bottom: calc(96px + env(safe-area-inset-bottom));
+      transition: background-color 0.25s cubic-bezier(0.2, 0, 0, 1), color 0.25s cubic-bezier(0.2, 0, 0, 1);
+      line-height: 1.45;
+    }
+
+    .mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .material-symbols-rounded {
+      font-variation-settings: 'FILL' 0, 'wght' 500, 'GRAD' 0, 'opsz' 24;
       user-select: none;
-      -webkit-font-smoothing: antialiased;
-      transition: background-color 0.25s ease, color 0.25s ease;
+      vertical-align: middle;
     }
-    input, textarea {
-      user-select: text;
+
+    .material-symbols-rounded.filled {
+      font-variation-settings: 'FILL' 1, 'wght' 500, 'GRAD' 0, 'opsz' 24;
     }
-    .safe-bottom {
-      padding-bottom: max(1.2rem, env(safe-area-inset-bottom, 1.2rem));
+
+    /* Material Top App Bar */
+    .m3-top-bar {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      background-color: var(--md-sys-color-surface);
+      padding: calc(12px + env(safe-area-inset-top)) 16px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      border-bottom: 1px solid var(--md-sys-color-outline-variant);
+      backdrop-filter: blur(12px);
     }
-    .paper-card {
-      background-color: var(--card-bg);
-      border: 1px solid var(--border-color);
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
-      transition: background-color 0.25s ease, border-color 0.25s ease;
+
+    .m3-app-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
     }
-    .subtle-press:active {
-      transform: scale(0.975);
-      transition: transform 0.08s ease;
+
+    .m3-brand-badge {
+      width: 40px;
+      height: 40px;
+      border-radius: 14px;
+      background: var(--md-sys-color-primary-container);
+      color: var(--md-sys-color-on-primary-container);
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      font-size: 15px;
+      letter-spacing: -0.02em;
     }
-    .custom-scroll::-webkit-scrollbar {
-      width: 4px;
+
+    .m3-app-title {
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: var(--md-sys-color-on-surface);
     }
-    .custom-scroll::-webkit-scrollbar-thumb {
-      background: var(--border-color);
-      border-radius: 9999px;
+
+    .m3-app-subtitle {
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--md-sys-color-on-surface-variant);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .m3-icon-btn {
+      width: 42px;
+      height: 42px;
+      border-radius: 999px;
+      border: 1px solid var(--md-sys-color-outline-variant);
+      background: var(--md-sys-color-surface-container-low);
+      color: var(--md-sys-color-on-surface);
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      transition: transform 0.15s ease, background-color 0.2s ease;
+    }
+
+    .m3-icon-btn:active {
+      transform: scale(0.92);
+    }
+
+    /* Main Container */
+    .m3-container {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 16px 16px 24px;
+    }
+
+    .view-section {
+      display: none;
+      animation: m3FadeIn 0.22s cubic-bezier(0.2, 0, 0, 1);
+    }
+
+    .view-section.active {
+      display: block;
+    }
+
+    @keyframes m3FadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Material You Cards */
+    .m3-card {
+      background-color: var(--md-sys-color-surface-container);
+      border-radius: 24px;
+      padding: 18px;
+      margin-bottom: 14px;
+      box-shadow: var(--md-elevation-1);
+      border: 1px solid transparent;
+    }
+
+    .m3-card-elevated {
+      background-color: var(--md-sys-color-surface-container-high);
+      box-shadow: var(--md-elevation-2);
+    }
+
+    .m3-card-outlined {
+      background-color: var(--md-sys-color-surface-container-low);
+      border: 1px solid var(--md-sys-color-outline-variant);
+      box-shadow: none;
+    }
+
+    .m3-hero-banner {
+      background: linear-gradient(135deg, var(--md-sys-color-primary-container), var(--md-sys-color-surface-container-high));
+      color: var(--md-sys-color-on-primary-container);
+      border-radius: 28px;
+      padding: 20px;
+      margin-bottom: 16px;
+      box-shadow: var(--md-elevation-2);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .m3-pill-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      background: var(--md-sys-color-surface-container-lowest);
+      color: var(--md-sys-color-on-surface);
+    }
+
+    /* Split Selector Chips (Horizontal Scroll) */
+    .m3-chip-row {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 6px;
+      margin-bottom: 14px;
+      scrollbar-width: none;
+    }
+    .m3-chip-row::-webkit-scrollbar { display: none; }
+
+    .m3-filter-chip {
+      flex: 0 0 auto;
+      padding: 9px 15px;
+      border-radius: 14px;
+      border: 1px solid var(--md-sys-color-outline-variant);
+      background: var(--md-sys-color-surface-container-low);
+      color: var(--md-sys-color-on-surface-variant);
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 2px;
+      transition: all 0.18s cubic-bezier(0.2, 0, 0, 1);
+    }
+
+    .m3-filter-chip.active {
+      background: var(--md-sys-color-secondary-container);
+      color: var(--md-sys-color-on-secondary-container);
+      border-color: var(--md-sys-color-primary);
+      box-shadow: var(--md-elevation-1);
+    }
+
+    .m3-filter-chip span.sub {
+      font-size: 10.5px;
+      font-weight: 600;
+      opacity: 0.85;
+    }
+
+    /* Timeline Bar (5:50 AM - 7:20 AM) */
+    .m3-timeline-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .m3-time-node {
+      background: var(--md-sys-color-surface-container-lowest);
+      color: var(--md-sys-color-on-surface);
+      padding: 9px 8px;
+      border-radius: 16px;
+      text-align: center;
+    }
+
+    .m3-time-node .t-val {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--md-sys-color-primary);
+    }
+
+    .m3-time-node .t-lbl {
+      font-size: 10.5px;
+      font-weight: 600;
+      color: var(--md-sys-color-on-surface-variant);
+      margin-top: 2px;
+    }
+
+    /* Exercise Cards */
+    .ex-card {
+      background: var(--md-sys-color-surface-container);
+      border-radius: 22px;
+      padding: 16px;
+      margin-bottom: 12px;
+      border: 1px solid var(--md-sys-color-outline-variant);
+      transition: border-color 0.2s ease, background-color 0.2s ease;
+    }
+
+    .ex-card.completed {
+      border-color: var(--md-sys-color-tertiary);
+      background: var(--md-sys-color-surface-container-low);
+    }
+
+    .ex-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .ex-title {
+      font-size: 15.5px;
+      font-weight: 800;
+      color: var(--md-sys-color-on-surface);
+    }
+
+    .ex-meta {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--md-sys-color-on-surface-variant);
+      margin-top: 3px;
+    }
+
+    .ex-cue {
+      font-size: 12px;
+      color: var(--md-sys-color-on-surface-variant);
+      background: var(--md-sys-color-surface-container-high);
+      padding: 8px 12px;
+      border-radius: 12px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .progression-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 800;
+      background: var(--md-sys-color-tertiary-container);
+      color: var(--md-sys-color-on-tertiary-container);
+    }
+
+    /* Set Logging Grid */
+    .set-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .set-row {
+      display: grid;
+      grid-template-columns: 44px 1fr 1fr 44px;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .set-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--md-sys-color-on-surface-variant);
+      text-align: center;
+      background: var(--md-sys-color-surface-container-high);
+      padding: 9px 4px;
+      border-radius: 12px;
+    }
+
+    .m3-input-box {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .m3-input {
+      width: 100%;
+      background: var(--md-sys-color-surface-container-lowest);
+      border: 1.5px solid var(--md-sys-color-outline-variant);
+      color: var(--md-sys-color-on-surface);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px;
+      font-weight: 700;
+      padding: 8px 34px 8px 10px;
+      border-radius: 12px;
+      outline: none;
+      transition: border-color 0.15s ease;
+    }
+
+    .m3-input:focus {
+      border-color: var(--md-sys-color-primary);
+    }
+
+    .m3-unit {
+      position: absolute;
+      right: 9px;
+      font-size: 10.5px;
+      font-weight: 700;
+      color: var(--md-sys-color-on-surface-variant);
+      pointer-events: none;
+    }
+
+    .set-check-btn {
+      width: 40px;
+      height: 38px;
+      border-radius: 12px;
+      border: 1.5px solid var(--md-sys-color-outline);
+      background: transparent;
+      color: var(--md-sys-color-on-surface-variant);
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .set-check-btn.done {
+      background: var(--md-sys-color-primary);
+      border-color: var(--md-sys-color-primary);
+      color: var(--md-sys-color-on-primary);
+    }
+
+    /* M3 Buttons & Switches */
+    .m3-btn-filled {
+      width: 100%;
+      padding: 14px 20px;
+      border-radius: 999px;
+      border: none;
+      background: var(--md-sys-color-primary);
+      color: var(--md-sys-color-on-primary);
+      font-family: inherit;
+      font-size: 14.5px;
+      font-weight: 800;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: var(--md-elevation-1);
+      transition: transform 0.15s ease, opacity 0.15s ease;
+    }
+
+    .m3-btn-filled:active {
+      transform: scale(0.98);
+    }
+
+    .m3-btn-tonal {
+      padding: 10px 16px;
+      border-radius: 999px;
+      border: none;
+      background: var(--md-sys-color-secondary-container);
+      color: var(--md-sys-color-on-secondary-container);
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    /* M3 Switch */
+    .m3-switch-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      background: var(--md-sys-color-surface-container-high);
+      padding: 12px 16px;
+      border-radius: 18px;
+      margin-bottom: 14px;
+    }
+
+    .m3-switch {
+      position: relative;
+      width: 52px;
+      height: 32px;
+      flex-shrink: 0;
+    }
+
+    .m3-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .m3-slider {
+      position: absolute;
+      inset: 0;
+      background-color: var(--md-sys-color-surface-container-highest);
+      border: 2px solid var(--md-sys-color-outline);
+      border-radius: 999px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .m3-slider::before {
+      content: "";
+      position: absolute;
+      height: 18px;
+      width: 18px;
+      left: 5px;
+      top: 5px;
+      background-color: var(--md-sys-color-outline);
+      border-radius: 50%;
+      transition: 0.2s cubic-bezier(0.2, 0, 0, 1);
+    }
+
+    .m3-switch input:checked + .m3-slider {
+      background-color: var(--md-sys-color-primary);
+      border-color: var(--md-sys-color-primary);
+    }
+
+    .m3-switch input:checked + .m3-slider::before {
+      transform: translateX(20px);
+      width: 22px;
+      height: 22px;
+      top: 3px;
+      left: 3px;
+      background-color: var(--md-sys-color-on-primary);
+    }
+
+    /* Treadmill Table / Blocks */
+    .treadmill-block {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 13px 14px;
+      border-radius: 18px;
+      background: var(--md-sys-color-surface-container-low);
+      border: 1px solid var(--md-sys-color-outline-variant);
+      margin-bottom: 9px;
+      cursor: pointer;
+      transition: all 0.18s ease;
+    }
+
+    .treadmill-block.checked {
+      background: var(--md-sys-color-tertiary-container);
+      color: var(--md-sys-color-on-tertiary-container);
+      border-color: var(--md-sys-color-tertiary);
+    }
+
+    /* Calendar Grid */
+    .cal-header-row {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      text-align: center;
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--md-sys-color-on-surface-variant);
+      margin-bottom: 8px;
+    }
+
+    .cal-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 6px;
+    }
+
+    .cal-cell {
+      aspect-ratio: 1 / 1.18;
+      border-radius: 14px;
+      padding: 5px 3px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--md-sys-color-surface-container-low);
+      border: 1px solid var(--md-sys-color-outline-variant);
+      cursor: pointer;
+      position: relative;
+      transition: transform 0.12s ease, border-color 0.15s ease;
+    }
+
+    .cal-cell.empty {
+      background: transparent;
+      border-color: transparent;
+      cursor: default;
+    }
+
+    .cal-cell.selected {
+      border: 2px solid var(--md-sys-color-primary);
+      transform: scale(1.03);
+    }
+
+    .cal-cell .day-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11.5px;
+      font-weight: 700;
+    }
+
+    .cal-tag {
+      font-size: 8.5px;
+      font-weight: 800;
+      padding: 2px 5px;
+      border-radius: 6px;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      width: 100%;
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    .tag-push { background: var(--chip-push-bg); color: var(--chip-push-fg); }
+    .tag-pull { background: var(--chip-pull-bg); color: var(--chip-pull-fg); }
+    .tag-legs { background: var(--chip-legs-bg); color: var(--chip-legs-fg); }
+    .tag-rest { background: var(--chip-rest-bg); color: var(--chip-rest-fg); }
+
+    .cal-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--md-sys-color-primary);
+    }
+
+    /* Metric Grid (Vitals) */
+    .vitals-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .vital-card {
+      background: var(--md-sys-color-surface-container);
+      border-radius: 22px;
+      padding: 16px;
+      border: 1px solid var(--md-sys-color-outline-variant);
+    }
+
+    .vital-val {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--md-sys-color-primary);
+      margin: 6px 0 2px;
+    }
+
+    /* Material 3 Bottom Navigation Bar */
+    .m3-nav-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 50;
+      background: var(--md-sys-color-surface-container);
+      border-top: 1px solid var(--md-sys-color-outline-variant);
+      padding: 8px 8px calc(8px + env(safe-area-inset-bottom));
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 4px;
+    }
+
+    .m3-nav-item {
+      background: transparent;
+      border: none;
+      color: var(--md-sys-color-on-surface-variant);
+      font-family: inherit;
+      font-size: 11.5px;
+      font-weight: 700;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+      padding: 4px 0;
+    }
+
+    .m3-nav-pill {
+      width: 56px;
+      height: 30px;
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+    .m3-nav-item.active {
+      color: var(--md-sys-color-on-surface);
+    }
+
+    .m3-nav-item.active .m3-nav-pill {
+      background: var(--md-sys-color-secondary-container);
+      color: var(--md-sys-color-on-secondary-container);
+    }
+
+    /* Snackbar */
+    .m3-snackbar {
+      position: fixed;
+      bottom: calc(84px + env(safe-area-inset-bottom));
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: var(--md-sys-color-on-surface);
+      color: var(--md-sys-color-surface);
+      padding: 12px 20px;
+      border-radius: 14px;
+      font-size: 13px;
+      font-weight: 700;
+      box-shadow: var(--md-elevation-3);
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.22s cubic-bezier(0.2, 0, 0, 1);
+      z-index: 60;
+      white-space: nowrap;
+    }
+
+    .m3-snackbar.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .section-heading {
+      font-size: 15px;
+      font-weight: 800;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
     }
   </style>
 </head>
-<body class="flex justify-center min-h-screen">
+<body>
 
-  <!-- Mobile Device Shell -->
-  <div class="w-full max-w-md flex flex-col min-h-screen relative pb-28 border-x border-stone-200 dark:border-stone-800 shadow-2xl transition-colors duration-200">
-    
-    <!-- Top Fixed Clean Header -->
-    <header class="sticky top-0 z-30 px-5 pt-4 pb-3.5 border-b border-stone-200 dark:border-stone-800 flex items-center justify-between bg-inherit/95 backdrop-blur-md">
-      <div class="flex items-baseline gap-2">
-        <h1 class="text-xl font-extrabold tracking-tight text-stone-900 dark:text-stone-100">Apex 50</h1>
-        <span class="text-[10px] font-mono tracking-widest uppercase font-bold text-brand-terracotta dark:text-brand-terracottaDark">PROTOCOL</span>
+  <!-- TOP APP BAR -->
+  <header class="m3-top-bar">
+    <div class="m3-app-title-wrap">
+      <div class="m3-brand-badge">A50</div>
+      <div>
+        <div class="m3-app-title">Apex 50 Protocol</div>
+        <div class="m3-app-subtitle">
+          <span class="mono" id="clockBadge">5:50 AM – 7:20 AM</span> • <span>M3 Recomp</span>
+        </div>
       </div>
-      
-      <div class="flex items-center gap-2">
-        <!-- Theme Toggle -->
-        <button onclick="toggleAppTheme()" class="w-8 h-8 rounded-full flex items-center justify-center border border-stone-200 dark:border-stone-700 bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-200 subtle-press transition">
-          <i id="themeIcon" data-lucide="moon" class="w-4 h-4"></i>
-        </button>
-
-        <!-- API Key Status Pill -->
-        <button onclick="switchTab('settings')" class="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-bold border border-stone-200 dark:border-stone-700 bg-stone-100 dark:bg-stone-800 text-stone-800 dark:text-stone-200 subtle-press transition">
-          <i data-lucide="key" class="w-3.5 h-3.5 text-brand-terracotta"></i>
-          <span id="apiKeyStatusText">API Key</span>
-        </button>
-      </div>
-    </header>
-
-    <!-- Main Dynamic Screen Content -->
-    <main class="flex-1 px-4 pt-4 space-y-4 overflow-y-auto custom-scroll">
-
-      <!-- ================= VIEW 1: TODAY'S LOG ================= -->
-      <section id="view-today" class="space-y-4">
-        
-                                                <!-- Fasted Weight Hero Card (Frozen Display + Edit/OK Commit) -->
-        <div class="paper-card rounded-2xl p-5 space-y-3.5">
-          <!-- Header info -->
-          <div class="flex justify-between items-center gap-2">
-            <div class="min-w-0 flex-1">
-              <div class="text-[11px] font-mono font-bold uppercase tracking-wider text-stone-400 dark:text-stone-500 flex items-center gap-2">
-                <span class="text-brand-terracotta dark:text-brand-terracottaDark">TRANSFORMATION PROTOCOL</span>
-                <span class="text-stone-300 dark:text-stone-700">•</span>
-                <span id="todayDateStr" class="text-stone-700 dark:text-stone-300">Today</span>
-              </div>
-            </div>
-            <div class="text-right shrink-0">
-              <span id="heroTargetWeightBadge" class="inline-block px-3 py-1 rounded-full text-xs font-mono font-bold bg-stone-100 dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-stone-900 dark:text-stone-200 whitespace-nowrap">
-                Target: 70.0 kg
-              </span>
-            </div>
-          </div>
-
-          <!-- Weight Display & Inline Editing -->
-          <div class="flex items-center justify-between gap-3 pt-1">
-            <!-- View Mode (Frozen by default) -->
-            <div id="weightFrozenView" class="flex items-center gap-3">
-              <div class="flex items-baseline gap-1.5">
-                <span id="weightFrozenDisplay" class="text-4xl font-extrabold text-stone-900 dark:text-stone-50 tracking-tight font-mono">75.2</span>
-                <span class="text-sm font-bold text-stone-400 dark:text-stone-500 font-mono">kg</span>
-              </div>
-              <button type="button" onclick="enableWeightEdit()" class="px-3 py-1.5 rounded-xl border border-stone-200 dark:border-stone-700 bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 font-mono text-xs font-bold flex items-center gap-1.5 subtle-press hover:border-brand-terracotta transition">
-                <i data-lucide="edit-3" class="w-3.5 h-3.5 text-brand-terracotta"></i> Edit
-              </button>
-            </div>
-
-            <!-- Edit Mode (Hidden until Edit is clicked) -->
-            <div id="weightEditView" class="hidden flex items-center gap-2 flex-1 min-w-0 max-w-[240px]">
-              <div class="relative flex-1 flex items-baseline border-b-2 border-brand-terracotta transition pb-0.5">
-                <input type="number" step="0.01" min="30" max="250" id="singleWeightInput" placeholder="75.2" class="w-full bg-transparent text-3xl font-extrabold text-stone-900 dark:text-stone-50 tracking-tight focus:outline-none font-mono" onkeydown="if(event.key==='Enter') saveAndCommitWeight(); if(event.key==='Escape') cancelWeightEdit();">
-                <span class="text-xs font-mono font-bold text-stone-400 dark:text-stone-500 ml-1">kg</span>
-              </div>
-              <button type="button" onclick="saveAndCommitWeight()" class="px-3.5 py-2 rounded-xl bg-stone-900 dark:bg-stone-100 text-stone-50 dark:text-stone-900 font-mono text-xs font-extrabold uppercase subtle-press hover:opacity-90 transition shrink-0">
-                OK
-              </button>
-              <button type="button" onclick="cancelWeightEdit()" class="px-2.5 py-2 rounded-xl border border-stone-200 dark:border-stone-700 text-stone-400 hover:text-stone-600 font-mono text-xs subtle-press shrink-0">
-                ✕
-              </button>
-            </div>
-
-            <!-- Dynamic Net Delta Badge -->
-            <div class="text-right shrink-0">
-              <p id="heroNetDeltaBadge" class="text-xs font-mono font-bold text-emerald-600 dark:text-emerald-400 whitespace-nowrap">-1.00 kg net</p>
-            </div>
-          </div>
-
-          <!-- Goal Weight Progress Trajectory Bar -->
-          <div class="pt-3 border-t border-stone-100 dark:border-stone-800">
-            <div class="flex justify-between text-xs font-mono font-bold mb-1.5 text-stone-500 dark:text-stone-400">
-              <span>Goal Trajectory</span>
-              <span id="targetWeightProgressPct" class="text-stone-900 dark:text-stone-100 font-mono">0%</span>
-            </div>
-            <div class="w-full h-2 bg-stone-100 dark:bg-stone-800 rounded-full overflow-hidden">
-              <div id="targetWeightProgressBar" class="h-full bg-emerald-600 rounded-full transition-all duration-500" style="width: 0%;"></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- AI Action Launchers -->
-        <div class="grid grid-cols-2 gap-3">
-          <button onclick="switchTab('lens-food')" class="paper-card rounded-2xl p-4 flex items-center gap-3.5 subtle-press text-left hover:border-brand-terracotta transition group">
-            <div class="w-10 h-10 rounded-xl bg-orange-50 dark:bg-orange-950/50 text-brand-terracotta flex items-center justify-center shrink-0">
-              <i data-lucide="camera" class="w-5 h-5"></i>
-            </div>
-            <div>
-              <div class="text-sm font-bold text-stone-900 dark:text-stone-100 leading-tight">Food Lens</div>
-              <div class="text-[11px] font-medium text-stone-400 dark:text-stone-500 mt-0.5">Snap or type meal</div>
-            </div>
-          </button>
-
-          <button onclick="switchTab('lens-workout')" class="paper-card rounded-2xl p-4 flex items-center gap-3.5 subtle-press text-left hover:border-emerald-600 transition group">
-            <div class="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
-              <i data-lucide="dumbbell" class="w-5 h-5"></i>
-            </div>
-            <div>
-              <div class="text-sm font-bold text-stone-900 dark:text-stone-100 leading-tight">Workout Lens</div>
-              <div class="text-[11px] font-medium text-stone-400 dark:text-stone-500 mt-0.5">Parse gym screenshot</div>
-            </div>
-          </button>
-        </div>
-
-        <!-- Calories & Nutrition Card -->
-        <div class="paper-card rounded-2xl p-5 space-y-4">
-          <div class="flex items-center justify-between gap-2">
-            <div class="min-w-0 flex-1">
-              <div class="text-[11px] font-mono font-bold uppercase tracking-wider text-stone-400 dark:text-stone-500">Daily Calorie Ceiling</div>
-              <div class="flex items-baseline gap-1.5 mt-0.5">
-                <span id="calCurrentDisplay" class="text-3xl font-extrabold tracking-tight text-stone-900 dark:text-stone-50 font-mono">1,240</span>
-                <span class="text-xs font-mono font-bold text-stone-400 dark:text-stone-500">/ 1,900 kcal</span>
-              </div>
-            </div>
-            <div class="text-right shrink-0">
-              <span id="calRemainingBadge" class="text-xs font-mono font-bold px-3 py-1.5 rounded-lg shrink-0 whitespace-nowrap bg-stone-100 dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-stone-800 dark:text-stone-200 inline-block">
-                660 kcal left
-              </span>
-            </div>
-          </div>
-
-          <!-- Progress Bar -->
-          <div class="w-full h-2.5 bg-stone-100 dark:bg-stone-800 rounded-full overflow-hidden">
-            <div id="calProgressBar" class="h-full bg-brand-terracotta rounded-full transition-all duration-300" style="width: 65%;"></div>
-          </div>
-
-          <!-- High-Contrast Macros Grid -->
-          <div class="grid grid-cols-3 gap-2 pt-2 border-t border-stone-100 dark:border-stone-800 text-center">
-            <div class="py-1">
-              <span class="text-[10px] font-mono font-bold uppercase text-stone-400 dark:text-stone-500">Protein</span>
-              <div class="text-base font-extrabold font-mono text-stone-900 dark:text-stone-100 mt-0.5"><span id="macroProteinToday">118</span><span class="text-xs font-medium text-stone-400">/150g</span></div>
-            </div>
-            <div class="py-1 border-x border-stone-100 dark:border-stone-800">
-              <span class="text-[10px] font-mono font-bold uppercase text-stone-400 dark:text-stone-500">Carbs</span>
-              <div class="text-base font-extrabold font-mono text-stone-900 dark:text-stone-100 mt-0.5"><span id="macroCarbsToday">112</span>g</div>
-            </div>
-            <div class="py-1">
-              <span class="text-[10px] font-mono font-bold uppercase text-stone-400 dark:text-stone-500">Fats</span>
-              <div class="text-base font-extrabold font-mono text-stone-900 dark:text-stone-100 mt-0.5"><span id="macroFatsToday">34</span>g</div>
-            </div>
-          </div>
-
-          <!-- Logged Meals List -->
-          <div class="pt-3 border-t border-stone-100 dark:border-stone-800">
-            <div class="flex justify-between items-center mb-2.5">
-              <span class="text-[11px] font-mono font-bold uppercase tracking-wider text-stone-400 dark:text-stone-500">Today's Ingested Meals</span>
-              <button onclick="switchTab('lens-food')" class="text-xs font-bold text-brand-terracotta dark:text-brand-terracottaDark hover:underline">+ Log Meal</button>
-            </div>
-            <div id="todayMealsContainer" class="space-y-2"></div>
-          </div>
-        </div>
-
-        <!-- Hydration Protocol Card -->
-        <div class="paper-card rounded-2xl p-5 space-y-4">
-          <div class="flex items-center justify-between">
-            <div>
-              <div class="text-[11px] font-mono font-bold uppercase tracking-wider text-stone-400 dark:text-stone-500">Hydration (4.0L Target)</div>
-              <div class="flex items-baseline gap-1 mt-0.5">
-                <span id="waterCurrentDisplay" class="text-3xl font-extrabold font-mono text-stone-900 dark:text-stone-50 tracking-tight">3.25</span>
-                <span class="text-xs font-mono font-bold text-stone-400 dark:text-stone-500">/ 4.00 L</span>
-              </div>
-            </div>
-            <span id="waterPctBadge" class="text-xs font-mono font-bold px-3 py-1 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
-              81%
-            </span>
-          </div>
-
-          <div class="w-full h-2 bg-stone-100 dark:bg-stone-800 rounded-full overflow-hidden">
-            <div id="waterProgressBar" class="h-full bg-emerald-600 rounded-full transition-all duration-300" style="width: 81%;"></div>
-          </div>
-
-          <div class="grid grid-cols-4 gap-2 pt-1">
-            <button onclick="addWater(250)" class="py-2 rounded-xl border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-800/60 font-mono text-xs font-bold text-stone-800 dark:text-stone-200 subtle-press hover:border-emerald-500 transition">+250ml</button>
-            <button onclick="addWater(500)" class="py-2 rounded-xl border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-800/60 font-mono text-xs font-bold text-stone-800 dark:text-stone-200 subtle-press hover:border-emerald-500 transition">+500ml</button>
-            <button onclick="addWater(1000)" class="py-2 rounded-xl border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-800/60 font-mono text-xs font-bold text-stone-800 dark:text-stone-200 subtle-press hover:border-emerald-500 transition">+1.0L</button>
-            <button onclick="resetWater()" class="py-2 rounded-xl border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-800/60 font-mono text-xs font-bold text-stone-400 dark:text-stone-500 hover:text-red-600 subtle-press transition">Reset</button>
-          </div>
-
-          <!-- Custom Quantity Entry -->
-          <div class="flex items-center gap-2 pt-1">
-            <div class="relative flex-1">
-              <input type="number" id="customWaterInput" placeholder="Custom ml (e.g. 300)" class="w-full py-2 px-3 text-xs font-mono bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-xl text-stone-900 dark:text-stone-100 placeholder-stone-400 focus:outline-none focus:border-emerald-500" onkeydown="if(event.key==='Enter') addCustomWater()">
-              <span class="absolute right-3 top-2 text-[10px] font-mono font-bold text-stone-400 pointer-events-none">ml</span>
-            </div>
-            <button onclick="addCustomWater()" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-mono text-xs font-bold subtle-press transition shrink-0">
-              + Add
-            </button>
-          </div>
-        </div>
-
-        
-        <!-- Sleep Recovery Protocol Card (Time Selection) -->
-        <div class="paper-card rounded-2xl p-5 space-y-4">
-          <div class="flex items-center justify-between">
-            <div>
-              <div class="text-[11px] font-mono font-bold uppercase tracking-wider text-stone-400 dark:text-stone-500">Sleep & Recovery (8.0h Target)</div>
-              <div class="flex items-baseline gap-1.5 mt-0.5">
-                <span id="sleepTotalDisplay" class="text-3xl font-extrabold font-mono text-stone-900 dark:text-stone-50 tracking-tight">0.0</span>
-                <span class="text-xs font-mono font-bold text-stone-400 dark:text-stone-500">/ 8.0 hrs</span>
-              </div>
-            </div>
-            <span id="sleepQualityBadge" class="text-xs font-mono font-bold px-3 py-1 rounded-lg bg-stone-100 dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-stone-500">
-              0 hrs
-            </span>
-          </div>
-
-          <div class="w-full h-2 bg-stone-100 dark:bg-stone-800 rounded-full overflow-hidden">
-            <div id="sleepProgressBar" class="h-full bg-indigo-500 rounded-full transition-all duration-300" style="width: 0%;"></div>
-          </div>
-
-          <!-- Bedtime & Wake Time Pickers -->
-          <div class="grid grid-cols-2 gap-3 pt-1">
-            <div class="p-3 bg-stone-50 dark:bg-stone-900 rounded-xl border border-stone-200 dark:border-stone-800">
-              <label class="block text-[10px] font-mono font-bold uppercase text-stone-400 dark:text-stone-500 mb-1">Bedtime</label>
-              <input type="time" id="sleepBedtimeInput" class="w-full bg-transparent font-mono text-sm font-bold text-stone-900 dark:text-stone-100 focus:outline-none" onchange="calculateSleepFromTimes()">
-            </div>
-            <div class="p-3 bg-stone-50 dark:bg-stone-900 rounded-xl border border-stone-200 dark:border-stone-800">
-              <label class="block text-[10px] font-mono font-bold uppercase text-stone-400 dark:text-stone-500 mb-1">Wake Time</label>
-              <input type="time" id="sleepWaketimeInput" class="w-full bg-transparent font-mono text-sm font-bold text-stone-900 dark:text-stone-100 focus:outline-none" onchange="calculateSleepFromTimes()">
-            </div>
-          </div>
-        </div>
-
-        <!-- Workout of the Day Card -->
-        <div class="paper-card rounded-2xl p-5 space-y-3.5">
-          <div class="flex items-center justify-between">
-            <div>
-              <div class="text-[11px] font-mono font-bold uppercase tracking-wider text-stone-400 dark:text-stone-500">Daily Training Session</div>
-              <div class="text-base font-bold text-stone-900 dark:text-stone-100 mt-0.5" id="todaySplitDisplay">Pull (Back & Biceps)</div>
-            </div>
-            <label class="flex items-center gap-2 cursor-pointer bg-stone-100 dark:bg-stone-800 border border-stone-200 dark:border-stone-700 px-3 py-1.5 rounded-full subtle-press">
-              <input type="checkbox" id="todayWorkoutCheckbox" class="w-4 h-4 text-stone-900 rounded accent-brand-terracotta focus:ring-0" onchange="toggleWorkoutCompleted()">
-              <span class="text-xs font-mono font-bold text-stone-900 dark:text-stone-200">Completed</span>
-            </label>
-          </div>
-
-          <div class="grid grid-cols-4 gap-2 text-center">
-            <button onclick="setSplitPreset('Push')" class="py-1.5 text-xs font-mono font-bold rounded-lg border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-700 dark:text-stone-300 hover:border-stone-400">Push</button>
-            <button onclick="setSplitPreset('Pull')" class="py-1.5 text-xs font-mono font-bold rounded-lg border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-700 dark:text-stone-300 hover:border-stone-400">Pull</button>
-            <button onclick="setSplitPreset('Legs')" class="py-1.5 text-xs font-mono font-bold rounded-lg border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-700 dark:text-stone-300 hover:border-stone-400">Legs</button>
-            <button onclick="setSplitPreset('Rest / Active')" class="py-1.5 text-xs font-mono font-bold rounded-lg border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-700 dark:text-stone-300 hover:border-stone-400">Rest</button>
-          </div>
-
-          <textarea id="todayWorkoutNotes" rows="2" placeholder="Exercise notes, load, reps or AI parsed summaries..." class="w-full p-3 text-xs font-mono bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-700 rounded-xl text-stone-900 dark:text-stone-100 placeholder-stone-400 focus:outline-none focus:border-stone-800 dark:focus:border-stone-300" onchange="saveTodayNotes()"></textarea>
-
-          <button onclick="switchTab('lens-workout')" class="w-full py-2.5 rounded-xl border border-dashed border-stone-300 dark:border-stone-700 text-xs font-mono font-bold text-stone-500 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100 flex items-center justify-center gap-2 subtle-press transition">
-            <i data-lucide="image" class="w-4 h-4 text-emerald-600"></i> Upload Hevy / Gym Screenshot
-          </button>
-        </div>
-
-      </section>
-
-      <!-- ================= VIEW 2: AI FOOD LENS ================= -->
-      <section id="view-lens-food" class="hidden space-y-4">
-        <div class="flex items-center justify-between pb-1">
-          <div>
-            <h2 class="text-xl font-extrabold text-stone-900 dark:text-stone-100 tracking-tight">Food Lens</h2>
-            <p class="text-xs text-stone-400 font-medium">Gemini AI Nutrition Vision</p>
-          </div>
-          <button onclick="switchTab('today')" class="text-xs font-mono font-bold text-stone-500 hover:text-stone-900 dark:hover:text-stone-100">
-            &larr; Today
-          </button>
-        </div>
-
-        <div class="paper-card rounded-2xl p-5 space-y-4">
-          <div class="text-xs font-mono font-bold uppercase tracking-wider text-stone-400 dark:text-stone-500">1. Meal Photo</div>
-          
-          <!-- Image Preview (Shown when image loaded) -->
-          <div id="foodPhotoPreviewContainer" class="hidden relative rounded-xl overflow-hidden border border-stone-200 dark:border-stone-800 bg-black">
-            <img id="foodPhotoPreview" class="w-full h-48 object-cover">
-            <button type="button" onclick="clearFoodPhoto()" class="absolute top-2 right-2 px-3 py-1.5 rounded-lg bg-stone-900/80 text-stone-100 text-xs font-mono font-bold backdrop-blur-md subtle-press border border-stone-700">
-              ✕ Retake / Change
-            </button>
-          </div>
-
-          <!-- Dual Camera vs Gallery Buttons -->
-          <div id="foodPickerButtons" class="grid grid-cols-2 gap-2.5">
-            <button type="button" onclick="document.getElementById('foodCameraInput').click()" class="py-4 px-3 rounded-xl border border-stone-200 dark:border-stone-800 bg-stone-50 dark:bg-stone-900/80 hover:border-brand-terracotta subtle-press flex flex-col items-center justify-center gap-1.5 transition">
-              <div class="w-9 h-9 rounded-full bg-orange-100 dark:bg-orange-950/60 flex items-center justify-center text-brand-terracotta">
-                <i data-lucide="camera" class="w-4 h-4"></i>
-              </div>
-              <span class="text-xs font-mono font-bold text-stone-900 dark:text-stone-100">Take Photo</span>
-              <span class="text-[10px] text-stone-400 font-mono">Open Live Camera</span>
-            </button>
-
-            <button type="button" onclick="document.getElementById('foodGalleryInput').click()" class="py-4 px-3 rounded-xl border border-stone-200 dark:border-stone-800 bg-stone-50 dark:bg-stone-900/80 hover:border-brand-terracotta subtle-press flex flex-col items-center justify-center gap-1.5 transition">
-              <div class="w-9 h-9 rounded-full bg-stone-200 dark:bg-stone-800 flex items-center justify-center text-stone-700 dark:text-stone-300">
-                <i data-lucide="image" class="w-4 h-4"></i>
-              </div>
-              <span class="text-xs font-mono font-bold text-stone-900 dark:text-stone-100">Photo Library</span>
-              <span class="text-[10px] text-stone-400 font-mono">Choose from Gallery</span>
-            </button>
-          </div>
-
-          <!-- Hidden inputs with environment capture for direct camera shutter -->
-          <input type="file" id="foodCameraInput" accept="image/*" capture="environment" class="hidden" onchange="handleFoodImageSelected(event)">
-          <input type="file" id="foodGalleryInput" accept="image/*" class="hidden" onchange="handleFoodImageSelected(event)">
-
-          <div class="pt-2 border-t border-stone-100 dark:border-stone-800">
-            <label class="block text-[11px] font-mono font-bold uppercase tracking-wider text-stone-400 dark:text-stone-500 mb-1.5">2. Or Describe Meal / Context</label>
-            <textarea id="foodTextDescription" rows="2.5" placeholder="e.g. 2 wheat rotis with ghee, 150g grilled chicken breast, 1 bowl dal" class="w-full p-3 text-xs font-medium bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-700 rounded-xl text-stone-900 dark:text-stone-100 placeholder-stone-400 focus:outline-none focus:border-stone-900 dark:focus:border-stone-300"></textarea>
-          </div>
-
-          <button onclick="runGeminiFoodAnalysis()" id="btnAnalyzeFood" class="w-full py-3 rounded-xl bg-stone-900 dark:bg-stone-100 text-stone-50 dark:text-stone-900 text-xs font-mono font-bold uppercase tracking-wider subtle-press flex items-center justify-center gap-2 hover:opacity-90 transition">
-            <i data-lucide="sparkles" class="w-4 h-4 text-brand-terracotta"></i> Calculate Calories & Macros
-          </button>
-        </div>
-
-        <!-- Manual Meal Entry (Instant Offline Fallback) -->
-        <div class="paper-card rounded-2xl p-5 space-y-3.5">
-          <div class="flex items-center justify-between pb-1 border-b border-stone-100 dark:border-stone-800">
-            <div class="text-xs font-mono font-bold uppercase tracking-wider text-stone-900 dark:text-stone-100 flex items-center gap-2">
-              <i data-lucide="edit-3" class="w-3.5 h-3.5 text-brand-terracotta"></i> Or Log Manually (No API Needed)
-            </div>
-          </div>
-          
-          <input type="text" id="manualMealName" placeholder="Meal Name (e.g. 100ml Milk)" class="w-full p-2.5 text-xs font-mono bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-xl text-stone-900 dark:text-stone-100 placeholder-stone-400 focus:outline-none focus:border-brand-terracotta">
-
-          <div class="grid grid-cols-4 gap-2 text-center">
-            <div>
-              <label class="block text-[9px] font-mono font-bold uppercase text-stone-400 mb-1">Calories</label>
-              <input type="number" id="manualMealCal" placeholder="kcal" class="w-full p-2 text-xs font-mono text-center bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-xl text-stone-900 dark:text-stone-100 focus:outline-none">
-            </div>
-            <div>
-              <label class="block text-[9px] font-mono font-bold uppercase text-stone-400 mb-1">Protein</label>
-              <input type="number" id="manualMealProtein" placeholder="g" class="w-full p-2 text-xs font-mono text-center bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-xl text-stone-900 dark:text-stone-100 focus:outline-none">
-            </div>
-            <div>
-              <label class="block text-[9px] font-mono font-bold uppercase text-stone-400 mb-1">Carbs</label>
-              <input type="number" id="manualMealCarbs" placeholder="g" class="w-full p-2 text-xs font-mono text-center bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-xl text-stone-900 dark:text-stone-100 focus:outline-none">
-            </div>
-            <div>
-              <label class="block text-[9px] font-mono font-bold uppercase text-stone-400 mb-1">Fats</label>
-              <input type="number" id="manualMealFats" placeholder="g" class="w-full p-2 text-xs font-mono text-center bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-xl text-stone-900 dark:text-stone-100 focus:outline-none">
-            </div>
-          </div>
-
-          <button onclick="commitManualMeal()" class="w-full py-2.5 rounded-xl border border-stone-300 dark:border-stone-700 hover:border-brand-terracotta font-mono text-xs font-bold uppercase text-stone-800 dark:text-stone-200 subtle-press transition">
-            + Add To Today Log
-          </button>
-        </div>
-
-        <!-- AI Food Review Card -->
-        <div id="foodResultCard" class="hidden paper-card rounded-2xl p-5 border-2 border-brand-terracotta space-y-4">
-          <div class="flex items-center justify-between border-b border-stone-100 dark:border-stone-800 pb-2.5">
-            <div>
-              <span class="text-[10px] font-mono uppercase tracking-wider text-brand-terracotta font-extrabold">Gemini Nutrition Breakdown</span>
-              <h3 id="foodResName" class="text-lg font-extrabold text-stone-900 dark:text-stone-100 mt-0.5">Meal Name</h3>
-            </div>
-            <span class="text-2xl font-extrabold font-mono text-stone-900 dark:text-stone-100" id="foodResCal">0 <span class="text-xs font-normal text-stone-400">kcal</span></span>
-          </div>
-
-          <div class="grid grid-cols-3 gap-2 text-center">
-            <div class="p-2.5 bg-stone-50 dark:bg-stone-900 rounded-xl border border-stone-200 dark:border-stone-800">
-              <span class="text-[9px] font-mono font-bold uppercase text-stone-400">Protein</span>
-              <div class="font-mono text-sm font-extrabold text-stone-900 dark:text-stone-100 mt-0.5" id="foodResProtein">0g</div>
-            </div>
-            <div class="p-2.5 bg-stone-50 dark:bg-stone-900 rounded-xl border border-stone-200 dark:border-stone-800">
-              <span class="text-[9px] font-mono font-bold uppercase text-stone-400">Carbs</span>
-              <div class="font-mono text-sm font-extrabold text-stone-900 dark:text-stone-100 mt-0.5" id="foodResCarbs">0g</div>
-            </div>
-            <div class="p-2.5 bg-stone-50 dark:bg-stone-900 rounded-xl border border-stone-200 dark:border-stone-800">
-              <span class="text-[9px] font-mono font-bold uppercase text-stone-400">Fats</span>
-              <div class="font-mono text-sm font-extrabold text-stone-900 dark:text-stone-100 mt-0.5" id="foodResFats">0g</div>
-            </div>
-          </div>
-
-          <p id="foodResNotes" class="text-xs text-stone-600 dark:text-stone-300 leading-relaxed italic bg-stone-50 dark:bg-stone-900/60 p-3 rounded-xl border border-stone-200 dark:border-stone-800"></p>
-
-          <div class="flex gap-2 pt-1">
-            <button onclick="discardFoodResult()" class="w-1/3 py-2.5 rounded-xl border border-stone-300 dark:border-stone-700 font-mono text-xs font-bold text-stone-500">Discard</button>
-            <button onclick="commitFoodToLog()" class="w-2/3 py-2.5 rounded-xl bg-brand-terracotta text-white font-mono text-xs font-bold uppercase subtle-press hover:opacity-90">Commit to Today</button>
-          </div>
-        </div>
-      </section>
-
-      <!-- ================= VIEW 3: AI WORKOUT SCREENSHOT LENS ================= -->
-      <section id="view-lens-workout" class="hidden space-y-4">
-        <div class="flex items-center justify-between pb-1">
-          <div>
-            <h2 class="text-xl font-extrabold text-stone-900 dark:text-stone-100 tracking-tight">Workout Lens</h2>
-            <p class="text-xs text-stone-400 font-medium">Hevy & Gym App Screenshot Parser</p>
-          </div>
-          <button onclick="switchTab('today')" class="text-xs font-mono font-bold text-stone-500 hover:text-stone-900 dark:hover:text-stone-100">
-            &larr; Today
-          </button>
-        </div>
-
-        <div class="paper-card rounded-2xl p-5 space-y-4">
-          <div class="text-xs font-mono font-bold uppercase tracking-wider text-stone-400 dark:text-stone-500">Upload Hevy / FitNotes Screenshot</div>
-          
-          <div id="workoutDropArea" class="border-2 border-dashed border-stone-300 dark:border-stone-700 rounded-xl p-5 flex flex-col items-center justify-center text-center cursor-pointer hover:border-emerald-500 bg-stone-50/50 dark:bg-stone-900/40 transition min-h-[140px]" onclick="document.getElementById('workoutFileInput').click()">
-            <img id="workoutPhotoPreview" class="hidden w-full max-h-64 object-contain rounded-xl mb-2">
-            <div id="workoutPlaceholderUI" class="space-y-1.5">
-              <i data-lucide="dumbbell" class="w-7 h-7 text-emerald-600 mx-auto"></i>
-              <div class="text-sm font-bold text-stone-900 dark:text-stone-200">Tap to select gym screenshot</div>
-              <div class="text-[11px] text-stone-400 font-mono">Parses exercises, sets, reps & total kg</div>
-            </div>
-          </div>
-          <input type="file" id="workoutFileInput" accept="image/*" class="hidden" onchange="handleWorkoutImageSelected(event)">
-
-          <button onclick="runGeminiWorkoutAnalysis()" id="btnAnalyzeWorkout" class="w-full py-3 rounded-xl bg-stone-900 dark:bg-stone-100 text-stone-50 dark:text-stone-900 text-xs font-mono font-bold uppercase tracking-wider subtle-press flex items-center justify-center gap-2 hover:opacity-90 transition">
-            <i data-lucide="sparkles" class="w-4 h-4 text-emerald-500"></i> Parse Session & Volume
-          </button>
-        </div>
-
-        <!-- Workout Result Preview -->
-        <div id="workoutResultCard" class="hidden paper-card rounded-2xl p-5 border-2 border-emerald-600 space-y-4">
-          <div class="flex items-start justify-between border-b border-stone-100 dark:border-stone-800 pb-3">
-            <div>
-              <span class="text-[10px] font-mono uppercase tracking-wider text-emerald-600 font-extrabold">Parsed Gym Session</span>
-              <h3 id="workoutResTitle" class="text-lg font-extrabold text-stone-900 dark:text-stone-100 mt-0.5">Session</h3>
-              <div id="workoutResFocus" class="text-xs font-bold font-mono text-stone-400 mt-0.5">Focus</div>
-            </div>
-            <div class="text-right">
-              <div class="text-[10px] font-mono text-stone-400 font-bold uppercase">Volume</div>
-              <div id="workoutResVolume" class="font-mono text-base font-extrabold text-stone-900 dark:text-stone-100">0 kg</div>
-            </div>
-          </div>
-
-          <div class="space-y-2" id="workoutResExercisesList"></div>
-
-          <div class="p-3 bg-stone-50 dark:bg-stone-900 rounded-xl border border-stone-200 dark:border-stone-800 text-xs text-stone-700 dark:text-stone-300 font-mono" id="workoutResSummary"></div>
-
-          <div class="flex gap-2 pt-1">
-            <button onclick="discardWorkoutResult()" class="w-1/3 py-2.5 rounded-xl border border-stone-300 dark:border-stone-700 font-mono text-xs font-bold text-stone-500">Discard</button>
-            <button onclick="commitWorkoutToLog()" class="w-2/3 py-2.5 rounded-xl bg-emerald-600 text-white font-mono text-xs font-bold uppercase subtle-press hover:opacity-90">Commit to Today</button>
-          </div>
-        </div>
-      </section>
-
-      <!-- ================= VIEW 4: TRAJECTORY & ANALYTICS ================= -->
-      <section id="view-trends" class="hidden space-y-4">
-        <div class="pb-1">
-          <h2 class="text-xl font-extrabold text-stone-900 dark:text-stone-100 tracking-tight">Trajectory</h2>
-          <p class="text-xs text-stone-400 font-medium">50-Day challenge metrics & historical ledger</p>
-        </div>
-
-        <!-- 3-Pill Summary -->
-        <div class="paper-card rounded-2xl p-4 sm:p-5">
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 divide-y sm:divide-y-0 sm:divide-x divide-stone-100 dark:divide-stone-800 text-center">
-            <div class="py-2 sm:py-0 sm:px-2 flex flex-col items-center justify-center">
-              <span class="text-[10px] font-mono font-bold uppercase tracking-wider text-stone-400">Current Weight</span>
-              <div id="metricCurrentWeight" class="text-2xl font-extrabold text-stone-900 dark:text-stone-100 font-mono mt-1 break-words">75.0 kg</div>
-              <span class="text-[10px] font-mono font-medium text-stone-400 mt-0.5">Day 16 of 50</span>
-            </div>
-            <div class="py-2 sm:py-0 sm:px-2 flex flex-col items-center justify-center">
-              <span class="text-[10px] font-mono font-bold uppercase tracking-wider text-stone-400">Net Delta</span>
-              <div id="metricNetLost" class="text-2xl font-extrabold text-emerald-600 dark:text-emerald-400 font-mono mt-1 break-words">-1.2 kg</div>
-              <span class="text-[10px] font-mono font-medium text-stone-400 mt-0.5">From 76.2 kg start</span>
-            </div>
-            <div class="py-2 sm:py-0 sm:px-2 flex flex-col items-center justify-center">
-              <span class="text-[10px] font-mono font-bold uppercase tracking-wider text-stone-400">To Milestone</span>
-              <div id="metricToGoal" class="text-2xl font-extrabold text-brand-terracotta dark:text-brand-terracottaDark font-mono mt-1 break-words">5.0 kg</div>
-              <span class="text-[10px] font-mono font-medium text-stone-400 mt-0.5">Target: 70.0 kg</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Weight Line Chart -->
-        <div class="paper-card rounded-2xl p-4 sm:p-5 space-y-3">
-          <div class="flex flex-wrap items-baseline justify-between gap-2">
-            <span class="text-xs font-mono font-bold uppercase tracking-wider text-stone-400">Fasted Weight Trajectory</span>
-            <span class="text-xs font-mono font-bold text-brand-terracotta dark:text-brand-terracottaDark">Goal Target</span>
-          </div>
-          <div class="w-full h-48 relative min-w-0">
-            <svg id="weightSvgChart" class="w-full h-full overflow-visible"></svg>
-          </div>
-          <div class="flex justify-between text-[10px] font-mono font-medium text-stone-400 pt-2 border-t border-stone-100 dark:border-stone-800">
-            <span>Day 1 (76.2kg)</span>
-            <span>Day 16 (75.0kg)</span>
-            <span>Day 50 (70.0kg)</span>
-          </div>
-        </div>
-
-        <!-- Calorie Adherence Bars -->
-        <div class="paper-card rounded-2xl p-4 sm:p-5 space-y-3">
-          <div class="flex flex-wrap items-baseline justify-between gap-2">
-            <span class="text-xs font-mono font-bold uppercase tracking-wider text-stone-400">Caloric Adherence Ledger</span>
-            <span class="text-xs font-mono font-bold text-stone-500">Ceiling: 1,900 kcal</span>
-          </div>
-          <div class="w-full h-36 relative min-w-0">
-            <svg id="calSvgChart" class="w-full h-full overflow-visible"></svg>
-          </div>
-          <div class="flex justify-between text-[10px] font-mono font-medium text-stone-400 pt-2 border-t border-stone-100 dark:border-stone-800">
-            <span>Historical Days</span>
-            <span class="text-brand-terracotta dark:text-brand-terracottaDark">• Red = Exceeded ceiling</span>
-          </div>
-        </div>
-
-        <!-- Historical Ledger -->
-        <div class="paper-card rounded-2xl p-4 sm:p-5 space-y-3">
-          <div class="text-xs font-mono font-bold uppercase tracking-wider text-stone-400">Historical Log Entries</div>
-          <div id="historyEntriesLedger" class="space-y-2.5 max-h-80 overflow-y-auto custom-scroll pr-1"></div>
-        </div>
-      </section>
-
-      <!-- ================= VIEW 5: CONFIG & DATA IMPORT/EXPORT ================= -->
-      <section id="view-settings" class="hidden space-y-4">
-        <div class="pb-1">
-          <h2 class="text-xl font-extrabold text-stone-900 dark:text-stone-100 tracking-tight">Configuration & Data</h2>
-          <p class="text-xs text-stone-400 font-medium">Theme, Gemini API key & Custom JSON Data</p>
-        </div>
-
-        <!-- Theme Mode Card -->
-        <div class="paper-card rounded-2xl p-4 sm:p-5 flex flex-wrap items-center justify-between gap-3">
-          <div class="min-w-0 flex-1">
-            <div class="text-sm font-bold text-stone-900 dark:text-stone-100">Display Theme</div>
-            <div class="text-xs text-stone-400 mt-0.5">Switch between Warm Editorial & Obsidian Dark</div>
-          </div>
-          <button onclick="toggleAppTheme()" class="px-4 py-2.5 rounded-xl border border-stone-200 dark:border-stone-700 bg-stone-100 dark:bg-stone-800 text-xs font-mono font-bold flex items-center gap-2 subtle-press shrink-0">
-            <i id="themeToggleBtnIcon" data-lucide="moon" class="w-4 h-4"></i>
-            <span id="themeToggleBtnText">Dark</span>
-          </button>
-        </div>
-
-                <!-- Target Weight Goal Card (Configurable) -->
-        <div class="paper-card rounded-2xl p-4 sm:p-5 space-y-3.5">
-          <div class="flex items-center justify-between pb-1 border-b border-stone-100 dark:border-stone-800">
-            <div class="flex items-center gap-2">
-              <i data-lucide="target" class="w-4 h-4 text-brand-terracotta shrink-0"></i>
-              <span class="text-xs font-mono font-bold text-stone-900 dark:text-stone-100 uppercase tracking-wider">Target Weight Goal</span>
-            </div>
-            <span id="configCurrentTargetBadge" class="text-xs font-mono font-bold px-2.5 py-0.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800">
-              70.0 kg
-            </span>
-          </div>
-          <p class="text-xs text-stone-500 dark:text-stone-400 leading-relaxed">
-            Update your target body weight. This automatically recalculates your milestone progress, remaining kilograms, and trajectory targets.
-          </p>
-          <div class="flex items-center gap-2">
-            <div class="relative flex-1">
-              <input type="number" step="0.1" min="30" max="250" id="configTargetWeightInput" placeholder="70.0" class="w-full p-3 text-xs font-mono bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-xl text-stone-900 dark:text-stone-100 focus:outline-none focus:border-brand-terracotta" onkeydown="if(event.key==='Enter') saveTargetWeightFromConfig()">
-              <span class="absolute right-3 top-3 text-xs font-mono font-bold text-stone-400 pointer-events-none">kg</span>
-            </div>
-            <button type="button" onclick="saveTargetWeightFromConfig()" class="px-5 py-3 rounded-xl bg-stone-900 dark:bg-stone-100 text-stone-50 dark:text-stone-900 font-mono text-xs font-bold uppercase subtle-press hover:opacity-90 transition shrink-0">
-              Save
-            </button>
-          </div>
-        </div>
-
-        <!-- Gemini API Key Card & Model Selector (Clean Stacked Layout) -->
-        <div class="paper-card rounded-2xl p-4 sm:p-5 space-y-4">
-          <div class="flex items-center justify-between pb-1 border-b border-stone-100 dark:border-stone-800">
-            <div class="flex items-center gap-2">
-              <i data-lucide="key" class="w-4 h-4 text-brand-terracotta shrink-0"></i>
-              <span class="text-xs font-mono font-bold text-stone-900 dark:text-stone-100 uppercase tracking-wider">Gemini API Key</span>
-            </div>
-            <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-stone-100 dark:bg-stone-800 text-stone-500 font-semibold">Client-Side</span>
-          </div>
-
-          <!-- API Key Input -->
-          <div class="space-y-1.5">
-            <label class="block text-[10px] font-mono font-bold uppercase text-stone-400 dark:text-stone-500">API Key</label>
-            <input type="password" id="settingsKeyInput" placeholder="AIzaSy..." class="w-full p-3 text-xs font-mono bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-xl text-stone-900 dark:text-stone-100 focus:outline-none focus:border-brand-terracotta" onchange="updateApiKey(this.value)">
-            <div class="text-[11px] text-stone-400 font-mono">
-              Get key at <a href="https://aistudio.google.com/" target="_blank" class="underline text-brand-terracotta font-bold">Google AI Studio</a>
-            </div>
-          </div>
-
-          <!-- Model Selector Row -->
-          <div class="pt-2 border-t border-stone-100 dark:border-stone-800 space-y-1.5">
-            <div class="flex items-center justify-between">
-              <label class="text-[10px] font-mono font-bold uppercase text-stone-400 dark:text-stone-500">Active Model</label>
-              <span class="text-[10px] font-mono text-emerald-600 dark:text-emerald-400 font-semibold">Auto-Failover Active</span>
-            </div>
-            <select id="modelSelectorDropdown" class="w-full bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-xl p-2.5 text-xs font-mono text-stone-900 dark:text-stone-100 focus:outline-none focus:border-brand-terracotta" onchange="changeActiveModel(this.value)">
-              <option value="gemini-3.8-flash">Gemini 3.8 Flash (Active Production)</option>
-              <option value="gemini-3.6-flash">Gemini 3.6 Flash</option>
-              <option value="gemini-3.5-flash-lite">Gemini 3.5 Flash Lite</option>
-              <option value="gemini-2.5-flash">Gemini 2.5 Flash</option>
-              <option value="gemini-1.5-flash">Gemini 1.5 Flash</option>
-            </select>
-          </div>
-        </div>
-
-        <!-- JSON Format & Import/Export -->
-        <div class="paper-card rounded-2xl p-4 sm:p-5 space-y-4">
-          <div class="flex flex-wrap items-center justify-between gap-2">
-            <div class="text-xs font-mono font-bold uppercase tracking-wider text-stone-900 dark:text-stone-100">Upload Your Own Data (JSON)</div>
-            <button onclick="downloadSampleJSON()" class="text-xs font-mono font-bold text-brand-terracotta dark:text-brand-terracottaDark hover:underline subtle-press">Sample File</button>
-          </div>
-          <p class="text-xs text-stone-500 dark:text-stone-400 leading-relaxed">
-            You can prepare your custom historical data in the format below and upload it directly to populate all 50 days instantly.
-          </p>
-
-          <div class="p-4 bg-stone-900 text-stone-200 rounded-xl text-[11px] font-mono leading-relaxed border border-stone-800 overflow-x-auto custom-scroll w-full">
-            <pre class="m-0 whitespace-pre"><code>{
-  "2026-11-06": {
-    "dayNum": 16,
-    "weight": 75.0,
-    "water": 3250,
-    "sleep": 7.5,
-    "split": "Pull (Back & Bi)",
-    "workoutDone": true,
-    "workoutNotes": "Heavy rows & pull-ups",
-    "meals": [
-      {
-        "id": 1,
-        "name": "Eggs & Toast",
-        "cal": 420,
-        "protein": 26,
-        "carbs": 34,
-        "fats": 16,
-        "time": "08:30"
-      }
-    ]
-  }
-}</code></pre>
-          </div>
-
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-            <button onclick="document.getElementById('importFilePicker').click()" class="w-full py-3 px-4 rounded-xl bg-brand-terracotta dark:bg-brand-terracottaDark text-white text-xs font-mono font-bold subtle-press flex items-center justify-center gap-2 hover:opacity-90 transition">
-              <i data-lucide="upload" class="w-4 h-4"></i> Upload JSON
-            </button>
-            <button onclick="exportDataJSON()" class="w-full py-3 px-4 rounded-xl border border-stone-200 dark:border-stone-700 bg-stone-100 dark:bg-stone-800 text-stone-800 dark:text-stone-200 text-xs font-mono font-bold subtle-press flex items-center justify-center gap-2 transition hover:border-stone-400">
-              <i data-lucide="download" class="w-4 h-4"></i> Export Backup
-            </button>
-          </div>
-          <input type="file" id="importFilePicker" accept=".json" class="hidden" onchange="importDataJSON(event)">
-        </div>
-      </section>
-
-    </main>
-
-    <!-- Bottom Mobile Nav Bar -->
-    <nav class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-inherit/95 backdrop-blur-md border-t border-stone-200 dark:border-stone-800 safe-bottom z-40 px-3 py-2 flex justify-around items-center">
-      <button onclick="switchTab('today')" id="nav-btn-today" class="flex flex-col items-center gap-1 text-stone-900 dark:text-stone-100 subtle-press transition">
-        <i data-lucide="calendar" class="w-4 h-4"></i>
-        <span class="text-[9px] font-mono font-bold tracking-wider uppercase">Today</span>
-      </button>
-
-      <button onclick="switchTab('lens-food')" id="nav-btn-lens-food" class="flex flex-col items-center gap-1 text-stone-400 dark:text-stone-500 subtle-press transition">
-        <i data-lucide="camera" class="w-4 h-4"></i>
-        <span class="text-[9px] font-mono font-bold tracking-wider uppercase">Food</span>
-      </button>
-
-      <button onclick="switchTab('lens-workout')" id="nav-btn-lens-workout" class="flex flex-col items-center gap-1 text-stone-400 dark:text-stone-500 subtle-press transition">
-        <i data-lucide="dumbbell" class="w-4 h-4"></i>
-        <span class="text-[9px] font-mono font-bold tracking-wider uppercase">Workout</span>
-      </button>
-
-      <button onclick="switchTab('trends')" id="nav-btn-trends" class="flex flex-col items-center gap-1 text-stone-400 dark:text-stone-500 subtle-press transition">
-        <i data-lucide="line-chart" class="w-4 h-4"></i>
-        <span class="text-[9px] font-mono font-bold tracking-wider uppercase">Trends</span>
-      </button>
-
-      <button onclick="switchTab('settings')" id="nav-btn-settings" class="flex flex-col items-center gap-1 text-stone-400 dark:text-stone-500 subtle-press transition">
-        <i data-lucide="sliders" class="w-4 h-4"></i>
-        <span class="text-[9px] font-mono font-bold tracking-wider uppercase">Config</span>
-      </button>
-    </nav>
-
-    <!-- Toast Notification -->
-    <div id="toast" class="fixed top-5 left-1/2 -translate-x-1/2 z-50 max-w-[90vw] sm:max-w-md px-4 py-2.5 rounded-2xl bg-stone-900/95 dark:bg-stone-100/95 text-stone-50 dark:text-stone-900 text-xs font-mono font-semibold shadow-2xl border border-stone-700/50 dark:border-stone-300/50 backdrop-blur-md pointer-events-none transition-all duration-300 opacity-0 transform -translate-y-2 text-center leading-relaxed">
-      <span id="toastMessage">Updated</span>
     </div>
+    <div style="display:flex; gap:8px;">
+      <button class="m3-icon-btn" id="themeToggleBtn" title="Switch Theme (Parchment / Obsidian)" aria-label="Toggle Theme">
+        <span class="material-symbols-rounded" id="themeIcon">light_mode</span>
+      </button>
+    </div>
+  </header>
 
-  </div>
+  <main class="m3-container">
+
+    <!-- ===================================================================
+         TAB 1: WORKOUT ROUTINE (DOUBLE-DIGIT HYPERTROPHY + PRE-FILLED WEIGHTS)
+         =================================================================== -->
+    <section id="tab-workout" class="view-section active">
+      <div class="m3-hero-banner">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+          <span class="m3-pill-tag">
+            <span class="material-symbols-rounded" style="font-size:15px;">bolt</span>
+            10–15 Reps • Double-Digit Protocol
+          </span>
+          <span class="mono" style="font-size:12px; font-weight:800;" id="sessionVolumeLive">0 kg vol</span>
+        </div>
+        <h2 style="font-size:21px; font-weight:800; letter-spacing:-0.02em;" id="activeSplitTitle">Monday — Push A (Chest Priority)</h2>
+        <p style="font-size:12.5px; opacity:0.9; margin-top:3px;" id="activeTargetMuscles">Target: Upper & Mid Chest • Side Delts • Triceps</p>
+
+        <div class="m3-timeline-strip">
+          <div class="m3-time-node">
+            <div class="t-val">5:50 AM</div>
+            <div class="t-lbl">Warm-Up</div>
+          </div>
+          <div class="m3-time-node">
+            <div class="t-val">5:55 AM</div>
+            <div class="t-lbl">5 Lifts (45m)</div>
+          </div>
+          <div class="m3-time-node">
+            <div class="t-val">6:40 AM</div>
+            <div class="t-lbl">Incline Walk</div>
+          </div>
+          <div class="m3-time-node">
+            <div class="t-val">7:20 AM</div>
+            <div class="t-lbl">Home Cutoff</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Day Selector Chips -->
+      <div class="m3-chip-row" id="dayChipRow"></div>
+
+      <!-- Warmup Note Card -->
+      <div class="m3-card-outlined" style="padding:12px 16px; border-radius:18px; margin-bottom:14px; display:flex; align-items:center; gap:10px;">
+        <span class="material-symbols-rounded" style="color:var(--md-sys-color-primary);">local_fire_department</span>
+        <div style="font-size:12.5px;">
+          <strong>5:50–5:55 AM Ramp-Up:</strong> <span id="warmupText">Band/cable shoulder openers + 2 light ramp-up sets (7.5 kg × 12, 10 kg × 8).</span>
+        </div>
+      </div>
+
+      <!-- Exercises Container -->
+      <div id="exerciseList"></div>
+
+      <!-- Complete Session CTA -->
+      <div class="m3-card" style="margin-top:16px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+          <div>
+            <div style="font-size:14px; font-weight:800;">Log Session to Calendar</div>
+            <div style="font-size:12px; color:var(--md-sys-color-on-surface-variant);">Marks today's targeted muscles & saves working weights</div>
+          </div>
+          <input type="date" id="logDateInput" class="m3-input" style="width:auto; padding:7px 10px; font-size:12px;" />
+        </div>
+        <button class="m3-btn-filled" id="completeWorkoutBtn">
+          <span class="material-symbols-rounded">check_circle</span>
+          Complete Lift & Stamp Calendar
+        </button>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         TAB 2: 20-MIN STEEP INCLINE TREADMILL (~308 KCAL)
+         =================================================================== -->
+    <section id="tab-cardio" class="view-section">
+      <div class="m3-hero-banner">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+          <span class="m3-pill-tag">
+            <span class="material-symbols-rounded" style="font-size:15px;">trending_up</span>
+            6:40 AM – 7:00 AM Post-Lift
+          </span>
+          <span class="mono" style="font-size:13px; font-weight:800;" id="cardioCalTotal">~308 kcal</span>
+        </div>
+        <h2 style="font-size:21px; font-weight:800;">20-Minute Incline Walk</h2>
+        <p style="font-size:12.5px; opacity:0.9; margin-top:4px;">Do not hold the handrails — holding rails cuts calorie burn by 25–30%.</p>
+      </div>
+
+      <!-- Leg Day Knee-Saver Switch -->
+      <div class="m3-switch-wrap">
+        <div>
+          <div style="font-size:13.5px; font-weight:800;">Leg-Day Mode (17.5% Incline • 5.5 km/h)</div>
+          <div style="font-size:11.5px; color:var(--md-sys-color-on-surface-variant);">Use on Wed & Sat after Hack Squats / RDLs to spare calves while keeping ~308 kcal burn</div>
+        </div>
+        <label class="m3-switch">
+          <input type="checkbox" id="legDayCardioToggle" />
+          <span class="m3-slider"></span>
+        </label>
+      </div>
+
+      <!-- Interactive Timer Bar -->
+      <div class="m3-card" style="display:flex; align-items:center; justify-content:space-between; gap:12px;">
+        <div>
+          <div style="font-size:11.5px; font-weight:700; color:var(--md-sys-color-on-surface-variant);">20:00 TREADMILL CLOCK</div>
+          <div class="mono" style="font-size:28px; font-weight:800; color:var(--md-sys-color-primary);" id="cardioTimerDisplay">20:00</div>
+        </div>
+        <div style="display:flex; gap:8px;">
+          <button class="m3-btn-tonal" id="cardioStartPauseBtn">
+            <span class="material-symbols-rounded" id="cardioTimerIcon">play_arrow</span>
+            <span id="cardioTimerLabel">Start</span>
+          </button>
+          <button class="m3-icon-btn" id="cardioResetBtn" title="Reset Timer">
+            <span class="material-symbols-rounded">restart_alt</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 5 Protocol Blocks -->
+      <div class="section-heading">
+        <span>Tap Blocks as You Walk</span>
+        <span class="mono" style="font-size:12px; color:var(--md-sys-color-primary);" id="cardioLoggedKcal">0 / 308 kcal</span>
+      </div>
+      <div id="treadmillBlockList"></div>
+
+      <button class="m3-btn-filled" id="saveCardioBtn" style="margin-top:8px;">
+        <span class="material-symbols-rounded">local_fire_department</span>
+        Log 20-Min Incline Session
+      </button>
+    </section>
+
+    <!-- ===================================================================
+         TAB 3: TARGET MUSCLE & WORKOUT CALENDAR
+         =================================================================== -->
+    <section id="tab-calendar" class="view-section">
+      <div class="m3-card">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+          <button class="m3-icon-btn" id="prevMonthBtn">
+            <span class="material-symbols-rounded">chevron_left</span>
+          </button>
+          <div style="text-align:center;">
+            <div style="font-size:17px; font-weight:800;" id="calMonthTitle">December 2026</div>
+            <div style="font-size:11.5px; color:var(--md-sys-color-on-surface-variant);">Starts Mon, Nov 30 • Tap any date to inspect muscles</div>
+          </div>
+          <button class="m3-icon-btn" id="nextMonthBtn">
+            <span class="material-symbols-rounded">chevron_right</span>
+          </button>
+        </div>
+
+        <!-- Legend Pills -->
+        <div style="display:flex; flex-wrap:wrap; gap:6px; justify-content:center; margin-bottom:14px;">
+          <span class="cal-tag tag-push" style="width:auto; padding:3px 9px;">PUSH (Chest/Delts/Tri)</span>
+          <span class="cal-tag tag-pull" style="width:auto; padding:3px 9px;">PULL (Back/Rear/Bi)</span>
+          <span class="cal-tag tag-legs" style="width:auto; padding:3px 9px;">LEGS + ABS</span>
+          <span class="cal-tag tag-rest" style="width:auto; padding:3px 9px;">REST / STEPS</span>
+        </div>
+
+        <div class="cal-header-row">
+          <div>MON</div><div>TUE</div><div>WED</div><div>THU</div><div>FRI</div><div>SAT</div><div>SUN</div>
+        </div>
+        <div class="cal-grid" id="calendarGrid"></div>
+      </div>
+
+      <!-- Selected Date Inspector Drawer -->
+      <div class="m3-card m3-card-elevated" id="calInspectorCard">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:10px; margin-bottom:10px;">
+          <div>
+            <div class="mono" style="font-size:11.5px; font-weight:700; color:var(--md-sys-color-primary);" id="inspDateLabel">Mon, Nov 30, 2026</div>
+            <h3 style="font-size:17px; font-weight:800; margin-top:2px;" id="inspSplitTitle">Push A — Chest Priority</h3>
+          </div>
+          <span class="m3-pill-tag" id="inspStatusBadge">Scheduled</span>
+        </div>
+
+        <div style="margin-bottom:12px;">
+          <div style="font-size:11.5px; font-weight:700; color:var(--md-sys-color-on-surface-variant); margin-bottom:6px;">TARGETED BODY PARTS</div>
+          <div style="display:flex; flex-wrap:wrap; gap:6px;" id="inspMuscleChips"></div>
+        </div>
+
+        <div id="inspExerciseSummary" style="font-size:12.5px; color:var(--md-sys-color-on-surface-variant); margin-bottom:14px;"></div>
+
+        <div style="display:flex; gap:8px;">
+          <button class="m3-btn-tonal" id="inspOpenWorkoutBtn" style="flex:1;">
+            <span class="material-symbols-rounded" style="font-size:18px;">fitness_center</span>
+            Open Routine
+          </button>
+          <button class="m3-btn-tonal" id="inspToggleDoneBtn" style="flex:1;">
+            <span class="material-symbols-rounded" style="font-size:18px;">task_alt</span>
+            Toggle Completed
+          </button>
+        </div>
+      </div>
+
+      <!-- Weekly Muscle Group Working Sets Breakdown -->
+      <div class="m3-card">
+        <div class="section-heading">
+          <span>Weekly Working Sets by Body Part</span>
+          <span class="mono" style="font-size:11.5px; color:var(--md-sys-color-primary);">103 Total Sets</span>
+        </div>
+        <div id="muscleVolumeBars" style="display:flex; flex-direction:column; gap:10px;"></div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         TAB 4: RECOMP VITALS, PROTEIN GUARDRAIL & GITHUB BACKUP
+         =================================================================== -->
+    <section id="tab-vitals" class="view-section">
+      <div class="vitals-grid">
+        <div class="vital-card">
+          <div style="font-size:11.5px; font-weight:700; color:var(--md-sys-color-on-surface-variant);">CURRENT WEIGHT</div>
+          <div class="vital-val" id="vitalCurrentWeight">75.4 kg</div>
+          <div style="font-size:11px; color:var(--md-sys-color-on-surface-variant);">Monday fasted check-in</div>
+        </div>
+        <div class="vital-card">
+          <div style="font-size:11.5px; font-weight:700; color:var(--md-sys-color-on-surface-variant);">WAIST (NAVEL)</div>
+          <div class="vital-val" id="vitalWaist">84.0 cm</div>
+          <div style="font-size:11px; color:var(--md-sys-color-on-surface-variant);">-0.5 cm / 2 wks = Recomp</div>
+        </div>
+        <div class="vital-card">
+          <div style="font-size:11.5px; font-weight:700; color:var(--md-sys-color-on-surface-variant);">SESSIONS LOGGED</div>
+          <div class="vital-val" id="vitalSessionsCount">0</div>
+          <div style="font-size:11px; color:var(--md-sys-color-on-surface-variant);">6-day streak target</div>
+        </div>
+        <div class="vital-card">
+          <div style="font-size:11.5px; font-weight:700; color:var(--md-sys-color-on-surface-variant);">DAILY PROTEIN HIT</div>
+          <div class="vital-val" id="vitalProteinStatus">2 Eggs +</div>
+          <div style="font-size:11px; color:var(--md-sys-color-on-surface-variant);">Curd / Chicken / Eggs</div>
+        </div>
+      </div>
+
+      <!-- Update Weight & Waist -->
+      <div class="m3-card">
+        <div class="section-heading"><span>Update Recomp Metrics</span></div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:12px;">
+          <div>
+            <label style="font-size:11px; font-weight:700; color:var(--md-sys-color-on-surface-variant); display:block; margin-bottom:4px;">Body Weight (kg)</label>
+            <input type="number" step="0.05" id="inputWeight" class="m3-input" value="75.40" />
+          </div>
+          <div>
+            <label style="font-size:11px; font-weight:700; color:var(--md-sys-color-on-surface-variant); display:block; margin-bottom:4px;">Waist at Navel (cm)</label>
+            <input type="number" step="0.1" id="inputWaist" class="m3-input" value="84.0" />
+          </div>
+        </div>
+        <button class="m3-btn-filled" id="saveVitalsBtn">Save Vitals</button>
+      </div>
+
+      <!-- Simple Protein Anchor Checklist (No Calorie Stress) -->
+      <div class="m3-card">
+        <div class="section-heading">
+          <span>Home-Food Protein Anchors</span>
+          <span class="mono" style="font-size:11.5px; color:var(--md-sys-color-tertiary);">Recomp Rule</span>
+        </div>
+        <p style="font-size:12px; color:var(--md-sys-color-on-surface-variant); margin-bottom:12px;">Eat your regular home meals; just check off your daily protein add-ons:</p>
+        <div style="display:flex; flex-direction:column; gap:8px;" id="proteinChecklist">
+          <label class="treadmill-block" style="margin:0;">
+            <span style="font-size:13px; font-weight:700;">7:25 AM — 2 Whole Boiled/Scrambled Eggs</span>
+            <input type="checkbox" data-prot="eggsAM" style="width:20px; height:20px; accent-color:var(--md-sys-color-primary);" />
+          </label>
+          <label class="treadmill-block" style="margin:0;">
+            <span style="font-size:13px; font-weight:700;">Afternoon — Thick Curd / Greek Yogurt Bowl</span>
+            <input type="checkbox" data-prot="yogurt" style="width:20px; height:20px; accent-color:var(--md-sys-color-primary);" />
+          </label>
+          <label class="treadmill-block" style="margin:0;">
+            <span style="font-size:13px; font-weight:700;">Evening / Dinner — Chicken Breast or +3 Eggs</span>
+            <input type="checkbox" data-prot="dinnerProt" style="width:20px; height:20px; accent-color:var(--md-sys-color-primary);" />
+          </label>
+        </div>
+      </div>
+
+      <!-- Data Export / Reset -->
+      <div class="m3-card-outlined" style="padding:16px; border-radius:22px; display:flex; gap:10px; flex-wrap:wrap;">
+        <button class="m3-btn-tonal" id="exportJsonBtn" style="flex:1;">
+          <span class="material-symbols-rounded" style="font-size:18px;">download</span>
+          Export JSON Backup
+        </button>
+        <button class="m3-btn-tonal" id="resetPlanBtn" style="flex:1; background:var(--md-sys-color-error-container); color:var(--md-sys-color-on-error-container);">
+          <span class="material-symbols-rounded" style="font-size:18px;">refresh</span>
+          Reset Defaults
+        </button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- MATERIAL 3 NAVIGATION BAR -->
+  <nav class="m3-nav-bar" aria-label="Primary Navigation">
+    <button class="m3-nav-item active" data-target="tab-workout">
+      <div class="m3-nav-pill"><span class="material-symbols-rounded filled">fitness_center</span></div>
+      <span>Workout</span>
+    </button>
+    <button class="m3-nav-item" data-target="tab-cardio">
+      <div class="m3-nav-pill"><span class="material-symbols-rounded">directions_walk</span></div>
+      <span>Treadmill</span>
+    </button>
+    <button class="m3-nav-item" data-target="tab-calendar">
+      <div class="m3-nav-pill"><span class="material-symbols-rounded">calendar_month</span></div>
+      <span>Calendar</span>
+    </button>
+    <button class="m3-nav-item" data-target="tab-vitals">
+      <div class="m3-nav-pill"><span class="material-symbols-rounded">monitoring</span></div>
+      <span>Vitals</span>
+    </button>
+  </nav>
+
+  <!-- SNACKBAR -->
+  <div class="m3-snackbar" id="m3Snackbar">Saved</div>
 
   <script>
-    const STORAGE_KEY_LOGS = 'apex50_editorial_logs_v2';
-    const STORAGE_KEY_API_KEY = 'apex50_editorial_gemini_key_v2';
-    const STORAGE_KEY_THEME = 'apex50_theme_v2';
-    const STORAGE_KEY_TARGET_WEIGHT = 'apex50_target_weight_v2';
-
-    const storedTargetWeight = parseFloat(localStorage.getItem(STORAGE_KEY_TARGET_WEIGHT)) || 70.0;
-
-    const PROTOCOL = {
-      startWeight: 76.2,
-      goalWeight: storedTargetWeight,
-      totalDays: 50,
-      calCeiling: 1900,
-      proteinGoal: 150,
-      waterTarget: 4000
+    /* ========================================================================
+       PRE-POPULATED DOUBLE-DIGIT HYPERTROPHY PROGRAM (STARTS MON NOV 30, 2026)
+       ======================================================================== */
+    const WORKOUT_PLAN = {
+      1: {
+        dayName: "Monday",
+        shortTag: "PUSH A",
+        typeClass: "tag-push",
+        title: "Push A — Chest Priority",
+        muscles: ["Upper Chest", "Mid Chest", "Side Delts", "Triceps"],
+        warmup: "5:50–5:55 AM: Cable shoulder openers + 2 ramp-up sets on Incline DB Press (7.5 kg × 12, 10 kg × 8).",
+        exercises: [
+          {
+            id: "mon_1",
+            name: "Incline Dumbbell Press (30° Bench)",
+            sets: 4,
+            repRange: "10–12",
+            targetReps: 12,
+            defaultWeight: 12.5,
+            unit: "kg/hand",
+            cue: "3-sec controlled lowering, 1-sec pause at chest. Hit 4×12 cleanly to unlock 15 kg."
+          },
+          {
+            id: "mon_2",
+            name: "Flat Barbell Bench Press",
+            sets: 3,
+            repRange: "10–12",
+            targetReps: 12,
+            defaultWeight: 37.5,
+            unit: "kg total",
+            cue: "Pin shoulder blades back into bench; drive bar smoothly without bouncing off ribs."
+          },
+          {
+            id: "mon_3",
+            name: "Machine Chest Fly (Pec Deck)",
+            sets: 3,
+            repRange: "12–15",
+            targetReps: 15,
+            defaultWeight: 32.5,
+            unit: "kg stack",
+            cue: "Keep slight elbow bend and squeeze inner chest for 1 full second at peak."
+          },
+          {
+            id: "mon_4",
+            name: "Dumbbell Lateral Raises",
+            sets: 4,
+            repRange: "12–15",
+            targetReps: 15,
+            defaultWeight: 7.5,
+            unit: "kg/hand",
+            cue: "Lead with elbows out to the sides; zero torso swing."
+          },
+          {
+            id: "mon_5",
+            name: "Cable Rope Tricep Pushdowns",
+            sets: 3,
+            repRange: "12–15",
+            targetReps: 15,
+            defaultWeight: 17.5,
+            unit: "kg stack",
+            cue: "Lock elbows to ribs and flare the rope ends apart at full extension."
+          }
+        ]
+      },
+      2: {
+        dayName: "Tuesday",
+        shortTag: "PULL A",
+        typeClass: "tag-pull",
+        title: "Pull A — Back Width & Rear Delts",
+        muscles: ["Lats", "Upper Back", "Rear Delts", "Biceps"],
+        warmup: "5:50–5:55 AM: Scapular pulldowns + 2 warm-up sets on Lat Pulldown (25 kg × 12, 35 kg × 8).",
+        exercises: [
+          {
+            id: "tue_1",
+            name: "Cable Lat Pulldowns (Wide Grip)",
+            sets: 4,
+            repRange: "10–12",
+            targetReps: 12,
+            defaultWeight: 47.5,
+            unit: "kg stack",
+            cue: "Drive elbows straight down toward hips; 2-sec controlled stretch on the way up."
+          },
+          {
+            id: "tue_2",
+            name: "Incline Bench Dumbbell Rows",
+            sets: 3,
+            repRange: "10–12",
+            targetReps: 12,
+            defaultWeight: 15,
+            unit: "kg/hand",
+            cue: "Lie chest-down on 30° incline bench so lower back cannot cheat."
+          },
+          {
+            id: "tue_3",
+            name: "Straight-Arm Cable Pulldowns",
+            sets: 3,
+            repRange: "12–15",
+            targetReps: 15,
+            defaultWeight: 17.5,
+            unit: "kg stack",
+            cue: "Hinge slightly forward, keep arms straight, pull bar to thighs."
+          },
+          {
+            id: "tue_4",
+            name: "Reverse Pec Deck Flyes",
+            sets: 3,
+            repRange: "12–15",
+            targetReps: 15,
+            defaultWeight: 27.5,
+            unit: "kg stack",
+            cue: "Push handles outward with back of hands; pause 1 sec at rear squeeze."
+          },
+          {
+            id: "tue_5",
+            name: "Incline Dumbbell Bicep Curls",
+            sets: 3,
+            repRange: "10–12",
+            targetReps: 12,
+            defaultWeight: 8.5,
+            unit: "kg/hand",
+            cue: "Bench at 45°; keep upper arms vertical for maximum long-head stretch."
+          }
+        ]
+      },
+      3: {
+        dayName: "Wednesday",
+        shortTag: "LEGS A",
+        typeClass: "tag-legs",
+        title: "Legs A & Abs — Quad Focus",
+        muscles: ["Quads", "Calves", "Upper Abs"],
+        warmup: "5:50–5:55 AM: Hip openers + 2 warm-up sets on Hack Squat (empty sled × 12, 20 kg × 8).",
+        exercises: [
+          {
+            id: "wed_1",
+            name: "Hack Squat",
+            sets: 4,
+            repRange: "10–12",
+            targetReps: 12,
+            defaultWeight: 45,
+            unit: "kg plates",
+            cue: "Feet mid-to-low on platform, shoulder-width; break parallel with control."
+          },
+          {
+            id: "wed_2",
+            name: "Sled / 45° Leg Press",
+            sets: 3,
+            repRange: "12–15",
+            targetReps: 15,
+            defaultWeight: 105,
+            unit: "kg plates",
+            cue: "Working right below your 130 kg PR for high-rep metabolic stress; don't lock knees."
+          },
+          {
+            id: "wed_3",
+            name: "Leg Extensions",
+            sets: 3,
+            repRange: "12–15",
+            targetReps: 15,
+            defaultWeight: 37.5,
+            unit: "kg stack",
+            cue: "Hold 1-sec peak contraction at the top; 2-sec controlled lowering."
+          },
+          {
+            id: "wed_4",
+            name: "Smith Machine Calf Raises",
+            sets: 4,
+            repRange: "12–15",
+            targetReps: 15,
+            defaultWeight: 45,
+            unit: "kg plates",
+            cue: "Stand on a weight plate; pause 2 full seconds in the deep bottom stretch."
+          },
+          {
+            id: "wed_5",
+            name: "Cable Crunches",
+            sets: 3,
+            repRange: "12–15",
+            targetReps: 15,
+            defaultWeight: 27.5,
+            unit: "kg stack",
+            cue: "Curl ribcage down toward pelvis; keep hips locked stationary."
+          }
+        ]
+      },
+      4: {
+        dayName: "Thursday",
+        shortTag: "PUSH B",
+        typeClass: "tag-push",
+        title: "Push B — Upper Chest & Delts",
+        muscles: ["Upper Chest", "Front Delts", "Side Delts", "Triceps"],
+        warmup: "5:50–5:55 AM: Band dislocates + 2 ramp-up sets on Smith Incline (bar × 12, 10 kg × 8).",
+        exercises: [
+          {
+            id: "thu_1",
+            name: "Smith Machine Incline Press",
+            sets: 4,
+            repRange: "10–12",
+            targetReps: 12,
+            defaultWeight: 27.5,
+            unit: "kg plates",
+            cue: "30° bench angle; lower bar to upper chest just below collarbone."
+          },
+          {
+            id: "thu_2",
+            name: "Machine Chest Press",
+            sets: 3,
+            repRange: "10–12",
+            targetReps: 12,
+            defaultWeight: 37.5,
+            unit: "kg stack",
+            cue: "Align handles with mid-chest; push smoothly to 1 rep shy of failure."
+          },
+          {
+            id: "thu_3",
+            name: "Machine Shoulder Press",
+            sets: 3,
+            repRange: "10–12",
+            targetReps: 12,
+            defaultWeight: 27.5,
+            unit: "kg stack",
+            cue: "Keep lower back pressed against pad; stop just short of elbow lockout."
+          },
+          {
+            id: "thu_4",
+            name: "Cable Single-Arm Lateral Raises",
+            sets: 3,
+            repRange: "12–15",
+            targetReps: 15,
+            defaultWeight: 5,
+            unit: "kg stack",
+            cue: "Set pulley to wrist height; constant tension across the entire arc."
+          },
+          {
+            id: "thu_5",
+            name: "Overhead Cable Rope Tricep Ext.",
+            sets: 3,
+            repRange: "12–15",
+            targetReps: 15,
+            defaultWeight: 17.5,
+            unit: "kg stack",
+            cue: "Split stance; let elbows travel back for a deep long-head tricep stretch."
+          }
+        ]
+      },
+      5: {
+        dayName: "Friday",
+        shortTag: "PULL B",
+        typeClass: "tag-pull",
+        title: "Pull B — Thickness, Traps & Arms",
+        muscles: ["Mid Back", "Lats", "Traps", "Brachialis", "Biceps"],
+        warmup: "5:50–5:55 AM: Dead hangs + 2 warm-up sets on Seated Cable Row (25 kg × 12, 35 kg × 8).",
+        exercises: [
+          {
+            id: "fri_1",
+            name: "Seated Cable Rows (Neutral Grip)",
+            sets: 4,
+            repRange: "10–12",
+            targetReps: 12,
+            defaultWeight: 47.5,
+            unit: "kg stack",
+            cue: "Reach forward for a lat stretch, then pull to lower sternum and squeeze 1 sec."
+          },
+          {
+            id: "fri_2",
+            name: "Single-Arm Dumbbell Rows",
+            sets: 3,
+            repRange: "10–12",
+            targetReps: 12,
+            defaultWeight: 20,
+            unit: "kg DB",
+            cue: "Brace hand on flat bench; row dumbbell back toward your hip pocket."
+          },
+          {
+            id: "fri_3",
+            name: "Smith Machine Shrugs",
+            sets: 3,
+            repRange: "12–15",
+            targetReps: 15,
+            defaultWeight: 45,
+            unit: "kg plates",
+            cue: "Shrug straight up toward ears; hold 1.5 sec at top, zero shoulder rolling."
+          },
+          {
+            id: "fri_4",
+            name: "Dumbbell Hammer Curls",
+            sets: 3,
+            repRange: "10–12",
+            targetReps: 12,
+            defaultWeight: 10,
+            unit: "kg/hand",
+            cue: "Neutral palms-in grip; builds forearm and outer arm thickness."
+          },
+          {
+            id: "fri_5",
+            name: "Cable Straight-Bar Bicep Curls",
+            sets: 3,
+            repRange: "12–15",
+            targetReps: 15,
+            defaultWeight: 17.5,
+            unit: "kg stack",
+            cue: "Keep elbows tucked slightly forward; squeeze hard at top."
+          }
+        ]
+      },
+      6: {
+        dayName: "Saturday",
+        shortTag: "LEGS B",
+        typeClass: "tag-legs",
+        title: "Legs B & Core — Hamstrings & Glutes",
+        muscles: ["Hamstrings", "Glutes", "Quads", "Core"],
+        warmup: "5:50–5:55 AM: Leg swings & glute bridges + 2 warm-up sets on Smith RDL (bar × 12, 20 kg × 8).",
+        exercises: [
+          {
+            id: "sat_1",
+            name: "Smith Machine Romanian Deadlifts",
+            sets: 4,
+            repRange: "10–12",
+            targetReps: 12,
+            defaultWeight: 45,
+            unit: "kg plates",
+            cue: "Soft knee bend, push hips straight back until bar reaches mid-shin."
+          },
+          {
+            id: "sat_2",
+            name: "Seated Leg Press (High & Wide Feet)",
+            sets: 3,
+            repRange: "12–15",
+            targetReps: 15,
+            defaultWeight: 85,
+            unit: "kg stack",
+            cue: "High foot placement shifts load straight onto glutes and hamstrings."
+          },
+          {
+            id: "sat_3",
+            name: "Hamstring Curls",
+            sets: 4,
+            repRange: "10–12",
+            targetReps: 12,
+            defaultWeight: 32.5,
+            unit: "kg stack",
+            cue: "Keep hips pressed flat into pad; control the eccentric for 2 seconds."
+          },
+          {
+            id: "sat_4",
+            name: "Dumbbell Bulgarian Split Squats",
+            sets: 3,
+            repRange: "10–12",
+            targetReps: 12,
+            defaultWeight: 7.5,
+            unit: "kg/hand",
+            cue: "Rear foot on bench; drop straight down until back knee nearly grazes floor."
+          },
+          {
+            id: "sat_5",
+            name: "Weighted Plank (Seconds)",
+            sets: 3,
+            repRange: "45–60s",
+            targetReps: 60,
+            defaultWeight: 10,
+            unit: "kg plate",
+            cue: "10 kg plate on upper back; brace abs and squeeze glutes hard."
+          }
+        ]
+      },
+      0: {
+        dayName: "Sunday",
+        shortTag: "REST",
+        typeClass: "tag-rest",
+        title: "Sunday — Active Recovery & Steps",
+        muscles: ["CNS Recovery", "8k–10k Steps", "Mobility"],
+        warmup: "No 5:50 AM gym alarm. Sleep in, hydrate, and hit 8,000–10,000 outdoor steps or dance.",
+        exercises: []
+      }
     };
 
-    let apiKey = localStorage.getItem(STORAGE_KEY_API_KEY) || '';
-    let dailyRecords = {};
-    let isDarkMode = localStorage.getItem(STORAGE_KEY_THEME) === 'dark';
+    const TREADMILL_STANDARD = [
+      { id: "tm_1", time: "Min 1–2 (2m)", incline: "12%", speed: "5.5 km/h", kcal: 24, label: "Ramp-Up" },
+      { id: "tm_2", time: "Min 3–8 (6m)", incline: "15%", speed: "6.0 km/h", kcal: 92, label: "Steady Climb" },
+      { id: "tm_3", time: "Min 9–14 (6m)", incline: "15%", speed: "6.2 km/h", kcal: 95, label: "Push Phase" },
+      { id: "tm_4", time: "Min 15–18 (4m)", incline: "15%", speed: "6.4 km/h", kcal: 65, label: "Peak Effort" },
+      { id: "tm_5", time: "Min 19–20 (2m)", incline: "15%", speed: "6.2 km/h", kcal: 32, label: "Taper" }
+    ];
 
-    let stagedFoodData = null;
-    let stagedFoodBase64 = null;
-    let stagedWorkoutData = null;
-    let stagedWorkoutBase64 = null;
+    const TREADMILL_LEGDAY = [
+      { id: "tm_1", time: "Min 1–2 (2m)", incline: "14%", speed: "5.2 km/h", kcal: 24, label: "Steep Ramp-Up" },
+      { id: "tm_2", time: "Min 3–8 (6m)", incline: "17.5%", speed: "5.4 km/h", kcal: 92, label: "Knee-Saver Climb" },
+      { id: "tm_3", time: "Min 9–14 (6m)", incline: "17.5%", speed: "5.5 km/h", kcal: 95, label: "Glute/Ham Drive" },
+      { id: "tm_4", time: "Min 15–18 (4m)", incline: "18%", speed: "5.6 km/h", kcal: 65, label: "Steep Peak" },
+      { id: "tm_5", time: "Min 19–20 (2m)", incline: "17.5%", speed: "5.4 km/h", kcal: 32, label: "Taper" }
+    ];
 
-    const today = new Date();
-    const todayKey = today.toISOString().split('T')[0];
+    /* ========================================================================
+       STATE MANAGEMENT (LOCALSTORAGE PERSISTED)
+       ======================================================================== */
+    const STORAGE_KEY = "apex50_m3_state_v2";
+    const PROGRAM_START_DATE = "2026-11-30"; // Monday, Nov 30, 2026
 
-    window.addEventListener('DOMContentLoaded', () => {
-      applyTheme(isDarkMode);
-      initDatabase();
-      updateApiKeyUI();
-      updateTargetWeightUI();
-      if (apiKey) fetchAvailableModels();
-      renderTodayView();
-      lucide.createIcons();
+    function getDefaultState() {
+      const logs = {};
+      Object.values(WORKOUT_PLAN).forEach((day) => {
+        day.exercises.forEach((ex) => {
+          logs[ex.id] = Array.from({ length: ex.sets }, () => ({
+            weight: ex.defaultWeight,
+            reps: ex.targetReps,
+            done: false
+          }));
+        });
+      });
+
+      return {
+        theme: "dark",
+        selectedDayOfWeek: 1, // Monday default so user sees Day 1 ready
+        selectedCalDate: PROGRAM_START_DATE,
+        calYear: 2026,
+        calMonth: 11, // 0-indexed -> 11 = December 2026
+        setLogs: logs,
+        completedDates: {}, // { "2026-11-30": { splitTag: "PUSH A", cardioDone: true, volume: 4200 } }
+        cardioChecked: {},
+        legDayMode: false,
+        vitals: {
+          weight: 75.4,
+          waist: 84.0
+        },
+        protein: {
+          eggsAM: false,
+          yogurt: false,
+          dinnerProt: false
+        }
+      };
+    }
+
+    let state = loadState();
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return getDefaultState();
+        const parsed = JSON.parse(raw);
+        return { ...getDefaultState(), ...parsed };
+      } catch (e) {
+        return getDefaultState();
+      }
+    }
+
+    function saveState() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    function showSnackbar(msg) {
+      const sb = document.getElementById("m3Snackbar");
+      sb.textContent = msg;
+      sb.classList.add("show");
+      clearTimeout(sb._timer);
+      sb._timer = setTimeout(() => sb.classList.remove("show"), 2600);
+    }
+
+    /* ========================================================================
+       THEME SWITCHING (PARCHMENT LIGHT <-> OBSIDIAN DARK)
+       ======================================================================== */
+    function applyTheme(theme) {
+      document.documentElement.setAttribute("data-theme", theme);
+      const icon = document.getElementById("themeIcon");
+      const meta = document.getElementById("metaThemeColor");
+      if (theme === "light") {
+        icon.textContent = "dark_mode";
+        meta.setAttribute("content", "#F6F3EC");
+      } else {
+        icon.textContent = "light_mode";
+        meta.setAttribute("content", "#0F0E0D");
+      }
+    }
+
+    document.getElementById("themeToggleBtn").addEventListener("click", () => {
+      state.theme = state.theme === "dark" ? "light" : "dark";
+      applyTheme(state.theme);
+      saveState();
+      showSnackbar(state.theme === "light" ? "Warm Editorial Parchment Theme" : "Minimalist Obsidian Dark Theme");
     });
 
-    function toggleAppTheme() {
-      isDarkMode = !isDarkMode;
-      localStorage.setItem(STORAGE_KEY_THEME, isDarkMode ? 'dark' : 'light');
-      applyTheme(isDarkMode);
+    /* ========================================================================
+       NAVIGATION TABS
+       ======================================================================== */
+    function switchTab(targetId) {
+      document.querySelectorAll(".view-section").forEach((sec) => sec.classList.remove("active"));
+      document.getElementById(targetId).classList.add("active");
+
+      document.querySelectorAll(".m3-nav-item").forEach((btn) => {
+        const isMatch = btn.dataset.target === targetId;
+        btn.classList.toggle("active", isMatch);
+        const icon = btn.querySelector(".material-symbols-rounded");
+        if (icon) icon.classList.toggle("filled", isMatch);
+      });
+
+      if (targetId === "tab-calendar") renderCalendar();
+      if (targetId === "tab-vitals") renderVitals();
     }
 
-    function applyTheme(dark) {
-      if (dark) {
-        document.documentElement.classList.add('dark');
-        document.getElementById('themeIcon').setAttribute('data-lucide', 'sun');
-        document.getElementById('themeToggleBtnIcon').setAttribute('data-lucide', 'sun');
-        document.getElementById('themeToggleBtnText').innerText = 'Light';
-      } else {
-        document.documentElement.classList.remove('dark');
-        document.getElementById('themeIcon').setAttribute('data-lucide', 'moon');
-        document.getElementById('themeToggleBtnIcon').setAttribute('data-lucide', 'moon');
-        document.getElementById('themeToggleBtnText').innerText = 'Dark';
-      }
-      lucide.createIcons();
+    document.querySelectorAll(".m3-nav-item").forEach((btn) => {
+      btn.addEventListener("click", () => switchTab(btn.dataset.target));
+    });
+
+    /* ========================================================================
+       RENDER WORKOUT VIEW
+       ======================================================================== */
+    function renderDayChips() {
+      const row = document.getElementById("dayChipRow");
+      const order = [1, 2, 3, 4, 5, 6, 0];
+      row.innerHTML = order
+        .map((dow) => {
+          const d = WORKOUT_PLAN[dow];
+          const active = state.selectedDayOfWeek === dow ? "active" : "";
+          return `
+            <button class="m3-filter-chip ${active}" data-dow="${dow}">
+              <span>${d.dayName.slice(0, 3)} • ${d.shortTag}</span>
+              <span class="sub">${d.muscles.slice(0, 2).join(", ")}</span>
+            </button>
+          `;
+        })
+        .join("");
+
+      row.querySelectorAll(".m3-filter-chip").forEach((chip) => {
+        chip.addEventListener("click", () => {
+          state.selectedDayOfWeek = Number(chip.dataset.dow);
+          saveState();
+          renderWorkoutView();
+        });
+      });
     }
 
-    function initDatabase() {
-      const stored = localStorage.getItem(STORAGE_KEY_LOGS);
-      if (stored) {
-        try {
-          dailyRecords = JSON.parse(stored);
-        } catch (e) {
-          console.error(e);
-        }
-      }
-
-      if (Object.keys(dailyRecords).length === 0) {
-        seedRealisticHistory();
-      }
-
-      // Auto-initialize new day: calories, water, sleep at 0, weight carried over from latest logged day
-      if (!dailyRecords[todayKey]) {
-        const sortedDates = Object.keys(dailyRecords).sort();
-        let lastRecordedWeight = PROTOCOL.startWeight;
-        let lastDayNum = 0;
-
-        if (sortedDates.length > 0) {
-          const prevDate = sortedDates[sortedDates.length - 1];
-          const prevRecord = dailyRecords[prevDate];
-          if (prevRecord) {
-            if (prevRecord.weight) lastRecordedWeight = prevRecord.weight;
-            if (prevRecord.dayNum) lastDayNum = prevRecord.dayNum;
+    function calculateDayVolume(dow) {
+      const plan = WORKOUT_PLAN[dow];
+      let total = 0;
+      plan.exercises.forEach((ex) => {
+        const rows = state.setLogs[ex.id] || [];
+        rows.forEach((r) => {
+          if (r.done && ex.unit !== "kg plate") {
+            const mult = ex.unit === "kg/hand" ? 2 : 1;
+            total += (Number(r.weight) || 0) * (Number(r.reps) || 0) * mult;
           }
-        }
-
-        dailyRecords[todayKey] = {
-          dayNum: Math.min(PROTOCOL.totalDays, lastDayNum + 1 || 1),
-          weight: lastRecordedWeight,
-          water: 0,
-          sleep: 0,
-          split: 'Push',
-          workoutDone: false,
-          workoutNotes: '',
-          meals: []
-        };
-      }
-      persist();
+        });
+      });
+      return Math.round(total);
     }
 
-    function seedRealisticHistory() {
-      const samples = [
-        { day: 1,  weight: 76.2, water: 3500, cal: 1880, p: 144, split: 'Push', done: true },
-        { day: 2,  weight: 76.0, water: 3800, cal: 1820, p: 148, split: 'Pull', done: true },
-        { day: 3,  weight: 75.9, water: 4000, cal: 1790, p: 152, split: 'Legs', done: true },
-        { day: 4,  weight: 76.1, water: 3900, cal: 1900, p: 140, split: 'Cardio', done: true },
-        { day: 5,  weight: 75.8, water: 3600, cal: 1840, p: 145, split: 'Rest', done: false },
-        { day: 6,  weight: 75.7, water: 4000, cal: 1760, p: 154, split: 'Push', done: true },
-        { day: 7,  weight: 75.6, water: 4000, cal: 1810, p: 150, split: 'Pull', done: true },
-        { day: 8,  weight: 75.5, water: 4000, cal: 1780, p: 151, split: 'Legs', done: true },
-        { day: 9,  weight: 75.4, water: 3700, cal: 1860, p: 146, split: 'Active Walk', done: true },
-        { day: 10, weight: 75.5, water: 3800, cal: 1890, p: 142, split: 'Rest', done: false },
-        { day: 11, weight: 75.3, water: 4000, cal: 1770, p: 153, split: 'Push', done: true },
-        { day: 12, weight: 75.2, water: 4000, cal: 1820, p: 149, split: 'Pull', done: true },
-        { day: 13, weight: 75.3, water: 4000, cal: 1800, p: 150, split: 'Legs', done: true },
-        { day: 14, weight: 75.1, water: 3900, cal: 1750, p: 155, split: 'Cardio', done: true },
-        { day: 15, weight: 75.0, water: 4000, cal: 1780, p: 152, split: 'Rest', done: false }
+    function renderWorkoutView() {
+      renderDayChips();
+      const dow = state.selectedDayOfWeek;
+      const plan = WORKOUT_PLAN[dow];
+
+      document.getElementById("activeSplitTitle").textContent = `${plan.dayName} — ${plan.title.replace(plan.dayName + " — ", "")}`;
+      document.getElementById("activeTargetMuscles").textContent = `Target: ${plan.muscles.join(" • ")}`;
+      document.getElementById("warmupText").textContent = plan.warmup.replace(/^5:50–5:55 AM:\s*/, "");
+      document.getElementById("sessionVolumeLive").textContent = `${calculateDayVolume(dow).toLocaleString()} kg vol`;
+
+      const list = document.getElementById("exerciseList");
+      if (plan.exercises.length === 0) {
+        list.innerHTML = `
+          <div class="m3-card" style="text-align:center; padding:28px 18px;">
+            <span class="material-symbols-rounded" style="font-size:40px; color:var(--md-sys-color-primary); margin-bottom:8px;">self_improvement</span>
+            <h3 style="font-size:17px; font-weight:800;">Sunday Active Recovery</h3>
+            <p style="font-size:13px; color:var(--md-sys-color-on-surface-variant); margin-top:6px;">
+              Hit 8,000–10,000 outdoor steps or a dance session. Let joints, chest, and central nervous system recover for Monday 5:50 AM.
+            </p>
+          </div>
+        `;
+        return;
+      }
+
+      list.innerHTML = plan.exercises
+        .map((ex, idx) => {
+          const rows = state.setLogs[ex.id] || [];
+          const allDone = rows.length > 0 && rows.every((r) => r.done);
+          const readyToProgress =
+            rows.length > 0 &&
+            rows.every((r) => r.done && Number(r.reps) >= ex.targetReps);
+
+          const rowsHtml = rows
+            .map(
+              (r, sIdx) => `
+              <div class="set-row">
+                <div class="set-num">S${sIdx + 1}</div>
+                <div class="m3-input-box">
+                  <input type="number" step="0.5" class="m3-input set-weight-input" data-ex="${ex.id}" data-set="${sIdx}" value="${r.weight}" aria-label="Weight" />
+                  <span class="m3-unit">kg</span>
+                </div>
+                <div class="m3-input-box">
+                  <input type="number" step="1" class="m3-input set-reps-input" data-ex="${ex.id}" data-set="${sIdx}" value="${r.reps}" aria-label="Reps" />
+                  <span class="m3-unit">${ex.unit === "kg plate" ? "sec" : "reps"}</span>
+                </div>
+                <button class="set-check-btn ${r.done ? "done" : ""}" data-ex="${ex.id}" data-set="${sIdx}" aria-label="Complete Set">
+                  <span class="material-symbols-rounded" style="font-size:20px;">check</span>
+                </button>
+              </div>
+            `
+            )
+            .join("");
+
+          return `
+            <div class="ex-card ${allDone ? "completed" : ""}">
+              <div class="ex-header">
+                <div>
+                  <div class="ex-title">${idx + 1}. ${ex.name}</div>
+                  <div class="ex-meta">${ex.sets} Sets × ${ex.repRange} ${ex.unit === "kg plate" ? "" : "Reps"} • Start: ${ex.defaultWeight} ${ex.unit}</div>
+                </div>
+                ${
+                  readyToProgress
+                    ? `<span class="progression-badge"><span class="material-symbols-rounded" style="font-size:14px;">trending_up</span>+2.5 kg Next Wk</span>`
+                    : `<span class="m3-pill-tag" style="font-size:10.5px;">${rows.filter((r) => r.done).length}/${ex.sets} Done</span>`
+                }
+              </div>
+              <div class="ex-cue">
+                <span class="material-symbols-rounded" style="font-size:17px; color:var(--md-sys-color-primary); flex-shrink:0;">tips_and_updates</span>
+                <span>${ex.cue}</span>
+              </div>
+              <div class="set-grid">${rowsHtml}</div>
+            </div>
+          `;
+        })
+        .join("");
+
+      // Attach listeners
+      list.querySelectorAll(".set-weight-input").forEach((inp) => {
+        inp.addEventListener("change", (e) => {
+          const { ex, set } = e.target.dataset;
+          state.setLogs[ex][Number(set)].weight = parseFloat(e.target.value) || 0;
+          saveState();
+          document.getElementById("sessionVolumeLive").textContent = `${calculateDayVolume(dow).toLocaleString()} kg vol`;
+        });
+      });
+
+      list.querySelectorAll(".set-reps-input").forEach((inp) => {
+        inp.addEventListener("change", (e) => {
+          const { ex, set } = e.target.dataset;
+          state.setLogs[ex][Number(set)].reps = parseInt(e.target.value, 10) || 0;
+          saveState();
+          renderWorkoutView();
+        });
+      });
+
+      list.querySelectorAll(".set-check-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const { ex, set } = btn.dataset;
+          const item = state.setLogs[ex][Number(set)];
+          item.done = !item.done;
+          saveState();
+          renderWorkoutView();
+        });
+      });
+    }
+
+    // Complete workout button
+    document.getElementById("logDateInput").value = PROGRAM_START_DATE;
+
+    document.getElementById("completeWorkoutBtn").addEventListener("click", () => {
+      const dateStr = document.getElementById("logDateInput").value || PROGRAM_START_DATE;
+      const dt = new Date(dateStr + "T00:00:00");
+      const dow = dt.getDay();
+      const plan = WORKOUT_PLAN[dow];
+      const vol = calculateDayVolume(state.selectedDayOfWeek);
+
+      state.completedDates[dateStr] = {
+        splitTag: plan.shortTag,
+        title: plan.title,
+        muscles: plan.muscles,
+        volume: vol,
+        cardioDone: state.completedDates[dateStr]?.cardioDone || false
+      };
+      state.selectedCalDate = dateStr;
+      saveState();
+      renderVitals();
+      showSnackbar(`Stamped ${plan.shortTag} (${plan.muscles.slice(0, 2).join(", ")}) on ${dateStr}`);
+    });
+
+    /* ========================================================================
+       TREADMILL CARDIO VIEW & 20-MIN TIMER
+       ======================================================================== */
+    let timerSeconds = 20 * 60;
+    let timerInterval = null;
+
+    function formatTimer(sec) {
+      const m = Math.floor(sec / 60);
+      const s = sec % 60;
+      return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+    }
+
+    function renderCardioView() {
+      const toggle = document.getElementById("legDayCardioToggle");
+      toggle.checked = !!state.legDayMode;
+      const blocks = state.legDayMode ? TREADMILL_LEGDAY : TREADMILL_STANDARD;
+
+      let logged = 0;
+      const container = document.getElementById("treadmillBlockList");
+      container.innerHTML = blocks
+        .map((b) => {
+          const isChecked = !!state.cardioChecked[b.id];
+          if (isChecked) logged += b.kcal;
+          return `
+            <div class="treadmill-block ${isChecked ? "checked" : ""}" data-bid="${b.id}">
+              <div>
+                <div style="font-size:13.5px; font-weight:800;">${b.time} • ${b.label}</div>
+                <div style="font-size:12px; opacity:0.85; margin-top:2px;">
+                  Incline: <strong>${b.incline}</strong> &nbsp;|&nbsp; Speed: <strong>${b.speed}</strong>
+                </div>
+              </div>
+              <div style="text-align:right;">
+                <div class="mono" style="font-size:13px; font-weight:800;">~${b.kcal} kcal</div>
+                <span class="material-symbols-rounded" style="font-size:20px; margin-top:2px;">
+                  ${isChecked ? "check_circle" : "radio_button_unchecked"}
+                </span>
+              </div>
+            </div>
+          `;
+        })
+        .join("");
+
+      document.getElementById("cardioLoggedKcal").textContent = `${logged} / 308 kcal`;
+
+      container.querySelectorAll(".treadmill-block").forEach((el) => {
+        el.addEventListener("click", () => {
+          const id = el.dataset.bid;
+          state.cardioChecked[id] = !state.cardioChecked[id];
+          saveState();
+          renderCardioView();
+        });
+      });
+    }
+
+    document.getElementById("legDayCardioToggle").addEventListener("change", (e) => {
+      state.legDayMode = e.target.checked;
+      saveState();
+      renderCardioView();
+      showSnackbar(state.legDayMode ? "Leg-Day Mode: 17.5% Incline @ 5.5 km/h" : "Standard Mode: 15% Incline @ 6.0–6.4 km/h");
+    });
+
+    document.getElementById("cardioStartPauseBtn").addEventListener("click", () => {
+      const icon = document.getElementById("cardioTimerIcon");
+      const label = document.getElementById("cardioTimerLabel");
+      if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+        icon.textContent = "play_arrow";
+        label.textContent = "Resume";
+      } else {
+        icon.textContent = "pause";
+        label.textContent = "Pause";
+        timerInterval = setInterval(() => {
+          if (timerSeconds > 0) {
+            timerSeconds--;
+            document.getElementById("cardioTimerDisplay").textContent = formatTimer(timerSeconds);
+          } else {
+            clearInterval(timerInterval);
+            timerInterval = null;
+            showSnackbar("20:00 Incline Walk Complete! ~308 kcal burned.");
+          }
+        }, 1000);
+      }
+    });
+
+    document.getElementById("cardioResetBtn").addEventListener("click", () => {
+      clearInterval(timerInterval);
+      timerInterval = null;
+      timerSeconds = 20 * 60;
+      document.getElementById("cardioTimerDisplay").textContent = "20:00";
+      document.getElementById("cardioTimerIcon").textContent = "play_arrow";
+      document.getElementById("cardioTimerLabel").textContent = "Start";
+    });
+
+    document.getElementById("saveCardioBtn").addEventListener("click", () => {
+      TREADMILL_STANDARD.forEach((b) => (state.cardioChecked[b.id] = true));
+      const dateStr = document.getElementById("logDateInput").value || PROGRAM_START_DATE;
+      const dt = new Date(dateStr + "T00:00:00");
+      const plan = WORKOUT_PLAN[dt.getDay()];
+      state.completedDates[dateStr] = {
+        splitTag: plan.shortTag,
+        title: plan.title,
+        muscles: plan.muscles,
+        volume: state.completedDates[dateStr]?.volume || 0,
+        cardioDone: true
+      };
+      saveState();
+      renderCardioView();
+      showSnackbar("Logged 20-Min Incline Treadmill (~308 kcal)");
+    });
+
+    /* ========================================================================
+       TARGET MUSCLE & WORKOUT CALENDAR
+       ======================================================================== */
+    const MONTH_NAMES = [
+      "January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"
+    ];
+
+    function pad2(n) {
+      return String(n).padStart(2, "0");
+    }
+
+    function renderCalendar() {
+      const year = state.calYear;
+      const month = state.calMonth;
+      document.getElementById("calMonthTitle").textContent = `${MONTH_NAMES[month]} ${year}`;
+
+      const firstDay = new Date(year, month, 1);
+      // Convert Sunday=0..Saturday=6 into Monday=0..Sunday=6
+      const startOffset = (firstDay.getDay() + 6) % 7;
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+      const grid = document.getElementById("calendarGrid");
+      let cellsHtml = "";
+
+      for (let i = 0; i < startOffset; i++) {
+        cellsHtml += `<div class="cal-cell empty"></div>`;
+      }
+
+      for (let day = 1; day <= daysInMonth; day++) {
+        const dateStr = `${year}-${pad2(month + 1)}-${pad2(day)}`;
+        const dt = new Date(year, month, day);
+        const dow = dt.getDay();
+        const plan = WORKOUT_PLAN[dow];
+        const isBeforeStart = dateStr < PROGRAM_START_DATE;
+        const isSelected = state.selectedCalDate === dateStr;
+        const isCompleted = !!state.completedDates[dateStr];
+
+        const tagHtml = isBeforeStart
+          ? `<span class="cal-tag tag-rest" style="opacity:0.45;">PREP</span>`
+          : `<span class="cal-tag ${plan.typeClass}">${plan.shortTag}</span>`;
+
+        cellsHtml += `
+          <div class="cal-cell ${isSelected ? "selected" : ""}" data-date="${dateStr}">
+            <div class="day-num">${day}</div>
+            ${isCompleted ? `<div class="cal-dot" title="Completed"></div>` : `<div style="height:6px;"></div>`}
+            ${tagHtml}
+          </div>
+        `;
+      }
+
+      grid.innerHTML = cellsHtml;
+
+      grid.querySelectorAll(".cal-cell[data-date]").forEach((cell) => {
+        cell.addEventListener("click", () => {
+          state.selectedCalDate = cell.dataset.date;
+          saveState();
+          renderCalendar();
+        });
+      });
+
+      renderCalendarInspector();
+      renderMuscleVolumeBars();
+    }
+
+    function renderCalendarInspector() {
+      const dateStr = state.selectedCalDate || PROGRAM_START_DATE;
+      const dt = new Date(dateStr + "T00:00:00");
+      const dow = dt.getDay();
+      const plan = WORKOUT_PLAN[dow];
+      const record = state.completedDates[dateStr];
+
+      document.getElementById("inspDateLabel").textContent = dt.toLocaleDateString("en-US", {
+        weekday: "long",
+        month: "short",
+        day: "numeric",
+        year: "numeric"
+      });
+      document.getElementById("inspSplitTitle").textContent = plan.title;
+
+      const statusBadge = document.getElementById("inspStatusBadge");
+      if (record) {
+        statusBadge.textContent = record.cardioDone ? "Lift + Cardio Done ✓" : "Completed ✓";
+        statusBadge.style.background = "var(--md-sys-color-tertiary-container)";
+        statusBadge.style.color = "var(--md-sys-color-on-tertiary-container)";
+      } else {
+        statusBadge.textContent = dateStr < PROGRAM_START_DATE ? "Pre-Launch" : "Scheduled 5:50 AM";
+        statusBadge.style.background = "var(--md-sys-color-surface-container-lowest)";
+        statusBadge.style.color = "var(--md-sys-color-on-surface)";
+      }
+
+      document.getElementById("inspMuscleChips").innerHTML = plan.muscles
+        .map((m) => `<span class="cal-tag ${plan.typeClass}" style="width:auto; padding:4px 10px; font-size:11px;">${m}</span>`)
+        .join("");
+
+      const summaryEl = document.getElementById("inspExerciseSummary");
+      if (plan.exercises.length === 0) {
+        summaryEl.textContent = "Active recovery day: 8,000–10,000 steps or dance session. Zero heavy gym loading.";
+      } else {
+        summaryEl.innerHTML =
+          `<strong>5 Lifts (10–15 Reps):</strong> ` +
+          plan.exercises.map((e) => `${e.name} (${e.sets}×${e.repRange})`).join(" • ") +
+          ` + <strong>20m Incline Walk (~308 kcal)</strong>.`;
+      }
+    }
+
+    document.getElementById("prevMonthBtn").addEventListener("click", () => {
+      state.calMonth--;
+      if (state.calMonth < 0) {
+        state.calMonth = 11;
+        state.calYear--;
+      }
+      saveState();
+      renderCalendar();
+    });
+
+    document.getElementById("nextMonthBtn").addEventListener("click", () => {
+      state.calMonth++;
+      if (state.calMonth > 11) {
+        state.calMonth = 0;
+        state.calYear++;
+      }
+      saveState();
+      renderCalendar();
+    });
+
+    document.getElementById("inspOpenWorkoutBtn").addEventListener("click", () => {
+      const dt = new Date((state.selectedCalDate || PROGRAM_START_DATE) + "T00:00:00");
+      state.selectedDayOfWeek = dt.getDay();
+      document.getElementById("logDateInput").value = state.selectedCalDate || PROGRAM_START_DATE;
+      saveState();
+      renderWorkoutView();
+      switchTab("tab-workout");
+    });
+
+    document.getElementById("inspToggleDoneBtn").addEventListener("click", () => {
+      const dateStr = state.selectedCalDate || PROGRAM_START_DATE;
+      if (state.completedDates[dateStr]) {
+        delete state.completedDates[dateStr];
+        showSnackbar(`Unmarked ${dateStr}`);
+      } else {
+        const dt = new Date(dateStr + "T00:00:00");
+        const plan = WORKOUT_PLAN[dt.getDay()];
+        state.completedDates[dateStr] = {
+          splitTag: plan.shortTag,
+          title: plan.title,
+          muscles: plan.muscles,
+          volume: 0,
+          cardioDone: true
+        };
+        showSnackbar(`Marked ${plan.shortTag} completed on ${dateStr}`);
+      }
+      saveState();
+      renderCalendar();
+      renderVitals();
+    });
+
+    function renderMuscleVolumeBars() {
+      const groups = [
+        { name: "Chest (Upper & Mid)", sets: 17, max: 20 },
+        { name: "Back (Lats, Mid & Traps)", sets: 20, max: 20 },
+        { name: "Quads & Glutes", sets: 16, max: 20 },
+        { name: "Shoulders (Side, Front & Rear)", sets: 16, max: 20 },
+        { name: "Biceps & Triceps", sets: 12, max: 20 },
+        { name: "Hamstrings & Calves", sets: 12, max: 20 },
+        { name: "Abs & Core", sets: 6, max: 20 }
       ];
 
-      for (let i = 0; i < samples.length; i++) {
-        const d = new Date();
-        d.setDate(d.getDate() - (15 - i));
-        const key = d.toISOString().split('T')[0];
-        const s = samples[i];
-        dailyRecords[key] = {
-          dayNum: s.day,
-          weight: s.weight,
-          water: s.water,
-          sleep: 7.5,
-          split: s.split,
-          workoutDone: s.done,
-          workoutNotes: `Completed ${s.split} session as prescribed.`,
-          meals: [
-            { id: 1, name: 'Eggs & Oats Breakfast', cal: 450, protein: 32, carbs: 48, fats: 14, time: '08:30' },
-            { id: 2, name: 'Whey Protein Shake', cal: 150, protein: 27, carbs: 3, fats: 2, time: '12:00' },
-            { id: 3, name: 'Chicken & Sweet Potato', cal: 680, protein: 55, carbs: 65, fats: 16, time: '15:00' },
-            { id: 4, name: 'Evening Light Dinner', cal: s.cal - 1280, protein: s.p - 114, carbs: 40, fats: 10, time: '19:30' }
-          ]
-        };
-      }
-      persist();
-    }
-
-    function persist() {
-      localStorage.setItem(STORAGE_KEY_LOGS, JSON.stringify(dailyRecords));
-    }
-
-    function renderTodayView() {
-      const rec = dailyRecords[todayKey] || {};
-      
-      const dateOpts = { weekday: 'short', day: 'numeric', month: 'short' };
-      const dateStrElem = document.getElementById('todayDateStr');
-      if (dateStrElem) {
-        dateStrElem.innerText = new Date().toLocaleDateString(undefined, dateOpts);
-      }
-
-      const heroTargetElem = document.getElementById('heroTargetWeightBadge');
-      if (heroTargetElem) {
-        heroTargetElem.innerText = `Target: ${Number(PROTOCOL.goalWeight).toFixed(1)} kg`;
-      }
-
-            renderActiveWeightDisplay();
-
-      const meals = rec.meals || [];
-      const totalCal = meals.reduce((acc, m) => acc + (m.cal || 0), 0);
-      const totalP = meals.reduce((acc, m) => acc + (m.protein || 0), 0);
-      const totalC = meals.reduce((acc, m) => acc + (m.carbs || 0), 0);
-      const totalF = meals.reduce((acc, m) => acc + (m.fats || 0), 0);
-
-      document.getElementById('calCurrentDisplay').innerText = totalCal.toLocaleString();
-      document.getElementById('macroProteinToday').innerText = totalP;
-      document.getElementById('macroCarbsToday').innerText = totalC;
-      document.getElementById('macroFatsToday').innerText = totalF;
-
-      const calPct = Math.min(Math.round((totalCal / PROTOCOL.calCeiling) * 100), 100);
-      document.getElementById('calProgressBar').style.width = `${calPct}%`;
-
-      const remaining = PROTOCOL.calCeiling - totalCal;
-      const remBadge = document.getElementById('calRemainingBadge');
-      if (remaining >= 0) {
-        remBadge.innerText = `${remaining} kcal left`;
-        remBadge.className = 'text-xs font-mono font-bold px-3 py-1.5 rounded-lg shrink-0 whitespace-nowrap bg-stone-100 dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-stone-800 dark:text-stone-200 inline-block';
-      } else {
-        remBadge.innerText = `+${Math.abs(remaining)} kcal over`;
-        remBadge.className = 'text-xs font-mono font-bold px-3 py-1.5 rounded-lg shrink-0 whitespace-nowrap bg-red-100 dark:bg-red-950/60 border border-red-300 dark:border-red-800 text-red-600 dark:text-red-400 inline-block';
-      }
-
-      // Update Hero Net Delta dynamically
-      const currentHeroW = (rec.weight !== undefined && rec.weight !== null) ? rec.weight : PROTOCOL.startWeight;
-      const netHeroDelta = (currentHeroW - PROTOCOL.startWeight).toFixed(1);
-      const heroDeltaElem = document.getElementById('heroNetDeltaBadge');
-      if (heroDeltaElem) {
-        heroDeltaElem.innerText = `${netHeroDelta > 0 ? '+' : ''}${netHeroDelta} kg net`;
-        heroDeltaElem.className = `text-xs font-mono font-bold mt-1.5 whitespace-nowrap ${netHeroDelta <= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-brand-terracotta dark:text-brand-terracottaDark'}`;
-      }
-
-      renderTodayMealsList(meals);
-
-      const water = rec.water || 0;
-      document.getElementById('waterCurrentDisplay').innerText = (water / 1000).toFixed(2);
-      const waterPct = Math.min(Math.round((water / PROTOCOL.waterTarget) * 100), 100);
-      document.getElementById('waterPctBadge').innerText = `${waterPct}%`;
-      document.getElementById('waterProgressBar').style.width = `${waterPct}%`;
-
-      const sleepHours = rec.sleep !== undefined ? rec.sleep : 0;
-      document.getElementById('sleepTotalDisplay').innerText = sleepHours > 0 ? sleepHours.toFixed(1) : '0.0';
-      document.getElementById('sleepBedtimeInput').value = rec.bedtime || '';
-      document.getElementById('sleepWaketimeInput').value = rec.waketime || '';
-
-      const sleepPct = Math.min(Math.round((sleepHours / 8.0) * 100), 100);
-      document.getElementById('sleepProgressBar').style.width = `${sleepPct}%`;
-      const sleepBadge = document.getElementById('sleepQualityBadge');
-      if (sleepHours >= 7.5) {
-        sleepBadge.innerText = 'Optimal';
-        sleepBadge.className = 'text-xs font-mono font-bold px-3 py-1 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800';
-      } else if (sleepHours >= 6.0) {
-        sleepBadge.innerText = 'Moderate';
-        sleepBadge.className = 'text-xs font-mono font-bold px-3 py-1 rounded-lg bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800';
-      } else if (sleepHours > 0) {
-        sleepBadge.innerText = 'Deficit';
-        sleepBadge.className = 'text-xs font-mono font-bold px-3 py-1 rounded-lg bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800';
-      } else {
-        sleepBadge.innerText = '0 hrs';
-        sleepBadge.className = 'text-xs font-mono font-bold px-3 py-1 rounded-lg bg-stone-100 dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-stone-500';
-      }
-
-      document.getElementById('todaySplitDisplay').innerText = rec.split || 'Pull Protocol';
-      document.getElementById('todayWorkoutCheckbox').checked = !!rec.workoutDone;
-      document.getElementById('todayWorkoutNotes').value = rec.workoutNotes || '';
-    }
-
-    function renderTodayMealsList(meals) {
-      const container = document.getElementById('todayMealsContainer');
-      if (!meals || meals.length === 0) {
-        container.innerHTML = `<div class="text-xs font-mono text-stone-400 py-2 italic text-center">No meals logged yet today.</div>`;
-        return;
-      }
-
-      container.innerHTML = meals.map(m => `
-        <div class="p-3 rounded-xl bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-800 flex items-center justify-between gap-3 text-xs">
-          <div class="min-w-0 flex-1">
-            <div class="font-extrabold text-stone-900 dark:text-stone-100 flex flex-wrap items-baseline gap-1.5 leading-snug">
-              <span class="break-words">${m.name}</span>
-              <span class="text-[10px] font-mono font-normal text-stone-400 shrink-0">${m.time || ''}</span>
+      document.getElementById("muscleVolumeBars").innerHTML = groups
+        .map(
+          (g) => `
+          <div>
+            <div style="display:flex; justify-content:space-between; font-size:12px; font-weight:700; margin-bottom:4px;">
+              <span>${g.name}</span>
+              <span class="mono" style="color:var(--md-sys-color-primary);">${g.sets} sets/wk</span>
             </div>
-            <div class="text-[10px] font-mono font-bold text-stone-400 mt-0.5 whitespace-nowrap">
-              ${m.protein || 0}g P • ${m.carbs || 0}g C • ${m.fats || 0}g F
+            <div style="height:8px; border-radius:999px; background:var(--md-sys-color-surface-container-highest); overflow:hidden;">
+              <div style="height:100%; width:${Math.min(100, (g.sets / g.max) * 100)}%; background:var(--md-sys-color-primary); border-radius:999px;"></div>
             </div>
           </div>
-          <div class="shrink-0 flex items-center gap-2.5">
-            <span class="font-mono font-extrabold text-stone-900 dark:text-stone-100 whitespace-nowrap">${m.cal} kcal</span>
-            <button onclick="removeMealItem(${m.id})" class="p-1 text-stone-400 hover:text-red-600 transition shrink-0 subtle-press" title="Remove meal">
-              <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-            </button>
-          </div>
-        </div>
-      `).join('');
-      lucide.createIcons();
+        `
+        )
+        .join("");
     }
 
-    function removeMealItem(mealId) {
-      if (!dailyRecords[todayKey]) return;
-      dailyRecords[todayKey].meals = (dailyRecords[todayKey].meals || []).filter(m => m.id !== mealId);
-      persist();
-      renderTodayView();
-      showToast('Meal removed');
-    }
+    /* ========================================================================
+       VITALS, PROTEIN ANCHORS & JSON EXPORT
+       ======================================================================== */
+    function renderVitals() {
+      document.getElementById("vitalCurrentWeight").textContent = `${Number(state.vitals.weight).toFixed(2)} kg`;
+      document.getElementById("vitalWaist").textContent = `${Number(state.vitals.waist).toFixed(1)} cm`;
+      document.getElementById("vitalSessionsCount").textContent = Object.keys(state.completedDates).length;
 
-                function getTodayWeight() {
-      const rec = dailyRecords[todayKey] || {};
-      return (rec.weight !== undefined && rec.weight !== null) ? rec.weight : PROTOCOL.startWeight;
-    }
+      document.getElementById("inputWeight").value = state.vitals.weight;
+      document.getElementById("inputWaist").value = state.vitals.waist;
 
-    function renderActiveWeightDisplay() {
-      const w = getTodayWeight();
-      const displayElem = document.getElementById('weightFrozenDisplay');
-      if (displayElem) {
-        displayElem.innerText = Number(w).toFixed(2).replace(/\.?0+$/, '');
-      }
+      const checkedCount = Object.values(state.protein).filter(Boolean).length;
+      document.getElementById("vitalProteinStatus").textContent = `${checkedCount} / 3 Hit`;
 
-      const input = document.getElementById('singleWeightInput');
-      if (input) {
-        input.value = Number(w).toFixed(2).replace(/\.?0+$/, '');
-      }
-
-      updateHeroDeltaBadge(w);
-    }
-
-    function enableWeightEdit() {
-      document.getElementById('weightFrozenView').classList.add('hidden');
-      const editView = document.getElementById('weightEditView');
-      editView.classList.remove('hidden');
-      const input = document.getElementById('singleWeightInput');
-      input.value = getTodayWeight();
-      input.focus();
-      input.select();
-    }
-
-    function cancelWeightEdit() {
-      document.getElementById('weightEditView').classList.add('hidden');
-      document.getElementById('weightFrozenView').classList.remove('hidden');
-    }
-
-    function saveAndCommitWeight() {
-      const input = document.getElementById('singleWeightInput');
-      const val = parseFloat(input.value);
-
-      if (!isNaN(val) && val >= 30 && val <= 250) {
-        const rounded = Math.round(val * 100) / 100;
-        if (!dailyRecords[todayKey]) dailyRecords[todayKey] = {};
-        
-        // Commit single weight to record
-        dailyRecords[todayKey].weight = rounded;
-        delete dailyRecords[todayKey].weightPost; // eliminate pre/post distinction
-        
-        persist();
-
-        // Freeze back to display view
-        document.getElementById('weightEditView').classList.add('hidden');
-        document.getElementById('weightFrozenView').classList.remove('hidden');
-        document.getElementById('weightFrozenDisplay').innerText = rounded;
-
-        // Recalculate deltas and UI immediately
-        renderTodayView();
-        
-        // Re-render graphs & analytics in background
-        if (typeof renderAnalyticsView === 'function') {
-          renderAnalyticsView();
-        }
-
-        showToast(`Weight committed: ${rounded} kg`);
-      } else {
-        showToast('Please enter a valid weight (e.g. 74.9)');
-      }
-    }
-
-    function updateHeroDeltaBadge(w) {
-      const currentW = (w !== undefined && w !== null) ? Number(w) : PROTOCOL.startWeight;
-      const netHeroDelta = (currentW - PROTOCOL.startWeight).toFixed(2);
-      const heroDeltaElem = document.getElementById('heroNetDeltaBadge');
-
-      if (heroDeltaElem) {
-        heroDeltaElem.innerText = `${netHeroDelta > 0 ? '+' : ''}${netHeroDelta} kg net`;
-        heroDeltaElem.className = `text-xs font-mono font-bold whitespace-nowrap ${netHeroDelta <= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-brand-terracotta dark:text-brand-terracottaDark'}`;
-      }
-
-      // Calculate percentage progress toward target weight
-      const totalToLose = PROTOCOL.startWeight - PROTOCOL.goalWeight;
-      let pct = 0;
-      if (totalToLose > 0) {
-        const lostSoFar = PROTOCOL.startWeight - currentW;
-        pct = Math.max(0, Math.min(100, Math.round((lostSoFar / totalToLose) * 100)));
-      } else if (totalToLose < 0) {
-        // Gaining protocol
-        const gainedSoFar = currentW - PROTOCOL.startWeight;
-        pct = Math.max(0, Math.min(100, Math.round((gainedSoFar / Math.abs(totalToLose)) * 100)));
-      } else {
-        pct = currentW === PROTOCOL.goalWeight ? 100 : 0;
-      }
-
-      const pctElem = document.getElementById('targetWeightProgressPct');
-      const barElem = document.getElementById('targetWeightProgressBar');
-      if (pctElem) pctElem.innerText = `${pct}%`;
-      if (barElem) barElem.style.width = `${pct}%`;
-    }
-
-    function saveTodayNotes() {
-      const n = document.getElementById('todayWorkoutNotes').value;
-      if (!dailyRecords[todayKey]) dailyRecords[todayKey] = {};
-      dailyRecords[todayKey].workoutNotes = n;
-      persist();
-      showToast('Notes saved');
-    }
-
-    function toggleWorkoutCompleted() {
-      if (!dailyRecords[todayKey]) dailyRecords[todayKey] = {};
-      dailyRecords[todayKey].workoutDone = document.getElementById('todayWorkoutCheckbox').checked;
-      persist();
-    }
-
-    function setSplitPreset(name) {
-      if (!dailyRecords[todayKey]) dailyRecords[todayKey] = {};
-      dailyRecords[todayKey].split = name;
-      document.getElementById('todaySplitDisplay').innerText = name;
-      persist();
-      showToast(`Split: ${name}`);
-    }
-
-    function addWater(amount) {
-      if (!dailyRecords[todayKey]) dailyRecords[todayKey] = {};
-      const current = dailyRecords[todayKey].water || 0;
-      dailyRecords[todayKey].water = current + amount;
-      persist();
-      renderTodayView();
-      showToast(`+${amount}ml added`);
-    }
-
-    function addCustomWater() {
-      const input = document.getElementById('customWaterInput');
-      const val = parseInt(input.value);
-      if (val && val > 0) {
-        addWater(val);
-        input.value = '';
-      } else {
-        showToast('Enter valid ml');
-      }
-    }
-
-    
-    function calculateSleepFromTimes() {
-      const bedtime = document.getElementById('sleepBedtimeInput').value;
-      const waketime = document.getElementById('sleepWaketimeInput').value;
-      
-      if (!dailyRecords[todayKey]) dailyRecords[todayKey] = {};
-      dailyRecords[todayKey].bedtime = bedtime;
-      dailyRecords[todayKey].waketime = waketime;
-
-      if (bedtime && waketime) {
-        const [bH, bM] = bedtime.split(':').map(Number);
-        const [wH, wM] = waketime.split(':').map(Number);
-
-        let bedMinutes = bH * 60 + bM;
-        let wakeMinutes = wH * 60 + wM;
-
-        // If wake time is earlier than bedtime, sleep crossed midnight
-        if (wakeMinutes < bedMinutes) {
-          wakeMinutes += 24 * 60;
-        }
-
-        const diffMinutes = wakeMinutes - bedMinutes;
-        const hours = Math.round((diffMinutes / 60) * 10) / 10;
-        dailyRecords[todayKey].sleep = hours;
-        showToast(`Sleep logged: ${hours}h`);
-      } else {
-        dailyRecords[todayKey].sleep = 0;
-      }
-
-      persist();
-      renderTodayView();
-    }
-
-    function resetWater() {
-      if (!dailyRecords[todayKey]) return;
-      dailyRecords[todayKey].water = 0;
-      persist();
-      renderTodayView();
-      showToast('Water reset');
-    }
-
-    function handleFoodImageSelected(event) {
-      const file = event.target.files[0];
-      if (!file) return;
-
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        stagedFoodBase64 = e.target.result;
-        const preview = document.getElementById('foodPhotoPreview');
-        const container = document.getElementById('foodPhotoPreviewContainer');
-        const buttons = document.getElementById('foodPickerButtons');
-        
-        preview.src = stagedFoodBase64;
-        container.classList.remove('hidden');
-        buttons.classList.add('hidden');
-        showToast('Photo loaded');
-      };
-      reader.readAsDataURL(file);
-    }
-
-    function clearFoodPhoto() {
-      stagedFoodBase64 = null;
-      document.getElementById('foodCameraInput').value = '';
-      document.getElementById('foodGalleryInput').value = '';
-      document.getElementById('foodPhotoPreviewContainer').classList.add('hidden');
-      document.getElementById('foodPickerButtons').classList.remove('hidden');
-    }
-
-    
-    // Live Active Model Chain (Compatible with new AQ. Auth Keys & x-goog-api-key)
-    const CORE_ACTIVE_MODELS = [
-      'gemini-3.8-flash',
-      'gemini-3.6-flash',
-      'gemini-3.5-flash-lite',
-      'gemini-2.5-flash',
-      'gemini-1.5-flash'
-    ];
-    let discoveredModels = [...CORE_ACTIVE_MODELS];
-
-    async function fetchAvailableModels() {
-      if (!apiKey || !apiKey.trim()) return;
-      try {
-        const cleanKey = apiKey.trim();
-        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${cleanKey}`, {
-          headers: { 'x-goog-api-key': cleanKey }
-        });
-        if (res.ok) {
-          const data = await res.json();
-          if (data.models && data.models.length > 0) {
-            const valid = data.models
-              .filter(m => m.supportedGenerationMethods && m.supportedGenerationMethods.includes('generateContent'))
-              .map(m => m.name.replace('models/', ''))
-              .filter(name => !name.includes('vision') && !name.includes('embedding') && !name.includes('aqa') && !name.includes('tts'));
-            if (valid.length > 0) {
-              discoveredModels = valid;
-              updateModelDropdownOptions(valid);
-              return;
-            }
-          }
-        }
-      } catch (e) {
-        console.warn('Model discovery fallback to verified active models list', e);
-      }
-      updateModelDropdownOptions(CORE_ACTIVE_MODELS);
-    }
-
-    function updateModelDropdownOptions(models) {
-      const dropdown = document.getElementById('modelSelectorDropdown');
-      if (!dropdown) return;
-      const current = localStorage.getItem('apex50_selected_model') || models[0];
-      dropdown.innerHTML = models.map(m => `
-        <option value="${m}" ${m === current ? 'selected' : ''}>${m}</option>
-      `).join('');
-    }
-
-    async function callGeminiWithFallback(promptText, base64Image = null, systemPrompt = '') {
-      if (!apiKey || !apiKey.trim()) {
-        throw new Error('Please enter your Gemini API Key in the Config tab.');
-      }
-      const cleanKey = apiKey.trim();
-
-      // Selected model or default to gemini-3.8-flash / 3.6-flash
-      let selected = localStorage.getItem('apex50_selected_model');
-      if (!selected || !discoveredModels.includes(selected)) {
-        selected = discoveredModels.find(m => m.includes('3.8-flash') || m.includes('3.6-flash')) || discoveredModels[0];
-        localStorage.setItem('apex50_selected_model', selected);
-      }
-
-      const modelsToTry = [selected, ...discoveredModels.filter(m => m !== selected)];
-
-      const parts = [{ text: promptText }];
-      if (base64Image) {
-        const mime = base64Image.substring(base64Image.indexOf(':') + 1, base64Image.indexOf(';'));
-        const data = base64Image.split(',')[1];
-        parts.push({ inlineData: { mimeType: mime, data: data } });
-      }
-
-      const requestBody = {
-        contents: [{ parts: parts }],
-        generationConfig: {
-          responseMimeType: "application/json"
-        }
-      };
-
-      if (systemPrompt) {
-        requestBody.systemInstruction = {
-          parts: [{ text: systemPrompt }]
-        };
-      }
-
-      let lastError = null;
-      for (const model of modelsToTry) {
-        try {
-          const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${cleanKey}`;
-          
-          // Set a 10s timeout so the button never stays stuck on calculating
-          const controller = new AbortController();
-          const timeoutId = setTimeout(() => controller.abort(), 12000);
-
-          const response = await fetch(url, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'x-goog-api-key': cleanKey
-            },
-            body: JSON.stringify(requestBody),
-            signal: controller.signal
-          });
-          clearTimeout(timeoutId);
-
-          const data = await response.json().catch(() => ({}));
-          if (response.ok) {
-            const rawText = data.candidates?.[0]?.content?.parts?.[0]?.text;
-            if (rawText) {
-              const cleanJson = rawText.replace(/```json/gi, '').replace(/```/g, '').trim();
-              return JSON.parse(cleanJson);
-            }
-          }
-
-          const errMsg = data.error?.message || `HTTP ${response.status}`;
-          lastError = new Error(`[${model}] ${errMsg}`);
-
-          // If deprecated, no longer available, 404, or 429 quota spike, failover to next active model
-          if (response.status === 404 || response.status === 429 || response.status === 503 || errMsg.includes('no longer available') || errMsg.includes('not found') || errMsg.includes('deprecated')) {
-            console.warn(`Model ${model} unavailable, trying fallback...`);
-            continue;
-          } else {
-            throw lastError;
-          }
-        } catch (e) {
-          lastError = e;
-          if (e.name === 'AbortError') {
-            console.warn(`Model ${model} timed out after 12s, trying next model...`);
-            continue;
-          }
-          if (e.message && (e.message.includes('API_KEY_INVALID') || e.message.includes('API key not valid'))) {
-            throw e;
-          }
-        }
-      }
-
-      let msg = lastError?.message || 'Gemini server busy. Please use Manual Entry below.';
-      if (msg.includes('API_KEY_INVALID') || msg.includes('API key not valid')) {
-        msg = 'Invalid API Key. Please verify in Config.';
-      }
-      throw new Error(msg);
-    }
-
-    async function runGeminiFoodAnalysis() {
-      const desc = document.getElementById('foodTextDescription').value.trim();
-      if (!stagedFoodBase64 && !desc) {
-        showToast('Please capture a photo or type meal info');
-        return;
-      }
-
-      const btn = document.getElementById('btnAnalyzeFood');
-      const originalHTML = btn.innerHTML;
-      btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Calculating macros...`;
-      btn.disabled = true;
-
-      const systemPrompt = `You are an elite sports nutritionist. Output strict JSON with keys:
-{
-  "meal_name": "string (name of dish)",
-  "calories": number,
-  "protein_g": number,
-  "carbs_g": number,
-  "fats_g": number,
-  "notes": "string (concise breakdown)"
-}`;
-
-      const promptText = desc ? `Analyze this meal: "${desc}". Calculate accurate calories, protein, carbs, and fats.` : `Identify the meal in this image and calculate calories, protein, carbs, and fats.`;
-
-      try {
-        const parsed = await callGeminiWithFallback(promptText, stagedFoodBase64, systemPrompt);
-        stagedFoodData = parsed;
-        displayStagedFood(parsed);
-      } catch (err) {
-        console.error(err);
-        showToast(err.message);
-      } finally {
-        btn.innerHTML = originalHTML;
-        btn.disabled = false;
-        lucide.createIcons();
-      }
-    }
-
-    function displayStagedFood(data) {
-      document.getElementById('foodResName').innerText = data.meal_name || 'Estimated Meal';
-      document.getElementById('foodResCal').innerHTML = `${data.calories} <span class="text-xs font-normal text-stone-400">kcal</span>`;
-      document.getElementById('foodResProtein').innerText = `${data.protein_g}g`;
-      document.getElementById('foodResCarbs').innerText = `${data.carbs_g}g`;
-      document.getElementById('foodResFats').innerText = `${data.fats_g}g`;
-      document.getElementById('foodResNotes').innerText = data.notes || '';
-      document.getElementById('foodResultCard').classList.remove('hidden');
-    }
-
-    function discardFoodResult() {
-      stagedFoodData = null;
-      document.getElementById('foodResultCard').classList.add('hidden');
-    }
-
-    
-    function commitManualMeal() {
-      const name = document.getElementById('manualMealName').value.trim();
-      const cal = parseInt(document.getElementById('manualMealCal').value) || 0;
-      const p = parseInt(document.getElementById('manualMealProtein').value) || 0;
-      const c = parseInt(document.getElementById('manualMealCarbs').value) || 0;
-      const f = parseInt(document.getElementById('manualMealFats').value) || 0;
-
-      if (!name) {
-        showToast('Please enter meal name');
-        return;
-      }
-
-      if (!dailyRecords[todayKey]) dailyRecords[todayKey] = { meals: [] };
-      if (!dailyRecords[todayKey].meals) dailyRecords[todayKey].meals = [];
-
-      const now = new Date();
-      const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
-      dailyRecords[todayKey].meals.push({
-        id: Date.now(),
-        name: name,
-        cal: cal,
-        protein: p,
-        carbs: c,
-        fats: f,
-        time: timeStr
+      document.querySelectorAll("#proteinChecklist input[type='checkbox']").forEach((cb) => {
+        const key = cb.dataset.prot;
+        cb.checked = !!state.protein[key];
       });
-
-      persist();
-      document.getElementById('manualMealName').value = '';
-      document.getElementById('manualMealCal').value = '';
-      document.getElementById('manualMealProtein').value = '';
-      document.getElementById('manualMealCarbs').value = '';
-      document.getElementById('manualMealFats').value = '';
-
-      switchTab('today');
-      showToast(`${name} added!`);
     }
 
-    function commitFoodToLog() {
-      if (!stagedFoodData) return;
-      if (!dailyRecords[todayKey]) dailyRecords[todayKey] = { meals: [] };
-      if (!dailyRecords[todayKey].meals) dailyRecords[todayKey].meals = [];
+    document.getElementById("saveVitalsBtn").addEventListener("click", () => {
+      state.vitals.weight = parseFloat(document.getElementById("inputWeight").value) || 75.4;
+      state.vitals.waist = parseFloat(document.getElementById("inputWaist").value) || 84.0;
+      saveState();
+      renderVitals();
+      showSnackbar("Updated Body Weight & Waist Measurement");
+    });
 
-      const now = new Date();
-      const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
-      dailyRecords[todayKey].meals.push({
-        id: Date.now(),
-        name: stagedFoodData.meal_name,
-        cal: Math.round(stagedFoodData.calories),
-        protein: Math.round(stagedFoodData.protein_g),
-        carbs: Math.round(stagedFoodData.carbs_g),
-        fats: Math.round(stagedFoodData.fats_g),
-        time: timeStr
+    document.querySelectorAll("#proteinChecklist input[type='checkbox']").forEach((cb) => {
+      cb.addEventListener("change", (e) => {
+        state.protein[e.target.dataset.prot] = e.target.checked;
+        saveState();
+        renderVitals();
       });
+    });
 
-      persist();
-      discardFoodResult();
-      document.getElementById('foodTextDescription').value = '';
-      clearFoodPhoto();
-
-      switchTab('today');
-      showToast('Meal added to log');
-    }
-
-    function handleWorkoutImageSelected(event) {
-      const file = event.target.files[0];
-      if (!file) return;
-
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        stagedWorkoutBase64 = e.target.result;
-        const preview = document.getElementById('workoutPhotoPreview');
-        preview.src = stagedWorkoutBase64;
-        preview.classList.remove('hidden');
-        document.getElementById('workoutPlaceholderUI').classList.add('hidden');
-      };
-      reader.readAsDataURL(file);
-    }
-
-    async function runGeminiWorkoutAnalysis() {
-      if (!stagedWorkoutBase64) {
-        showToast('Please upload gym screenshot');
-        return;
-      }
-
-      const btn = document.getElementById('btnAnalyzeWorkout');
-      const originalHTML = btn.innerHTML;
-      btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Parsing screenshot...`;
-      btn.disabled = true;
-
-      const systemPrompt = `You are an elite strength coach. Parse this workout log app screenshot (Hevy/FitNotes).
-Output strict JSON with format:
-{
-  "split": "string (e.g. Push, Pull, Legs)",
-  "muscle_focus": "string (e.g. Chest & Triceps)",
-  "total_volume_kg": number,
-  "exercises": [
-    {
-      "name": "string",
-      "sets_reps": "string"
-    }
-  ],
-  "summary": "string"
-}`;
-
-      try {
-        const parsed = await callGeminiWithFallback("Parse this gym workout screenshot and calculate total volume and exercises.", stagedWorkoutBase64, systemPrompt);
-        stagedWorkoutData = parsed;
-        displayStagedWorkout(parsed);
-      } catch (err) {
-        console.error(err);
-        showToast(err.message);
-      } finally {
-        btn.innerHTML = originalHTML;
-        btn.disabled = false;
-        lucide.createIcons();
-      }
-    }
-
-    function displayStagedWorkout(data) {
-      document.getElementById('workoutResTitle').innerText = data.split || 'Workout';
-      document.getElementById('workoutResFocus').innerText = data.muscle_focus || '';
-      document.getElementById('workoutResVolume').innerText = `${(data.total_volume_kg || 0).toLocaleString()} kg`;
-      document.getElementById('workoutResSummary').innerText = data.summary || '';
-
-      const exContainer = document.getElementById('workoutResExercisesList');
-      if (data.exercises && data.exercises.length > 0) {
-        exContainer.innerHTML = data.exercises.map(ex => `
-          <div class="p-2.5 bg-stone-50 dark:bg-stone-900 rounded-xl border border-stone-200 dark:border-stone-800 text-xs">
-            <span class="font-extrabold text-stone-900 dark:text-stone-100 block">${ex.name}</span>
-            <span class="text-[10px] font-mono font-bold text-stone-400">${ex.sets_reps}</span>
-          </div>
-        `).join('');
-      } else {
-        exContainer.innerHTML = '';
-      }
-
-      document.getElementById('workoutResultCard').classList.remove('hidden');
-    }
-
-    function discardWorkoutResult() {
-      stagedWorkoutData = null;
-      document.getElementById('workoutResultCard').classList.add('hidden');
-    }
-
-    function commitWorkoutToLog() {
-      if (!stagedWorkoutData) return;
-      if (!dailyRecords[todayKey]) dailyRecords[todayKey] = {};
-
-      dailyRecords[todayKey].split = stagedWorkoutData.split;
-      dailyRecords[todayKey].workoutDone = true;
-
-      const notesList = (stagedWorkoutData.exercises || [])
-        .map(e => `${e.name}: ${e.sets_reps}`)
-        .join(' • ');
-
-      dailyRecords[todayKey].workoutNotes = `[${stagedWorkoutData.total_volume_kg}kg Volume] ${stagedWorkoutData.summary} — ${notesList}`;
-
-      persist();
-      discardWorkoutResult();
-      document.getElementById('workoutFileInput').value = '';
-      document.getElementById('workoutPhotoPreview').classList.add('hidden');
-      document.getElementById('workoutPlaceholderUI').classList.remove('hidden');
-      stagedWorkoutBase64 = null;
-
-      switchTab('today');
-      showToast('Workout saved');
-    }
-
-    function renderAnalyticsView() {
-      const dates = Object.keys(dailyRecords).sort();
-      const weights = [];
-      const calories = [];
-      let latestW = 76.2;
-
-      dates.forEach(d => {
-        const item = dailyRecords[d];
-        if (item.weight) {
-          weights.push({ date: d, weight: item.weight, day: item.dayNum });
-          latestW = item.weight;
-        }
-        const dayCal = (item.meals || []).reduce((acc, m) => acc + (m.cal || 0), 0);
-        calories.push({ date: d, cal: dayCal, day: item.dayNum });
-      });
-
-      document.getElementById('metricCurrentWeight').innerText = `${latestW.toFixed(1)} kg`;
-      const net = (latestW - PROTOCOL.startWeight).toFixed(1);
-      document.getElementById('metricNetLost').innerText = `${net > 0 ? '+' : ''}${net} kg`;
-      document.getElementById('metricToGoal').innerText = `${Math.max(0, (latestW - PROTOCOL.goalWeight)).toFixed(1)} kg`;
-      const toGoalSubtext = document.querySelector('#metricToGoal + span');
-      if (toGoalSubtext) toGoalSubtext.innerText = `Target: ${Number(PROTOCOL.goalWeight).toFixed(1)} kg`;
-
-      renderSvgWeightChart(weights);
-      renderSvgCalChart(calories);
-      renderHistoryLedger(dates);
-    }
-
-    function renderSvgWeightChart(data) {
-      const svg = document.getElementById('weightSvgChart');
-      if (!data || data.length === 0) return;
-
-      const w = svg.clientWidth || 340;
-      const h = svg.clientHeight || 176;
-      svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
-
-      const minW = 69.5;
-      const maxW = 76.5;
-
-      const getX = (index) => 20 + (index / (data.length - 1 || 1)) * (w - 40);
-      const getY = (val) => h - 25 - ((val - minW) / (maxW - minW)) * (h - 45);
-
-      const goalW = PROTOCOL.goalWeight || 70.0;
-      const targetY = getY(goalW);
-      let content = `
-        <line x1="15" y1="${targetY}" x2="${w - 15}" y2="${targetY}" stroke="#C85A32" stroke-dasharray="4,4" stroke-width="1.5" />
-        <text x="${w - 15}" y="${targetY - 6}" font-family="JetBrains Mono" font-size="10" font-weight="700" fill="#C85A32" text-anchor="end">${Number(goalW).toFixed(1)}kg Goal</text>
-      `;
-
-      let pathD = '';
-      data.forEach((pt, i) => {
-        const x = getX(i);
-        const y = getY(pt.weight);
-        if (i === 0) pathD += `M ${x} ${y}`;
-        else pathD += ` L ${x} ${y}`;
-      });
-
-      const strokeColor = isDarkMode ? '#F4F4F5' : '#18181B';
-      content += `<path d="${pathD}" fill="none" stroke="${strokeColor}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />`;
-
-      data.forEach((pt, i) => {
-        const x = getX(i);
-        const y = getY(pt.weight);
-        content += `<circle cx="${x}" cy="${y}" r="3.5" fill="${isDarkMode ? '#161619' : '#FFFFFF'}" stroke="${strokeColor}" stroke-width="2" />`;
-      });
-
-      svg.innerHTML = content;
-    }
-
-    function renderSvgCalChart(data) {
-      const svg = document.getElementById('calSvgChart');
-      if (!data || data.length === 0) return;
-
-      const w = svg.clientWidth || 340;
-      const h = svg.clientHeight || 128;
-      svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
-
-      const maxCal = 2200;
-      const ceilingY = h - 20 - (1900 / maxCal) * (h - 35);
-
-      let content = `
-        <line x1="15" y1="${ceilingY}" x2="${w - 15}" y2="${ceilingY}" stroke="${isDarkMode ? '#3F3F46' : '#E4E4E7'}" stroke-width="1.5" />
-      `;
-
-      const barWidth = Math.max(4, Math.floor((w - 40) / data.length) - 4);
-
-      data.forEach((pt, i) => {
-        const x = 20 + i * (barWidth + 4);
-        const barH = Math.min((pt.cal / maxCal) * (h - 35), h - 35);
-        const y = h - 20 - barH;
-        const color = pt.cal > 1900 ? '#C85A32' : (isDarkMode ? '#52525B' : '#A1A1AA');
-
-        content += `
-          <rect x="${x}" y="${y}" width="${barWidth}" height="${barH}" fill="${color}" rx="2" />
-        `;
-      });
-
-      svg.innerHTML = content;
-    }
-
-    function renderHistoryLedger(dates) {
-      const ledger = document.getElementById('historyEntriesLedger');
-      ledger.innerHTML = [...dates].reverse().map(d => {
-        const item = dailyRecords[d] || {};
-        const totalCal = (item.meals || []).reduce((acc, m) => acc + (m.cal || 0), 0);
-        return `
-          <div class="p-3 rounded-xl bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-800 flex items-center justify-between text-xs font-mono">
-            <div>
-              <div class="font-extrabold text-stone-900 dark:text-stone-100">Day ${item.dayNum || '--'} • ${d}</div>
-              <div class="text-[10px] font-bold text-stone-400 mt-0.5">${item.split || 'Rest'} • ${(item.water || 0)/1000}L • ${item.sleep || 0}h sleep</div>
-            </div>
-            <div class="text-right">
-              <div class="font-extrabold text-stone-900 dark:text-stone-100 whitespace-nowrap">
-                ${item.weight ? Number(item.weight).toFixed(2) + ' kg' : '--'}
-              </div>
-              <div class="text-[10px] font-bold text-stone-400 whitespace-nowrap mt-0.5">
-                ${totalCal} kcal
-              </div>
-            </div>
-          </div>
-        `;
-      }).join('');
-    }
-
-    function switchTab(tabId) {
-      ['today', 'lens-food', 'lens-workout', 'trends', 'settings'].forEach(id => {
-        const section = document.getElementById(`view-${id}`);
-        if (section) section.classList.add('hidden');
-        
-        const navBtn = document.getElementById(`nav-btn-${id}`);
-        if (navBtn) {
-          navBtn.classList.remove('text-stone-900', 'dark:text-stone-100');
-          navBtn.classList.add('text-stone-400', 'dark:text-stone-500');
-        }
-      });
-
-      const targetSection = document.getElementById(`view-${tabId}`);
-      if (targetSection) targetSection.classList.remove('hidden');
-
-      const activeNav = document.getElementById(`nav-btn-${tabId}`);
-      if (activeNav) {
-        activeNav.classList.remove('text-stone-400', 'dark:text-stone-500');
-        activeNav.classList.add('text-stone-900', 'dark:text-stone-100');
-      }
-
-      if (tabId === 'trends') renderAnalyticsView();
-      if (tabId === 'today') renderTodayView();
-
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-        function updateTargetWeightUI() {
-      const badge = document.getElementById('configCurrentTargetBadge');
-      const input = document.getElementById('configTargetWeightInput');
-      const heroBadge = document.getElementById('heroTargetWeightBadge');
-      const valStr = `${Number(PROTOCOL.goalWeight).toFixed(1)} kg`;
-
-      if (badge) badge.innerText = valStr;
-      if (heroBadge) heroBadge.innerText = `Target: ${valStr}`;
-      if (input) input.value = Number(PROTOCOL.goalWeight).toFixed(1);
-    }
-
-    function saveTargetWeightFromConfig() {
-      const input = document.getElementById('configTargetWeightInput');
-      const val = parseFloat(input.value);
-
-      if (!isNaN(val) && val >= 30 && val <= 250) {
-        const rounded = Math.round(val * 10) / 10;
-        PROTOCOL.goalWeight = rounded;
-        localStorage.setItem(STORAGE_KEY_TARGET_WEIGHT, rounded);
-        updateTargetWeightUI();
-        renderTodayView();
-        if (typeof renderAnalyticsView === 'function') {
-          renderAnalyticsView();
-        }
-        showToast(`Target goal set to ${rounded} kg`);
-      } else {
-        showToast('Please enter a valid target weight (e.g. 70.0)');
-      }
-    }
-
-    function updateApiKey(key) {
-      apiKey = key.trim();
-      localStorage.setItem(STORAGE_KEY_API_KEY, apiKey);
-      updateApiKeyUI();
-      if (apiKey) fetchAvailableModels();
-      showToast(apiKey ? 'Gemini API active' : 'API key removed');
-    }
-
-    function changeActiveModel(modelName) {
-      localStorage.setItem('apex50_selected_model', modelName);
-      showToast(`Model set: ${modelName}`);
-    }
-
-    function updateApiKeyUI() {
-      const statusText = document.getElementById('apiKeyStatusText');
-      const settingsInput = document.getElementById('settingsKeyInput');
-      const modelDropdown = document.getElementById('modelSelectorDropdown');
-      
-      const savedModel = localStorage.getItem('apex50_selected_model') || 'gemini-2.0-flash';
-      if (modelDropdown) modelDropdown.value = savedModel;
-
-      if (settingsInput) settingsInput.value = apiKey;
-      if (apiKey) {
-        statusText.innerText = 'Connected';
-        statusText.className = 'text-emerald-600 dark:text-emerald-400 font-extrabold';
-      } else {
-        statusText.innerText = 'API Key';
-        statusText.className = 'text-stone-800 dark:text-stone-200';
-      }
-    }
-
-    function exportDataJSON() {
-      const blob = new Blob([JSON.stringify(dailyRecords, null, 2)], { type: 'application/json' });
+    document.getElementById("exportJsonBtn").addEventListener("click", () => {
+      const blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
       const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
+      const a = document.createElement("a");
       a.href = url;
-      a.download = `Apex50_Ledger_${todayKey}.json`;
+      a.download = `apex-50-recomp-backup-${PROGRAM_START_DATE}.json`;
       a.click();
       URL.revokeObjectURL(url);
-      showToast('Export downloaded');
-    }
+      showSnackbar("Downloaded JSON Backup");
+    });
 
-    function downloadSampleJSON() {
-      const sample = {
-        "2026-11-06": {
-          "dayNum": 16,
-          "weight": 75.0,
-          "water": 3250,
-          "sleep": 7.5,
-          "split": "Pull (Back & Biceps)",
-          "workoutDone": true,
-          "workoutNotes": "Weighted pull-ups 3x5, DB curls 3x12",
-          "meals": [
-            {
-              "id": 1,
-              "name": "Eggs & Toast",
-              "cal": 420,
-              "protein": 26,
-              "carbs": 34,
-              "fats": 16,
-              "time": "08:30"
-            }
-          ]
-        }
-      };
-      const blob = new Blob([JSON.stringify(sample, null, 2)], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `Apex50_Template.json`;
-      a.click();
-      URL.revokeObjectURL(url);
-      showToast('Sample template downloaded');
-    }
+    document.getElementById("resetPlanBtn").addEventListener("click", () => {
+      const currentTheme = state.theme;
+      state = getDefaultState();
+      state.theme = currentTheme;
+      saveState();
+      renderWorkoutView();
+      renderCardioView();
+      renderCalendar();
+      renderVitals();
+      showSnackbar("Reset to Week 1 Starting Weights");
+    });
 
-    function importDataJSON(event) {
-      const file = event.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        try {
-          const parsed = JSON.parse(e.target.result);
-          dailyRecords = parsed;
-          persist();
-          renderTodayView();
-          showToast('Data imported successfully');
-        } catch (err) {
-          showToast('Invalid JSON file format');
-        }
-      };
-      reader.readAsText(file);
-    }
+    /* ========================================================================
+       INITIALIZE APP & SERVICE WORKER
+       ======================================================================== */
+    applyTheme(state.theme);
+    renderWorkoutView();
+    renderCardioView();
+    renderCalendar();
+    renderVitals();
 
-    let toastTimeout;
-    function showToast(msg) {
-      const toast = document.getElementById('toast');
-      const textElem = document.getElementById('toastMessage');
-      if (!toast || !textElem) return;
-
-      // Clean message: truncate if unexpectedly long
-      const cleanMsg = typeof msg === 'string' && msg.length > 90 ? msg.substring(0, 90) + '...' : msg;
-      textElem.innerText = cleanMsg;
-      
-      toast.classList.remove('opacity-0', '-translate-y-2');
-      toast.classList.add('opacity-100', 'translate-y-0');
-      clearTimeout(toastTimeout);
-      toastTimeout = setTimeout(() => {
-        toast.classList.remove('opacity-100', 'translate-y-0');
-        toast.classList.add('opacity-0', '-translate-y-2');
-      }, 3000);
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("./sw.js").catch(() => {});
+      });
     }
   </script>
 </body>
