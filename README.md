@@ -1,10 +1,10 @@
-# Apex 50 Protocol — Obsidian Blue & Cyan Edition (v3)
+# Apex 50 Protocol — High-Volume Cyan M3 Edition (v4)
 
 Material You (M3) Progressive Web App built for GitHub Pages (`transformation-app`).
 
-## Key Features
-- **Blues, Blacks & Cyans M3 Palette:** Dual themes — Deep Obsidian Black + Electric Cyan (Dark) & Ice Cyan + Cobalt Blue (Light).
-- **Home Command Dashboard:** Live 5:50 AM – 7:20 AM window tracker, Weight trajectory (75.40 kg → 70.0 kg), End-of-Day Step logger, 40-minute Hydration timer, and Gemini AI Food/Meal logger.
-- **Custom Workout Override:** Complete your scheduled double-digit routine OR log any custom workout for the day (e.g., if you swap splits or train outside the plan) and stamp it directly onto the calendar.
-- **Responsive Mobile Calendar:** Fixed 7-column layout that fits cleanly on mobile screens without horizontal clipping, showing exact targeted muscles for every day.
-- **Smart Push & In-App Notifications:** Every-40-minute water reminder + End-of-Day step check-in alert (`9:30 PM` or custom time).
+## What's New in v4
+- **24+ Working Sets Every Training Day (6–7 Exercises/Day):** Upgraded every Mon–Sat routine to 6–7 exercises totaling 24–25 double-digit sets (10–15 reps) using your exact gym machines, cables, Smith machine, and dumbbells.
+- **Animated Exercise & Opener Demos:** Every warm-up opener and working lift includes an interactive animated pose player (`Start` ↔ `Peak` motion loop) backed by the public-domain `free-exercise-db` visual library with offline SVG fallback.
+- **Today-Only Workout Focus & Ephemeral Override:** The **Workout** tab locks strictly onto **Today** (`5:50 AM – 7:20 AM`). Using **Override Today Only** logs a custom session solely for today's date without altering future scheduled splits.
+- **Analytics & Progress Graphs:** Interactive SVG trajectory charts on the Home Dashboard for **Body Weight**, **Daily Steps**, and **Daily Working Sets / Volume**.
+- **Cardio Tab with Custom Override:** Renamed from Treadmill to **Cardio** with a one-tap **Override Today's Cardio** option (e.g., Dance, Outdoor Walk, Cycling, HIIT) alongside your 20-minute ~308 kcal steep incline walk.
