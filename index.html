@@ -1146,16 +1146,30 @@
         </div>
       </div>
 
+      <div id="cardioPrevBannerContainer"></div>
+
       <div class="section-heading">
-        <span>Incline Protocol Blocks</span>
+        <span>Incline Protocol Blocks (Tap to Check)</span>
         <span class="mono" style="font-size:12px; color:var(--md-sys-color-primary);" id="cardioLoggedMins">0 / 20 min</span>
       </div>
       <div id="treadmillBlockList"></div>
 
       <button class="m3-btn-filled" id="saveCardioBtn" style="margin-top:6px;">
-        <span class="material-symbols-rounded">check_circle</span>
-        Log Today's Cardio Session
+        <span class="material-symbols-rounded">auto_awesome</span>
+        Complete Cardio, Auto-Progress & AI Analyze
       </button>
+
+      <!-- Post-Cardio AI Analysis Card -->
+      <div class="m3-card" id="aiCardioAnalysisCard" style="display:none; margin-top:12px; border-color:var(--acc-emerald);">
+        <div class="section-heading" style="margin-bottom:6px;">
+          <span style="color:var(--acc-emerald); display:flex; align-items:center; gap:6px;">
+            <span class="material-symbols-rounded" style="font-size:18px;">directions_run</span>
+            Post-Cardio AI Coach Analysis
+          </span>
+          <span class="m3-pill-tag" id="aiCardioSourceTag" style="font-size:9.5px;">AI Coach</span>
+        </div>
+        <div id="aiCardioAnalysisBody" style="font-size:12.5px; line-height:1.5; color:var(--md-sys-color-on-surface);"></div>
+      </div>
     </section>
 
     <!-- ===================================================================
@@ -1493,7 +1507,7 @@
     /* ========================================================================
        PERSISTENT STATE
        ======================================================================== */
-    const STORAGE_KEY = "apex50_amoled_m3_v18";
+    const STORAGE_KEY = "apex50_amoled_m3_v19";
 
     function getDefaultState() {
       const logs = {};
@@ -1528,6 +1542,10 @@
         geminiApiKey: "",
         lastResetDate: getTodayIso(),
         exerciseHistory: {},
+        cardioHistory: [],
+        cardioBlocksStd: JSON.parse(JSON.stringify(TREADMILL_STANDARD)),
+        cardioBlocksLeg: JSON.parse(JSON.stringify(TREADMILL_LEGDAY)),
+        cardioAnalyses: {},
         sessionAnalyses: {},
         activeGraphTab: "weight"
       };
@@ -1551,6 +1569,14 @@
             }
           });
         });
+        if (!Array.isArray(merged.cardioBlocksStd) || merged.cardioBlocksStd.length === 0) {
+          merged.cardioBlocksStd = JSON.parse(JSON.stringify(TREADMILL_STANDARD));
+        }
+        if (!Array.isArray(merged.cardioBlocksLeg) || merged.cardioBlocksLeg.length === 0) {
+          merged.cardioBlocksLeg = JSON.parse(JSON.stringify(TREADMILL_LEGDAY));
+        }
+        if (!Array.isArray(merged.cardioHistory)) merged.cardioHistory = [];
+        if (!merged.cardioAnalyses) merged.cardioAnalyses = {};
         if (merged.lastResetDate !== getTodayIso()) {
           merged.lastResetDate = getTodayIso();
           Object.keys(merged.setLogs).forEach((exId) => {
@@ -2321,33 +2347,73 @@ Provide a concise, high-impact 3-part post-workout analysis (1. Volume & Stimulu
       return `${String(Math.floor(sec / 60)).padStart(2, "0")}:${String(sec % 60).padStart(2, "0")}`;
     }
 
+    function parsePct(str) {
+      return parseFloat(String(str).replace("%", "")) || 0;
+    }
+
+    function parseSpeed(str) {
+      return parseFloat(String(str).replace("km/h", "")) || 0;
+    }
+
+    function getActiveCardioBlocks() {
+      return state.legDayMode ? state.cardioBlocksLeg : state.cardioBlocksStd;
+    }
+
     function renderCardioView() {
       const todayIso = getTodayIso();
       const todayRec = state.dailyRecords[todayIso];
+      const blocks = getActiveCardioBlocks();
+
+      const minInc = Math.min(...blocks.map((b) => parsePct(b.incline)));
+      const maxInc = Math.max(...blocks.map((b) => parsePct(b.incline)));
+      const minSpd = Math.min(...blocks.map((b) => parseSpeed(b.speed)));
+      const maxSpd = Math.max(...blocks.map((b) => parseSpeed(b.speed)));
+      const incRangeText = minInc === maxInc ? `${maxInc}%` : `${minInc}–${maxInc}%`;
+      const spdRangeText = minSpd === maxSpd ? `${maxSpd.toFixed(1)} km/h` : `${minSpd.toFixed(1)}–${maxSpd.toFixed(1)} km/h`;
+
       if (todayRec && todayRec.cardioOverride) {
         document.getElementById("cardioHeroTitle").textContent = `Today (Override): ${todayRec.cardioOverride.type}`;
         document.getElementById("cardioHeroSpecs").textContent = `${todayRec.cardioOverride.mins}m • ${todayRec.cardioOverride.incline}% • ${todayRec.cardioOverride.speed} km/h`;
         document.getElementById("cardioHeroSub").textContent = "Today-only cardio override active. Tomorrow resets to incline walk.";
       } else {
-        document.getElementById("cardioHeroTitle").textContent = "20-Min Steep Incline Walk";
-        document.getElementById("cardioHeroSpecs").textContent = state.legDayMode ? "17.5% • 5.5 km/h" : "15% • 6.0–6.4 km/h";
-        document.getElementById("cardioHeroSub").textContent = "Hands off the rails — keep steady uphill stride.";
+        document.getElementById("cardioHeroTitle").textContent = state.legDayMode ? "20-Min Leg-Day Steep Climb" : "20-Min Steep Incline Walk";
+        document.getElementById("cardioHeroSpecs").textContent = `${incRangeText} • ${spdRangeText}`;
+        document.getElementById("cardioHeroSub").textContent = "Hands off the rails — complete all 20m to unlock next cycle's incline/speed step-up.";
+      }
+
+      const prevCardio = (state.cardioHistory || []).find((h) => h.date !== todayIso) || (state.cardioHistory || [])[0] || null;
+      const prevBannerEl = document.getElementById("cardioPrevBannerContainer");
+      if (prevBannerEl) {
+        if (prevCardio) {
+          prevBannerEl.innerHTML = `
+            <div class="prev-session-banner" style="margin-bottom:12px;">
+              <span>LAST (${prevCardio.date.slice(5)}): <strong>${prevCardio.summary}</strong></span>
+              <span>${state.cardioHistory.length}x logged</span>
+            </div>`;
+        } else {
+          prevBannerEl.innerHTML = `
+            <div class="prev-session-banner" style="margin-bottom:12px; color:var(--md-sys-color-on-surface-variant);">
+              <span>PREVIOUS: First cardio cycle (${incRangeText} × ${spdRangeText} × 20m)</span>
+              <span>0x logged</span>
+            </div>`;
+        }
       }
 
       document.getElementById("legDayCardioToggle").checked = !!state.legDayMode;
-      const blocks = state.legDayMode ? TREADMILL_LEGDAY : TREADMILL_STANDARD;
       let loggedMins = 0;
 
       const container = document.getElementById("treadmillBlockList");
       container.innerHTML = blocks
-        .map((b) => {
+        .map((b, idx) => {
           const checked = !!state.cardioChecked[b.id];
           if (checked) loggedMins += b.mins;
+          const prevBlock = prevCardio?.blocks?.[idx];
+          const prevBadge = prevBlock ? `Prev: ${prevBlock.incline} × ${prevBlock.speed}` : "Baseline";
           return `
             <div class="treadmill-block ${checked ? "checked" : ""}" data-bid="${b.id}">
               <div>
                 <div style="font-size:13px; font-weight:800;">${b.time} (${b.mins}m) • ${b.label}</div>
-                <div style="font-size:11.5px; opacity:0.85;">Incline: <strong>${b.incline}</strong> | Speed: <strong>${b.speed}</strong></div>
+                <div style="font-size:11.5px; opacity:0.88;">Target: <strong>${b.incline}</strong> @ <strong>${b.speed}</strong> • <span class="mono" style="font-size:10px; color:var(--acc-emerald);">${prevBadge}</span></div>
               </div>
               <div style="text-align:right;">
                 <span class="material-symbols-rounded" style="font-size:20px;">${checked ? "check_circle" : "radio_button_unchecked"}</span>
@@ -2358,6 +2424,16 @@ Provide a concise, high-impact 3-part post-workout analysis (1. Volume & Stimulu
         .join("");
 
       document.getElementById("cardioLoggedMins").textContent = `${loggedMins} / 20 min`;
+
+      const savedCardioAnalysis = state.cardioAnalyses?.[todayIso];
+      const cardioCard = document.getElementById("aiCardioAnalysisCard");
+      if (savedCardioAnalysis && cardioCard) {
+        cardioCard.style.display = "block";
+        document.getElementById("aiCardioSourceTag").textContent = savedCardioAnalysis.source || "AI Coach";
+        document.getElementById("aiCardioAnalysisBody").innerHTML = savedCardioAnalysis.html;
+      } else if (cardioCard) {
+        cardioCard.style.display = "none";
+      }
 
       container.querySelectorAll(".treadmill-block").forEach((el) => {
         el.addEventListener("click", () => {
@@ -2451,12 +2527,127 @@ Provide a concise, high-impact 3-part post-workout analysis (1. Volume & Stimulu
       document.getElementById("cardioTimerLabel").textContent = "Start";
     });
 
-    document.getElementById("saveCardioBtn").addEventListener("click", () => {
-      TREADMILL_STANDARD.forEach((b) => (state.cardioChecked[b.id] = true));
+    function applyCardioAutoProgression(completedMins, targetMins, isOverride, overrideData) {
+      if (isOverride && overrideData) {
+        if (completedMins >= targetMins) {
+          const nextInc = +(Number(overrideData.incline) + 0.5).toFixed(1);
+          return {
+            upgraded: true,
+            note: `Cleared full ${completedMins}m override — next time push incline from ${overrideData.incline}% → ${nextInc}% at ${overrideData.speed} km/h.`
+          };
+        }
+        return {
+          upgraded: false,
+          note: `Logged ${completedMins}/${targetMins}m — hold ${overrideData.incline}% @ ${overrideData.speed} km/h until you clear the full ${targetMins} minutes.`
+        };
+      }
+
+      const blocks = getActiveCardioBlocks();
+      if (completedMins >= 20) {
+        const maxCap = state.legDayMode ? 20.0 : 18.0;
+        const speedCap = state.legDayMode ? 5.8 : 6.6;
+        let bumped = false;
+        blocks.forEach((b, idx) => {
+          if (idx === 0) return;
+          const curInc = parsePct(b.incline);
+          const curSpd = parseSpeed(b.speed);
+          if (curInc < maxCap) {
+            b.incline = `${+(curInc + 0.5).toFixed(1)}%`;
+            bumped = true;
+          } else if (curSpd < speedCap) {
+            b.speed = `${+(curSpd + 0.1).toFixed(1)} km/h`;
+            bumped = true;
+          }
+        });
+        const peakBlock = blocks[3] || blocks[blocks.length - 1];
+        return {
+          upgraded: bumped,
+          note: bumped
+            ? `Full 20m cleared! Auto-progressed next cycle's main blocks by +0.5% incline (peak now ${peakBlock.incline} @ ${peakBlock.speed}).`
+            : `Full 20m cleared at peak cap (${peakBlock.incline} @ ${peakBlock.speed}) — maintain hands-free stride.`
+        };
+      } else {
+        const peakBlock = blocks[3] || blocks[blocks.length - 1];
+        return {
+          upgraded: false,
+          note: `Completed ${completedMins}/20 min — holding incline & speed steady (${peakBlock.incline} @ ${peakBlock.speed}) until all 20 minutes are completed cleanly.`
+        };
+      }
+    }
+
+    document.getElementById("saveCardioBtn").addEventListener("click", async () => {
       const todayIso = getTodayIso();
       const dow = getTodayDow();
       const plan = WORKOUT_PLAN[dow];
       const existing = state.dailyRecords[todayIso];
+      const blocks = getActiveCardioBlocks();
+
+      const anyChecked = blocks.some((b) => !!state.cardioChecked[b.id]);
+      if (!anyChecked && !existing?.cardioOverride) {
+        blocks.forEach((b) => (state.cardioChecked[b.id] = true));
+      }
+
+      let completedMins = 0;
+      const blockSnapshot = [];
+      blocks.forEach((b) => {
+        if (state.cardioChecked[b.id]) {
+          completedMins += b.mins;
+          blockSnapshot.push({ label: b.label, mins: b.mins, incline: b.incline, speed: b.speed });
+        }
+      });
+
+      const isOverride = !!existing?.cardioOverride;
+      const targetMins = isOverride ? Number(existing.cardioOverride.mins) || 20 : 20;
+      if (isOverride && completedMins === 0) completedMins = targetMins;
+
+      const summaryText = isOverride
+        ? `${existing.cardioOverride.type} (${completedMins}m • ${existing.cardioOverride.incline}% • ${existing.cardioOverride.speed} km/h)`
+        : `${completedMins}m Incline Walk (${blockSnapshot.map((s) => `${s.incline}×${s.speed}`).slice(-1)[0] || "15%×6.2 km/h"})`;
+
+      state.cardioHistory = (state.cardioHistory || []).filter((h) => h.date !== todayIso);
+      state.cardioHistory.unshift({
+        date: todayIso,
+        mins: completedMins,
+        summary: summaryText,
+        blocks: blockSnapshot
+      });
+      state.cardioHistory = state.cardioHistory.slice(0, 12);
+
+      const cardioProg = applyCardioAutoProgression(completedMins, targetMins, isOverride, existing?.cardioOverride);
+
+      const btn = document.getElementById("saveCardioBtn");
+      btn.disabled = true;
+      btn.innerHTML = `<span class="material-symbols-rounded">hourglass_top</span> Analyzing Cardio...`;
+
+      let analysisHtml = `<strong>Cardio Summary:</strong> Logged <strong>${summaryText}</strong>.<br><br><strong>Next Cycle Target:</strong> ${cardioProg.note}<br><br><strong>Execution Cue:</strong> Keep hands off the treadmill rails and breathe rhythmically through your nose/mouth.`;
+      let sourceLabel = "Smart Coach";
+
+      if (state.geminiApiKey) {
+        try {
+          const prompt = `You are a conditioning coach reviewing a post-lift cardio session (${state.weight} kg lifter, 6:40-7:00 AM window).
+Session: ${summaryText} (${completedMins}/${targetMins} target minutes completed).
+Progression Update: ${cardioProg.note}
+Give a concise 2-part review (1. Cardiovascular & Recomp Stimulus, 2. Next Session Pacing Target) in under 90 words using clean HTML <strong> and <br> tags only.`;
+          const bodyPayload = JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] });
+          for (const modelName of ["gemini-3.8-flash", "gemini-3.0-flash", "gemini-flash-latest"]) {
+            const ep = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${encodeURIComponent(state.geminiApiKey)}`;
+            const res = await fetch(ep, { method: "POST", headers: { "Content-Type": "application/json" }, body: bodyPayload });
+            const data = await res.json();
+            if (res.ok) {
+              const aiText = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
+              if (aiText) {
+                analysisHtml = aiText.replace(/```html|```/g, "").trim();
+                sourceLabel = "Gemini 3.8 AI";
+              }
+              break;
+            }
+          }
+        } catch (_) {}
+      }
+
+      state.cardioAnalyses = state.cardioAnalyses || {};
+      state.cardioAnalyses[todayIso] = { html: analysisHtml, source: sourceLabel };
+
       state.dailyRecords[todayIso] = {
         splitTag: existing?.splitTag || plan.shortTag,
         typeClass: existing?.typeClass || plan.typeClass,
@@ -2466,12 +2657,19 @@ Provide a concise, high-impact 3-part post-workout analysis (1. Volume & Stimulu
         isCustom: existing?.isCustom || false,
         cardioOverride: existing?.cardioOverride || null,
         cardioDone: true,
-        setsDone: existing?.setsDone || 0
+        cardioSummary: summaryText,
+        setsDone: existing?.setsDone || 0,
+        volumeKg: existing?.volumeKg || 0,
+        loggedExercises: existing?.loggedExercises || []
       };
+
       saveState();
       renderCardioView();
       renderDashboard();
-      showSnackbar("Logged Today's Cardio Session!");
+
+      btn.disabled = false;
+      btn.innerHTML = `<span class="material-symbols-rounded">auto_awesome</span> Complete Cardio, Auto-Progress & AI Analyze`;
+      showSnackbar(cardioProg.upgraded ? "Cardio progressed (+0.5% incline) & analyzed!" : "Cardio logged — holding pace until full 20m cleared!");
     });
 
     /* ========================================================================
@@ -2567,11 +2765,23 @@ Provide a concise, high-impact 3-part post-workout analysis (1. Volume & Stimulu
         summaryEl.innerHTML = `<strong>${plan.exercises.length} Exercises (24 Sets):</strong> ${plan.exercises.map((e) => `${e.name} (${e.sets}×${e.repRange})`).join(" • ")}.`;
       }
 
+      if (record && record.cardioSummary) {
+        summaryEl.innerHTML += `<br><span style="color:var(--acc-cyan);">• <strong>Cardio:</strong> <span class="mono">${record.cardioSummary}</span></span>`;
+      }
+
       const coachBox = document.getElementById("inspAiCoachBox");
       const dateAnalysis = state.sessionAnalyses?.[dateStr];
-      if (dateAnalysis && coachBox) {
+      const dateCardioAnalysis = state.cardioAnalyses?.[dateStr];
+      if ((dateAnalysis || dateCardioAnalysis) && coachBox) {
         coachBox.style.display = "block";
-        coachBox.innerHTML = `<div style="color:var(--acc-emerald); font-weight:800; margin-bottom:4px;">AI Session Review (${dateAnalysis.source}):</div>${dateAnalysis.html}`;
+        let htmlParts = [];
+        if (dateAnalysis) {
+          htmlParts.push(`<div style="color:var(--acc-emerald); font-weight:800; margin-bottom:4px;">AI Workout Review (${dateAnalysis.source}):</div>${dateAnalysis.html}`);
+        }
+        if (dateCardioAnalysis) {
+          htmlParts.push(`<div style="color:var(--acc-cyan); font-weight:800; margin-top:${dateAnalysis ? "10px" : "0"}; margin-bottom:4px;">AI Cardio Review (${dateCardioAnalysis.source}):</div>${dateCardioAnalysis.html}`);
+        }
+        coachBox.innerHTML = htmlParts.join("");
       } else if (coachBox) {
         coachBox.style.display = "none";
       }

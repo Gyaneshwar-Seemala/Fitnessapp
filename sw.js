@@ -1,4 +1,4 @@
-const CACHE_NAME = 'apex-50-amoled-v18';
+const CACHE_NAME = 'apex-50-amoled-v19';
 const ASSETS = [
   './',
   './index.html',

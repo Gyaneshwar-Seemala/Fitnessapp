@@ -1,6 +1,7 @@
-# Apex 50 Protocol — Previous Weight × Rep History Edition (v18)
+# Apex 50 Protocol — Adaptive Cardio & Weight Progression Edition (v19)
 
-Upgraded with set-by-set **Previous Weight × Rep History** and smart missed-rep progression:
-- **Inline Previous `Weight × Reps` Display:** Every exercise card displays your last logged session (`Last: 12.5×12, 12.5×11, 12.5×10, 12.5×9`) plus a per-set `Prev` pill (`12.5×12`) next to every set row so you always know the exact number to beat.
-- **Smart Missed-Rep Progression Engine:** If you miss the top of your rep range or fall below the bottom of your rep range, the app holds your working weight steady and targets `+1 rep` on the sets that fell short rather than jumping weight prematurely.
-- **Calendar Set-by-Set History:** Tapping any completed date on the Calendar displays the exact `Weight × Reps` logged for every lift on that day alongside your AI Coach review.
+Applies the exact same Previous History + Smart Progression / Missed-Target Rule to Cardio as well as Workouts:
+- Previous Cardio History (Incline x Speed x Mins): Every incline cardio block and the main Cardio banner display your last logged incline% x speed km/h and minutes so you see your prior session at a glance.
+- Auto-Progression on Full Completion: When you complete all 20 minutes of your incline protocol, the app automatically progresses next week's incline (+0.5%, up to 18% / 20%) or speed (+0.1 km/h, up to 6.6 km/h) while keeping your 20-minute 6:40-7:00 AM window intact.
+- Missed-Target Rule for Cardio: If you log fewer minutes or drop incline/speed during a session, the app holds your incline and speed targets steady and focuses on completing the full 20 minutes before increasing intensity.
+- Post-Cardio AI Coach Review & Calendar Log: Logging Cardio generates an AI/Smart Coach pacing review and stamps your exact incline% x speed km/h blocks onto the Calendar inspector.
