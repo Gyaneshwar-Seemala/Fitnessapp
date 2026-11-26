@@ -1,6 +1,6 @@
-# Apex 50 Protocol — Visual Trackers Edition (v12)
+# Apex 50 Protocol — AMOLED Colorful Edition (v14)
 
-Upgraded with interactive visual trackers on the Home Dashboard:
-- **Circular Goal Rings:** Visual progress rings for **Daily Steps** (vs 10,000 goal), **Hydration** (vs 2,500 ml daily target), and **Body Weight Recomp Progress** toward your 70.0 kg target.
-- **7-Day Visual Habit & Session Matrix:** Color-coded daily pills showing Lift, Cardio, Steps Goal, and Hydration Goal completion at a glance.
-- **7-Day SVG Trend Graphs:** Switchable between Weight, Hydration, Steps, and Sets over true `#000000` AMOLED pitch-black surfaces.
+Final release built for GitHub Pages (`yaneshwar-seemala.github.io`):
+- **Cardio Override with Minutes, Incline & Speed + AI Calorie Calculation:** Enter custom cardio mode/notes plus **Minutes**, **Incline (%)**, and **Speed (km/h)**—Gemini AI calculates estimated calories burned from your body weight, duration, incline, and speed (with a built-in ACSM metabolic fallback when offline or without an API key).
+- **Modern AMOLED-Friendly Multi-Accent Palette:** Pure `#000000` AMOLED pitch-black surfaces with low-glare multi-hue accents across cyan (`#38BDF8`), emerald (`#34D399`), violet (`#A78BFA`), and cobalt (`#60A5FA`) so each card, ring, graph, and split tag pops cleanly without draining OLED battery.
+- **Complete Recomp Suite:** 24-set conventional busy-gym splits, animated opener and exercise pose loops, today-only overrides, 7-day progress graphs, 40-minute water reminders, end-of-day step check-ins, and Gemini 3.8 Flash meal logging.

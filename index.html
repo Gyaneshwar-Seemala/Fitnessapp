@@ -238,6 +238,32 @@
       border: 1px solid var(--md-sys-color-outline-variant);
     }
 
+    /* Modern AMOLED-Friendly Multi-Hue Accents */
+    :root[data-theme="dark"] {
+      --acc-cyan: #38BDF8;
+      --acc-emerald: #34D399;
+      --acc-violet: #A78BFA;
+      --acc-cobalt: #60A5FA;
+      --acc-amber: #FBBF24;
+    }
+    :root[data-theme="light"] {
+      --acc-cyan: #0284C7;
+      --acc-emerald: #059669;
+      --acc-violet: #7C3AED;
+      --acc-cobalt: #1D4ED8;
+      --acc-amber: #D97706;
+    }
+    .kpi-card:nth-child(1) .kpi-val { color: var(--acc-cyan); }
+    .kpi-card:nth-child(2) .kpi-val { color: var(--acc-emerald); }
+    .kpi-card:nth-child(3) .kpi-val { color: var(--acc-violet); }
+    .kpi-card:nth-child(4) .kpi-val { color: var(--acc-cobalt); }
+    .ring-card:nth-child(1) .ring-sub { color: var(--acc-emerald); }
+    .ring-card:nth-child(2) .ring-sub { color: var(--acc-violet); }
+    .ring-card:nth-child(3) .ring-sub { color: var(--acc-cyan); }
+    .habit-pip.on-lift { background: #0E7490; border-color: #38BDF8; }
+    .habit-pip.on-cardio { background: #047857; border-color: #34D399; }
+    .habit-pip.on-water { background: #5B21B6; border-color: #A78BFA; }
+
     /* Visual Progress Rings & 7-Day Matrix */
     .rings-strip {
       display: grid;
@@ -878,7 +904,7 @@
             <span class="material-symbols-rounded" style="font-size:16px; color:var(--md-sys-color-primary);">footprint</span>
           </div>
           <div class="kpi-val" id="dashStepsVal">0</div>
-          <div class="kpi-sub">Target: <span class="mono">10,000</span> steps</div>
+          <div class="kpi-sub">Target: <span class="mono" id="dashTargetSteps">10,000</span> steps</div>
         </div>
 
         <div class="kpi-card">
@@ -1101,13 +1127,32 @@
         </div>
 
         <div id="cardioOverrideForm" style="display:none; margin-top:12px; padding-top:12px; border-top:1px solid var(--md-sys-color-outline-variant);">
-          <div style="display:grid; grid-template-columns: 1.3fr 0.7fr; gap:8px; margin-bottom:8px;">
-            <input type="text" id="customCardioType" class="m3-input" placeholder="e.g., 45m Outdoor Walk / Dance" />
-            <input type="number" id="customCardioKcal" class="m3-input" placeholder="kcal (300)" />
+          <div style="margin-bottom:8px;">
+            <label style="font-size:10.5px; font-weight:700; color:var(--md-sys-color-on-surface-variant); display:block; margin-bottom:3px;">Activity / Mode (Today Only)</label>
+            <input type="text" id="customCardioType" class="m3-input" placeholder="e.g., Incline Treadmill / Outdoor Walk / Dance" />
+          </div>
+          <div style="display:grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap:8px; margin-bottom:8px;">
+            <div>
+              <label style="font-size:10px; font-weight:700; color:var(--acc-emerald); display:block; margin-bottom:3px;">Minutes</label>
+              <input type="number" id="customCardioMins" class="m3-input" placeholder="20" value="20" min="1" />
+            </div>
+            <div>
+              <label style="font-size:10px; font-weight:700; color:var(--acc-violet); display:block; margin-bottom:3px;">Incline (%)</label>
+              <input type="number" step="0.5" id="customCardioIncline" class="m3-input" placeholder="15" value="15" min="0" />
+            </div>
+            <div>
+              <label style="font-size:10px; font-weight:700; color:var(--acc-cyan); display:block; margin-bottom:3px;">Speed (km/h)</label>
+              <input type="number" step="0.1" id="customCardioSpeed" class="m3-input" placeholder="6.0" value="6.0" min="0" />
+            </div>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center; background:var(--md-sys-color-surface-container-low); border:1px solid var(--md-sys-color-outline-variant); padding:8px 12px; border-radius:12px; margin-bottom:8px;">
+            <span style="font-size:11.5px; font-weight:700; color:var(--md-sys-color-on-surface-variant);">AI Estimated Burn:</span>
+            <span class="mono" id="aiCardioKcalPreview" style="font-size:13px; font-weight:800; color:var(--acc-emerald);">~308 kcal</span>
           </div>
           <div style="display:flex; gap:8px;">
             <button class="m3-btn-filled" id="applyCardioOverrideBtn" style="flex:2; padding:10px 14px; font-size:12.5px;">
-              Save Today's Cardio Override
+              <span class="material-symbols-rounded" style="font-size:16px;">auto_awesome</span>
+              Calculate Burn & Save
             </button>
             <button class="m3-btn-tonal" id="clearCardioOverrideBtn" style="flex:1; background:var(--md-sys-color-error-container); color:var(--md-sys-color-on-error-container);">
               Revert
@@ -1231,23 +1276,49 @@
       </div>
 
       <div class="m3-card">
-        <div class="section-heading"><span>Notifications & Goals</span></div>
-        <button class="m3-btn-filled" id="requestBrowserNotifBtn" style="margin-bottom:12px;">
-          <span class="material-symbols-rounded">notifications_active</span>
-          Enable Push Notifications
-        </button>
+        <div class="section-heading">
+          <span>Custom Targets & Goals</span>
+          <span class="m3-pill-tag" style="font-size:9.5px;">Live Sync</span>
+        </div>
+        <p style="font-size:11.5px; color:var(--md-sys-color-on-surface-variant); margin-bottom:10px;">
+          Customize your daily hydration, weight, step, cardio burn targets, and step check-in alert time:
+        </p>
 
         <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:10px;">
+          <div>
+            <label style="font-size:11px; font-weight:700; color:var(--md-sys-color-on-surface-variant); display:block; margin-bottom:4px;">Hydration Target (ml)</label>
+            <input type="number" step="100" id="waterGoalInput" class="m3-input" value="2500" />
+          </div>
+          <div>
+            <label style="font-size:11px; font-weight:700; color:var(--md-sys-color-on-surface-variant); display:block; margin-bottom:4px;">Target Weight (kg)</label>
+            <input type="number" step="0.1" id="targetWeightInput" class="m3-input" value="70.0" />
+          </div>
+          <div>
+            <label style="font-size:11px; font-weight:700; color:var(--md-sys-color-on-surface-variant); display:block; margin-bottom:4px;">Daily Steps Target</label>
+            <input type="number" step="500" id="stepGoalInput" class="m3-input" value="10000" />
+          </div>
+          <div>
+            <label style="font-size:11px; font-weight:700; color:var(--md-sys-color-on-surface-variant); display:block; margin-bottom:4px;">Recomp Start Weight (kg)</label>
+            <input type="number" step="0.1" id="startWeightInput" class="m3-input" value="76.8" />
+          </div>
+          <div>
+            <label style="font-size:11px; font-weight:700; color:var(--md-sys-color-on-surface-variant); display:block; margin-bottom:4px;">Cardio Burn Target (kcal)</label>
+            <input type="number" step="5" id="cardioGoalInput" class="m3-input" value="308" />
+          </div>
           <div>
             <label style="font-size:11px; font-weight:700; color:var(--md-sys-color-on-surface-variant); display:block; margin-bottom:4px;">End-of-Day Step Alert</label>
             <input type="time" id="stepReminderTimeInput" class="m3-input" value="21:30" />
           </div>
-          <div>
-            <label style="font-size:11px; font-weight:700; color:var(--md-sys-color-on-surface-variant); display:block; margin-bottom:4px;">Target Weight (kg)</label>
-            <input type="number" step="0.5" id="targetWeightInput" class="m3-input" value="70.0" />
-          </div>
         </div>
-        <button class="m3-btn-tonal" id="saveNotifPrefsBtn" style="width:100%;">Save Preferences</button>
+
+        <button class="m3-btn-filled" id="saveNotifPrefsBtn" style="margin-bottom:8px;">
+          <span class="material-symbols-rounded" style="font-size:18px;">save</span>
+          Save Custom Targets
+        </button>
+        <button class="m3-btn-tonal" id="requestBrowserNotifBtn" style="width:100%;">
+          <span class="material-symbols-rounded" style="font-size:17px;">notifications_active</span>
+          Enable Push Notifications
+        </button>
       </div>
 
       <div class="m3-card" style="display:flex; gap:8px; flex-wrap:wrap;">
@@ -1466,7 +1537,7 @@
     /* ========================================================================
        PERSISTENT STATE
        ======================================================================== */
-    const STORAGE_KEY = "apex50_amoled_m3_v12";
+    const STORAGE_KEY = "apex50_amoled_m3_v14";
 
     function getDefaultState() {
       const logs = {};
@@ -1490,8 +1561,12 @@
         dailyRecords: {},
         cardioChecked: {},
         legDayMode: false,
+        startWeight: 76.8,
         weight: 75.4,
         targetWeight: 70.0,
+        waterGoalMl: 2500,
+        stepGoal: 10000,
+        cardioGoalKcal: 308,
         weightHistory: {},
         waterHistory: {},
         dailySteps: {},
@@ -1699,53 +1774,56 @@
     /* ========================================================================
        HOME DASHBOARD & SVG PROGRESS GRAPHS
        ======================================================================== */
-    function buildRingSvg(pct, centerText) {
+    function buildRingSvg(pct, centerText, strokeColor = '#38BDF8') {
       const clamped = Math.max(0, Math.min(100, pct));
       const r = 24, c = 2 * Math.PI * r;
       const offset = c - (clamped / 100) * c;
       return `
         <svg width="60" height="60" viewBox="0 0 60 60">
           <circle cx="30" cy="30" r="${r}" fill="none" stroke="#142030" stroke-width="5"/>
-          <circle cx="30" cy="30" r="${r}" fill="none" stroke="#38BDF8" stroke-width="5"
+          <circle cx="30" cy="30" r="${r}" fill="none" stroke="${strokeColor}" stroke-width="5"
                   stroke-dasharray="${c.toFixed(1)}" stroke-dashoffset="${offset.toFixed(1)}"
                   stroke-linecap="round" transform="rotate(-90 30 30)"/>
-          <text x="30" y="33" fill="#CBD5E1" font-family="JetBrains Mono, monospace" font-size="10.5" font-weight="800" text-anchor="middle">${centerText}</text>
+          <text x="30" y="33" fill="#E2F1FF" font-family="JetBrains Mono, monospace" font-size="10.5" font-weight="800" text-anchor="middle">${centerText}</text>
         </svg>
       `;
     }
 
     function renderVisualTrackers() {
       const todayIso = getTodayIso();
+      const stepGoal = Math.max(100, Number(state.stepGoal) || 10000);
       const stepsToday = Number(state.dailySteps?.[todayIso]) || 0;
-      const stepPct = Math.round((stepsToday / 10000) * 100);
+      const stepPct = Math.round((stepsToday / stepGoal) * 100);
 
-      const waterGoal = 2500;
+      const waterGoal = Math.max(250, Number(state.waterGoalMl) || 2500);
       const waterToday = Number(state.waterMl) || 0;
       const waterPct = Math.round((waterToday / waterGoal) * 100);
 
-      // Weight progress from 76.8 kg start toward targetWeight (default 70.0 kg)
-      const startW = 76.8;
+      const startW = Number(state.startWeight) || 76.8;
       const goalW = Number(state.targetWeight) || 70.0;
       const curW = Number(state.weight) || 75.4;
-      const totalSpan = Math.max(0.5, startW - goalW);
-      const lostSoFar = Math.max(0, startW - curW);
-      const weightPct = Math.round((lostSoFar / totalSpan) * 100);
+      const totalSpan = Math.abs(startW - goalW) || 1;
+      const progressDelta = goalW < startW ? Math.max(0, startW - curW) : Math.max(0, curW - startW);
+      const weightPct = Math.round((progressDelta / totalSpan) * 100);
+
+      const hTag = document.getElementById("habitMatrixHeaderTag");
+      if (hTag) hTag.textContent = `LIFT • CARDIO • ${(waterGoal / 1000).toFixed(1)}L H2O`;
 
       document.getElementById("visualRingsStrip").innerHTML = `
         <div class="ring-card">
-          ${buildRingSvg(stepPct, stepPct + "%")}
+          ${buildRingSvg(stepPct, stepPct + "%", "#34D399")}
           <div class="ring-label">Steps Ring</div>
-          <div class="ring-sub">${(stepsToday / 1000).toFixed(1)}k / 10k</div>
+          <div class="ring-sub">${(stepsToday / 1000).toFixed(1)}k / ${(stepGoal / 1000).toFixed(1)}k</div>
         </div>
         <div class="ring-card">
-          ${buildRingSvg(waterPct, waterPct + "%")}
+          ${buildRingSvg(waterPct, waterPct + "%", "#A78BFA")}
           <div class="ring-label">Water Ring</div>
-          <div class="ring-sub">${(waterToday / 1000).toFixed(2)}L / 2.5L</div>
+          <div class="ring-sub">${(waterToday / 1000).toFixed(2)}L / ${(waterGoal / 1000).toFixed(2)}L</div>
         </div>
         <div class="ring-card">
-          ${buildRingSvg(weightPct, weightPct + "%")}
+          ${buildRingSvg(weightPct, weightPct + "%", "#38BDF8")}
           <div class="ring-label">Recomp Ring</div>
-          <div class="ring-sub">${curW.toFixed(1)} → ${goalW.toFixed(0)}kg</div>
+          <div class="ring-sub">${curW.toFixed(1)} → ${goalW.toFixed(1)}kg</div>
         </div>
       `;
 
@@ -1759,7 +1837,7 @@
         const liftDone = !!(rec && (Number(rec.setsDone) > 0 || rec.isCustom));
         const cardioDone = !!(rec && rec.cardioDone);
         const wAmt = iso === todayIso ? waterToday : (Number(state.waterHistory?.[iso]) || 0);
-        const waterHit = wAmt >= 2000;
+        const waterHit = wAmt >= waterGoal;
 
         cols.push(`
           <div class="habit-day-col">
@@ -1810,7 +1888,7 @@
       const minV = type === "weight" ? Math.min(...values) - 0.5 : 0;
       const maxV = Math.max(
         ...values,
-        type === "weight" ? minV + 1 : (type === "hydration" ? 2500 : (type === "steps" ? 10000 : 24))
+        type === "weight" ? minV + 1 : (type === "hydration" ? (Number(state.waterGoalMl) || 2500) : (type === "steps" ? (Number(state.stepGoal) || 10000) : 24))
       );
       const span = maxV - minV || 1;
 
@@ -1883,6 +1961,7 @@
 
       document.getElementById("dashWeightVal").textContent = `${Number(state.weight).toFixed(2)} kg`;
       document.getElementById("dashTargetWeight").textContent = `${Number(state.targetWeight).toFixed(1)} kg`;
+      document.getElementById("dashTargetSteps").textContent = `${Number(state.stepGoal || 10000).toLocaleString()}`;
       document.getElementById("homeWeightInput").value = state.weight;
 
       const stepsToday = state.dailySteps[todayIso] || 0;
@@ -2298,12 +2377,55 @@
       form.style.display = form.style.display === "none" ? "block" : "none";
     });
 
-    document.getElementById("applyCardioOverrideBtn").addEventListener("click", () => {
+    function estimateWalkingKcalFallback(mins, inclinePct, speedKmh, weightKg) {
+      const mPerMin = (Math.max(0, speedKmh) * 1000) / 60;
+      const grade = Math.max(0, inclinePct) / 100;
+      const vo2 = mPerMin > 5.05
+        ? 3.5 + 0.2 * mPerMin + 0.9 * mPerMin * grade
+        : 3.5 + 0.1 * mPerMin + 1.8 * mPerMin * grade;
+      const kcalPerMin = (vo2 * (Number(weightKg) || 75.4)) / 200;
+      return Math.max(10, Math.round(kcalPerMin * Math.max(1, mins)));
+    }
+
+    document.getElementById("applyCardioOverrideBtn").addEventListener("click", async () => {
       const todayIso = getTodayIso();
       const dow = getTodayDow();
       const plan = WORKOUT_PLAN[dow];
       const type = document.getElementById("customCardioType").value.trim() || "Custom Cardio";
-      const kcal = parseInt(document.getElementById("customCardioKcal").value, 10) || 300;
+      const mins = Math.max(1, parseFloat(document.getElementById("customCardioMins").value) || 20);
+      const incline = Math.max(0, parseFloat(document.getElementById("customCardioIncline").value) || 0);
+      const speed = Math.max(0, parseFloat(document.getElementById("customCardioSpeed").value) || 0);
+      const weightKg = Number(state.weight) || 75.4;
+
+      let kcal = estimateWalkingKcalFallback(mins, incline, speed, weightKg);
+
+      if (state.geminiApiKey) {
+        const btn = document.getElementById("applyCardioOverrideBtn");
+        btn.disabled = true;
+        btn.innerHTML = `<span class="material-symbols-rounded" style="font-size:16px;">hourglass_top</span> AI Calculating...`;
+        try {
+          const prompt = `A person weighing ${weightKg} kg does "${type}" for ${mins} minutes at ${incline}% incline and ${speed} km/h speed. Estimate total calories (kcal) burned. Return ONLY valid JSON: {"kcal": number}`;
+          const bodyPayload = JSON.stringify({
+            contents: [{ parts: [{ text: prompt }] }],
+            generationConfig: { responseMimeType: "application/json" }
+          });
+          for (const modelName of ["gemini-3.8-flash", "gemini-3.0-flash", "gemini-flash-latest"]) {
+            const ep = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${encodeURIComponent(state.geminiApiKey)}`;
+            const r = await fetch(ep, { method: "POST", headers: { "Content-Type": "application/json" }, body: bodyPayload });
+            const d = await r.json();
+            if (r.ok) {
+              const raw = (d.candidates?.[0]?.content?.parts?.[0]?.text || "{}").replace(/```json|```/g, "").trim();
+              const parsed = JSON.parse(raw);
+              if (Number(parsed.kcal) > 0) kcal = Math.round(Number(parsed.kcal));
+              break;
+            }
+          }
+        } catch (_) {}
+        btn.disabled = false;
+        btn.innerHTML = `<span class="material-symbols-rounded" style="font-size:16px;">auto_awesome</span> Calculate Burn & Save`;
+      }
+
+      document.getElementById("aiCardioKcalPreview").textContent = `~${kcal} kcal`;
       const existing = state.dailyRecords[todayIso];
 
       state.dailyRecords[todayIso] = {
@@ -2313,14 +2435,14 @@
         muscles: existing?.muscles || plan.muscles,
         notes: existing?.notes || "",
         isCustom: existing?.isCustom || false,
-        cardioOverride: { type, kcal },
+        cardioOverride: { type: `${type} (${mins}m • ${incline}% • ${speed}km/h)`, kcal, mins, incline, speed },
         cardioDone: true,
         setsDone: existing?.setsDone || 0
       };
       document.getElementById("cardioOverrideForm").style.display = "none";
       saveState();
       renderCardioView();
-      showSnackbar(`Today's cardio overridden to "${type}" (~${kcal} kcal)`);
+      showSnackbar(`AI Burn Calculated: ~${kcal} kcal for ${mins}m @ ${incline}% / ${speed} km/h`);
     });
 
     document.getElementById("clearCardioOverrideBtn").addEventListener("click", () => {
@@ -2531,7 +2653,11 @@
     function renderSettings() {
       document.getElementById("geminiApiKeyInput").value = state.geminiApiKey || "";
       document.getElementById("stepReminderTimeInput").value = state.stepReminderTime || "21:30";
-      document.getElementById("targetWeightInput").value = state.targetWeight || 70.0;
+      document.getElementById("targetWeightInput").value = state.targetWeight ?? 70.0;
+      document.getElementById("startWeightInput").value = state.startWeight ?? 76.8;
+      document.getElementById("waterGoalInput").value = state.waterGoalMl ?? 2500;
+      document.getElementById("stepGoalInput").value = state.stepGoal ?? 10000;
+      document.getElementById("cardioGoalInput").value = state.cardioGoalKcal ?? 308;
     }
 
     document.getElementById("saveApiKeyBtn").addEventListener("click", () => {
@@ -2543,9 +2669,14 @@
     document.getElementById("saveNotifPrefsBtn").addEventListener("click", () => {
       state.stepReminderTime = document.getElementById("stepReminderTimeInput").value || "21:30";
       state.targetWeight = parseFloat(document.getElementById("targetWeightInput").value) || 70.0;
+      state.startWeight = parseFloat(document.getElementById("startWeightInput").value) || 76.8;
+      state.waterGoalMl = Math.max(250, parseInt(document.getElementById("waterGoalInput").value, 10) || 2500);
+      state.stepGoal = Math.max(100, parseInt(document.getElementById("stepGoalInput").value, 10) || 10000);
+      state.cardioGoalKcal = Math.max(10, parseInt(document.getElementById("cardioGoalInput").value, 10) || 308);
       saveState();
       renderDashboard();
-      showSnackbar(`Saved: Step Alert @ ${state.stepReminderTime}, Target ${state.targetWeight} kg`);
+      renderCardioView();
+      showSnackbar(`Saved targets: ${(state.waterGoalMl / 1000).toFixed(2)}L water • ${state.targetWeight} kg goal`);
     });
 
     document.getElementById("exportJsonBtn").addEventListener("click", () => {
