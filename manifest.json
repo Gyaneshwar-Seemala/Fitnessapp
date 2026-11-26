@@ -1,7 +1,7 @@
 {
   "name": "Apex 50 Protocol",
   "short_name": "Apex 50",
-  "description": "True AMOLED Black Weight, Steps, 24-Set Hypertrophy & Cardio Tracker PWA",
+  "description": "True AMOLED Black Weight, Steps, Previous Weight x Rep History, Auto-Progressive 24-Set Workouts & AI Coach PWA",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",

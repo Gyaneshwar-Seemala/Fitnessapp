@@ -525,14 +525,47 @@
       object-fit: contain;
     }
 
-    /* Set Logging Rows */
+    /* Set Logging Rows & Previous History */
+    .prev-session-banner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      background: var(--md-sys-color-surface-container-lowest);
+      border: 1px dashed var(--md-sys-color-outline);
+      border-radius: 10px;
+      padding: 6px 10px;
+      margin-top: 8px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--acc-emerald);
+    }
     .set-row {
       display: grid;
-      grid-template-columns: 40px 1fr 1fr 40px;
-      gap: 7px;
+      grid-template-columns: 36px 68px 1fr 1fr 38px;
+      gap: 6px;
       align-items: center;
       margin-top: 7px;
     }
+    .set-prev-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--md-sys-color-on-surface-variant);
+      background: var(--md-sys-color-surface-container-lowest);
+      border: 1px solid var(--md-sys-color-outline-variant);
+      border-radius: 9px;
+      padding: 8px 3px;
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .set-prev-tag.has-data {
+      color: var(--acc-emerald);
+      border-color: rgba(52, 211, 153, 0.35);
+    }
+
 
     .set-num {
       font-family: 'JetBrains Mono', monospace;
@@ -1010,9 +1043,21 @@
       <!-- Complete Today's Workout CTA -->
       <div class="m3-card">
         <button class="m3-btn-filled" id="completeWorkoutBtn">
-          <span class="material-symbols-rounded">check_circle</span>
-          Complete Today's 24-Set Session
+          <span class="material-symbols-rounded">auto_awesome</span>
+          Complete Session, Auto-Progress & AI Analyze
         </button>
+      </div>
+
+      <!-- Post-Workout AI Analysis Card -->
+      <div class="m3-card" id="aiWorkoutAnalysisCard" style="display:none; border-color:var(--acc-emerald);">
+        <div class="section-heading" style="margin-bottom:6px;">
+          <span style="color:var(--acc-emerald); display:flex; align-items:center; gap:6px;">
+            <span class="material-symbols-rounded" style="font-size:18px;">psychology</span>
+            Post-Workout AI Coach Analysis
+          </span>
+          <span class="m3-pill-tag" id="aiAnalysisSourceTag" style="font-size:9.5px;">AI Coach</span>
+        </div>
+        <div id="aiWorkoutAnalysisBody" style="font-size:12.5px; line-height:1.5; color:var(--md-sys-color-on-surface);"></div>
       </div>
     </section>
 
@@ -1162,7 +1207,8 @@
           <div style="display:flex; flex-wrap:wrap; gap:5px;" id="inspMuscleChips"></div>
         </div>
 
-        <div id="inspExerciseSummary" style="font-size:12px; color:var(--md-sys-color-on-surface-variant); margin-bottom:12px;"></div>
+        <div id="inspExerciseSummary" style="font-size:12px; color:var(--md-sys-color-on-surface-variant); margin-bottom:10px;"></div>
+        <div id="inspAiCoachBox" style="display:none; background:var(--md-sys-color-surface-container-low); border:1px solid var(--md-sys-color-outline-variant); border-radius:12px; padding:10px; font-size:11.5px; margin-bottom:12px;"></div>
 
         <button class="m3-btn-tonal" id="inspToggleDoneBtn" style="width:100%;">
           <span class="material-symbols-rounded" style="font-size:17px;">task_alt</span>
@@ -1175,6 +1221,20 @@
          TAB 5: SETUP (CUSTOM WEIGHT/STEP TARGETS, ALERTS & BACKUP)
          =================================================================== -->
     <section id="tab-settings" class="view-section">
+      <div class="m3-card">
+        <div class="section-heading">
+          <span>Gemini API Key (AI Workout Coach)</span>
+          <span class="m3-pill-tag" style="font-size:9.5px;">Local Storage</span>
+        </div>
+        <p style="font-size:11.5px; color:var(--md-sys-color-on-surface-variant); margin-bottom:8px;">
+          Used strictly after you complete a workout to analyze volume, plateaus, and next-week weight jumps.
+        </p>
+        <div style="display:flex; gap:8px;">
+          <input type="password" id="geminiApiKeyInput" class="m3-input" placeholder="AIzaSy..." />
+          <button class="m3-btn-tonal" id="saveApiKeyBtn">Save Key</button>
+        </div>
+      </div>
+
       <div class="m3-card">
         <div class="section-heading">
           <span>Custom Weight & Step Targets</span>
@@ -1433,7 +1493,7 @@
     /* ========================================================================
        PERSISTENT STATE
        ======================================================================== */
-    const STORAGE_KEY = "apex50_amoled_m3_v16";
+    const STORAGE_KEY = "apex50_amoled_m3_v18";
 
     function getDefaultState() {
       const logs = {};
@@ -1465,6 +1525,10 @@
         dailySteps: {},
         stepReminderTime: "21:30",
         lastStepAlertDate: "",
+        geminiApiKey: "",
+        lastResetDate: getTodayIso(),
+        exerciseHistory: {},
+        sessionAnalyses: {},
         activeGraphTab: "weight"
       };
     }
@@ -1487,6 +1551,13 @@
             }
           });
         });
+        if (merged.lastResetDate !== getTodayIso()) {
+          merged.lastResetDate = getTodayIso();
+          Object.keys(merged.setLogs).forEach((exId) => {
+            merged.setLogs[exId] = merged.setLogs[exId].map((r) => ({ ...r, done: false }));
+          });
+          merged.cardioChecked = {};
+        }
         return merged;
       } catch (e) {
         return getDefaultState();
@@ -1904,11 +1975,30 @@
           const allDone = rows.length > 0 && rows.every((r) => r.done);
           const readyUp = rows.length > 0 && rows.every((r) => r.done && Number(r.reps) >= ex.targetReps);
 
+          const histList = state.exerciseHistory?.[ex.id] || [];
+          // Find most recent entry prior to today (or latest entry if completed today)
+          const prevEntry = histList.find((h) => h.date !== todayIso) || histList[0] || null;
+          const unitSuffix = ex.unit === "kg plate" ? "s" : "";
+
+          const prevBannerHtml = prevEntry
+            ? `<div class="prev-session-banner">
+                 <span>LAST (${prevEntry.date.slice(5)}): <strong>${prevEntry.sets.map((s) => `${s.weight}×${s.reps}${unitSuffix}`).join(", ")}</strong></span>
+                 <span>${histList.length}x logged</span>
+               </div>`
+            : `<div class="prev-session-banner" style="color:var(--md-sys-color-on-surface-variant);">
+                 <span>PREVIOUS: First cycle baseline (${ex.defaultWeight} kg × ${ex.repRange})</span>
+                 <span>0x logged</span>
+               </div>`;
+
           const rowsHtml = rows
             .map(
-              (r, sIdx) => `
+              (r, sIdx) => {
+                const prevSet = prevEntry?.sets?.[sIdx];
+                const prevText = prevSet ? `${prevSet.weight}×${prevSet.reps}${unitSuffix}` : "—";
+                return `
               <div class="set-row">
                 <div class="set-num">S${sIdx + 1}</div>
+                <div class="set-prev-tag ${prevSet ? "has-data" : ""}" title="Previous session set ${sIdx + 1}">${prevText}</div>
                 <div class="m3-input-box">
                   <input type="number" step="0.5" class="m3-input set-weight-input" data-ex="${ex.id}" data-set="${sIdx}" value="${r.weight}" />
                   <span class="m3-unit">kg</span>
@@ -1921,7 +2011,8 @@
                   <span class="material-symbols-rounded" style="font-size:18px;">check</span>
                 </button>
               </div>
-            `
+            `;
+              }
             )
             .join("");
 
@@ -1930,10 +2021,11 @@
               <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px;">
                 <div>
                   <div style="font-size:14.5px; font-weight:800;">${idx + 1}. ${ex.name}</div>
-                  <div style="font-size:11.5px; color:var(--md-sys-color-on-surface-variant);">${ex.sets} Sets × ${ex.repRange} • Start: ${ex.defaultWeight} ${ex.unit}</div>
+                  <div style="font-size:11.5px; color:var(--md-sys-color-on-surface-variant);">${ex.sets} Sets × ${ex.repRange} • Target: ${r0Weight = rows[0]?.weight ?? ex.defaultWeight} ${ex.unit}</div>
                 </div>
-                <span class="m3-pill-tag" style="font-size:10px;">${readyUp ? "+2.5 kg Next Wk" : `${rows.filter((r) => r.done).length}/${ex.sets}`}</span>
+                <span class="m3-pill-tag" style="font-size:10px;">${readyUp ? "Level Up Next Wk" : `${rows.filter((r) => r.done).length}/${ex.sets}`}</span>
               </div>
+              ${prevBannerHtml}
 
               <div class="demo-media-box">
                 <span class="demo-badge-live">● FORM LOOP</span>
@@ -1967,6 +2059,16 @@
           renderTodayWorkoutView();
         });
       });
+
+      const savedAnalysis = state.sessionAnalyses?.[todayIso];
+      const analysisCard = document.getElementById("aiWorkoutAnalysisCard");
+      if (savedAnalysis && analysisCard) {
+        analysisCard.style.display = "block";
+        document.getElementById("aiAnalysisSourceTag").textContent = savedAnalysis.source || "AI Coach";
+        document.getElementById("aiWorkoutAnalysisBody").innerHTML = savedAnalysis.html;
+      } else if (analysisCard) {
+        analysisCard.style.display = "none";
+      }
 
       list.querySelectorAll(".set-check-btn").forEach((btn) => {
         btn.addEventListener("click", () => {
@@ -2031,27 +2133,182 @@
       showSnackbar("Reverted today back to scheduled split");
     });
 
-    document.getElementById("completeWorkoutBtn").addEventListener("click", () => {
+    function getWeightStepIncrement(ex) {
+      if (ex.unit === "bodyweight") return 0;
+      if (ex.unit === "kg/hand") return 1.25;
+      if (ex.unit === "kg DB") return 2.5;
+      return 2.5;
+    }
+
+    function applyWeeklyAutoProgression(dow) {
+      const plan = WORKOUT_PLAN[dow];
+      const upgraded = [];
+      const maintained = [];
+
+      plan.exercises.forEach((ex) => {
+        const rows = state.setLogs[ex.id] || [];
+        if (rows.length === 0) return;
+
+        // Treat checked sets (or all sets if user tapped complete at end of session)
+        const activeRows = rows.some((r) => r.done) ? rows.filter((r) => r.done) : rows;
+        const avgWeight = activeRows.reduce((s, r) => s + (Number(r.weight) || 0), 0) / activeRows.length;
+        const minReps = Math.min(...activeRows.map((r) => Number(r.reps) || 0));
+
+        if (ex.unit === "bodyweight") {
+          const nextReps = Math.min(25, minReps + 2);
+          state.setLogs[ex.id] = rows.map((r) => ({ weight: 0, reps: nextReps, done: r.done }));
+          upgraded.push(`${ex.name}: ${minReps} → ${nextReps} reps`);
+        } else if (ex.unit === "kg plate") {
+          if (minReps >= 60) {
+            const nextW = +(avgWeight + 2.5).toFixed(2);
+            state.setLogs[ex.id] = rows.map((r) => ({ weight: nextW, reps: 45, done: r.done }));
+            upgraded.push(`${ex.name}: ${avgWeight} kg → ${nextW} kg (45s)`);
+          } else {
+            const nextSec = Math.min(60, minReps + 5);
+            state.setLogs[ex.id] = rows.map((r) => ({ weight: avgWeight, reps: nextSec, done: r.done }));
+            upgraded.push(`${ex.name}: ${minReps}s → ${nextSec}s @ ${avgWeight} kg`);
+          }
+        } else if (minReps >= ex.targetReps) {
+          const inc = getWeightStepIncrement(ex);
+          const nextW = +(avgWeight + inc).toFixed(2);
+          const resetReps = ex.repRange.startsWith("12") ? 12 : 10;
+          state.setLogs[ex.id] = rows.map((r) => ({ weight: nextW, reps: resetReps, done: r.done }));
+          upgraded.push(`${ex.name}: ${avgWeight} kg → ${nextW} kg (${resetReps} reps)`);
+        } else {
+          const nextReps = Math.min(ex.targetReps, minReps + 1);
+          state.setLogs[ex.id] = rows.map((r) => ({ weight: avgWeight, reps: nextReps, done: r.done }));
+          maintained.push(`${ex.name}: ${avgWeight} kg × ${nextReps} reps`);
+        }
+      });
+
+      return { upgraded, maintained };
+    }
+
+    function buildLocalWorkoutAnalysis(sessionTitle, totalSets, totalVolumeKg, progResult, isCustom) {
+      const lines = [];
+      lines.push(`<strong>Session Summary:</strong> Completed <strong>${sessionTitle}</strong> (${totalSets} working sets${totalVolumeKg > 0 ? `, ~${totalVolumeKg.toLocaleString()} kg total tonnage` : ""}).`);
+      if (isCustom) {
+        lines.push(`<strong>Schedule Sync:</strong> Logged as a today-only override. Tomorrow automatically returns to your scheduled split.`);
+      } else if (progResult.upgraded.length > 0) {
+        lines.push(`<strong>Next Week's Auto-Upgrades (${progResult.upgraded.length} lifts leveled up):</strong><br>• ${progResult.upgraded.join("<br>• ")}`);
+      } else if (progResult.maintained.length > 0) {
+        lines.push(`<strong>Next Week's Rep Progression:</strong> Keep current weights and push +1 rep per set:<br>• ${progResult.maintained.slice(0, 4).join("<br>• ")}`);
+      }
+      lines.push(`<strong>Recovery Cue:</strong> Hit your 20-min incline walk (6:40–7:00 AM), log end-of-day steps tonight, and prioritize sleep for muscle repair.`);
+      return lines.join("<br><br>");
+    }
+
+    document.getElementById("completeWorkoutBtn").addEventListener("click", async () => {
       const todayIso = getTodayIso();
       const dow = getTodayDow();
       const plan = WORKOUT_PLAN[dow];
       const counts = countTodayCompletedSets(dow);
       const existing = state.dailyRecords[todayIso];
+      const isCustom = !!existing?.isCustom;
+
+      // Save Weight x Rep History & Calculate Session Tonnage
+      let totalVolumeKg = 0;
+      const exerciseSummaryLines = [];
+      const loggedExercisesSnapshot = [];
+      state.exerciseHistory = state.exerciseHistory || {};
+
+      if (!isCustom) {
+        plan.exercises.forEach((ex) => {
+          const rows = state.setLogs[ex.id] || [];
+          const activeRows = rows.some((r) => r.done) ? rows.filter((r) => r.done) : rows;
+          const mult = ex.unit === "kg/hand" ? 2 : 1;
+          activeRows.forEach((r) => {
+            if (ex.unit !== "kg plate" && ex.unit !== "bodyweight") {
+              totalVolumeKg += (Number(r.weight) || 0) * (Number(r.reps) || 0) * mult;
+            }
+          });
+
+          const setSnapshot = rows.map((r) => ({
+            weight: Number(r.weight) || 0,
+            reps: Number(r.reps) || 0
+          }));
+
+          // Upsert today's entry in exerciseHistory (keep up to 12 most recent sessions per lift)
+          const existingHist = (state.exerciseHistory[ex.id] || []).filter((h) => h.date !== todayIso);
+          existingHist.unshift({ date: todayIso, sets: setSnapshot });
+          state.exerciseHistory[ex.id] = existingHist.slice(0, 12);
+
+          const formattedSets = setSnapshot.map((s) => `${s.weight}×${s.reps}`).join(", ");
+          exerciseSummaryLines.push(`${ex.name}: [${formattedSets}] ${ex.unit}`);
+          loggedExercisesSnapshot.push({ name: ex.name, unit: ex.unit, sets: setSnapshot });
+        });
+      }
+      totalVolumeKg = Math.round(totalVolumeKg);
+
+      // Apply automatic weekly progression (or hold weight & +1 rep if reps were missed)
+      const progResult = isCustom ? { upgraded: [], maintained: [] } : applyWeeklyAutoProgression(dow);
+
+      const sessionTitle = isCustom ? existing.title : plan.title;
+      const sessionMuscles = isCustom ? existing.muscles : plan.muscles;
+      const setsCompleted = Math.max(counts.done, counts.total || 24);
+
+      const btn = document.getElementById("completeWorkoutBtn");
+      btn.disabled = true;
+      btn.innerHTML = `<span class="material-symbols-rounded">hourglass_top</span> Analyzing Session...`;
+
+      let analysisHtml = buildLocalWorkoutAnalysis(sessionTitle, setsCompleted, totalVolumeKg, progResult, isCustom);
+      let sourceLabel = "Smart Coach";
+
+      if (state.geminiApiKey) {
+        try {
+          const prompt = `You are an expert hypertrophy strength coach analyzing a completed gym session for a 22yo lifter (${state.weight} kg, targeting body recomposition to ${state.targetWeight} kg, working out 5:50-7:20 AM).
+Session: ${sessionTitle}
+Target Muscles: ${sessionMuscles.join(", ")}
+Details: ${isCustom ? (existing.notes || "Custom session") : exerciseSummaryLines.join("; ")}
+Total Tonnage: ${totalVolumeKg} kg
+Next-Week Auto-Progressions Applied: ${progResult.upgraded.join("; ") || "Building reps at current weights"}
+
+Provide a concise, high-impact 3-part post-workout analysis (1. Volume & Stimulus Assessment, 2. Plateau-Breaking & Form Focus, 3. Next Week's Progression Target). Keep it under 130 words in clean HTML using <strong> and <br> tags only.`;
+
+          const bodyPayload = JSON.stringify({
+            contents: [{ parts: [{ text: prompt }] }]
+          });
+
+          for (const modelName of ["gemini-3.8-flash", "gemini-3.0-flash", "gemini-flash-latest"]) {
+            const ep = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${encodeURIComponent(state.geminiApiKey)}`;
+            const res = await fetch(ep, { method: "POST", headers: { "Content-Type": "application/json" }, body: bodyPayload });
+            const data = await res.json();
+            if (res.ok) {
+              const aiText = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
+              if (aiText) {
+                analysisHtml = aiText.replace(/```html|```/g, "").trim();
+                sourceLabel = "Gemini 3.8 AI";
+              }
+              break;
+            }
+          }
+        } catch (_) {}
+      }
+
+      state.sessionAnalyses = state.sessionAnalyses || {};
+      state.sessionAnalyses[todayIso] = { html: analysisHtml, source: sourceLabel };
 
       state.dailyRecords[todayIso] = {
-        splitTag: existing?.isCustom ? "OVERRIDE" : plan.shortTag,
-        typeClass: existing?.isCustom ? "tag-custom" : plan.typeClass,
-        title: existing?.isCustom ? existing.title : plan.title,
-        muscles: existing?.isCustom ? existing.muscles : plan.muscles,
+        splitTag: isCustom ? "OVERRIDE" : plan.shortTag,
+        typeClass: isCustom ? "tag-custom" : plan.typeClass,
+        title: sessionTitle,
+        muscles: sessionMuscles,
         notes: existing?.notes || "",
-        isCustom: existing?.isCustom || false,
+        isCustom,
         cardioOverride: existing?.cardioOverride || null,
         cardioDone: existing?.cardioDone || false,
-        setsDone: Math.max(counts.done, counts.total || 24)
+        setsDone: setsCompleted,
+        volumeKg: totalVolumeKg,
+        loggedExercises: loggedExercisesSnapshot
       };
+
       saveState();
+      renderTodayWorkoutView();
       renderDashboard();
-      showSnackbar(`Completed today's session & stamped calendar!`);
+
+      btn.disabled = false;
+      btn.innerHTML = `<span class="material-symbols-rounded">auto_awesome</span> Complete Session, Auto-Progress & AI Analyze`;
+      showSnackbar(`Session analyzed & next week's weights updated!`);
     });
 
     /* ========================================================================
@@ -2303,8 +2560,20 @@
         summaryEl.innerHTML = `<strong>Today-Only Override:</strong> ${record.notes || "Custom workout logged."}`;
       } else if (plan.exercises.length === 0) {
         summaryEl.textContent = "Active recovery: 8,000–10,000 steps or dance session.";
+      } else if (record && record.loggedExercises && record.loggedExercises.length > 0) {
+        summaryEl.innerHTML = `<strong>Logged Sets (${record.volumeKg ? record.volumeKg.toLocaleString() + " kg vol" : "Completed"}):</strong><br>` +
+          record.loggedExercises.map((le) => `• <strong>${le.name}:</strong> <span class="mono" style="color:var(--acc-emerald);">${le.sets.map((s) => `${s.weight}×${s.reps}`).join(", ")}</span>`).join("<br>");
       } else {
         summaryEl.innerHTML = `<strong>${plan.exercises.length} Exercises (24 Sets):</strong> ${plan.exercises.map((e) => `${e.name} (${e.sets}×${e.repRange})`).join(" • ")}.`;
+      }
+
+      const coachBox = document.getElementById("inspAiCoachBox");
+      const dateAnalysis = state.sessionAnalyses?.[dateStr];
+      if (dateAnalysis && coachBox) {
+        coachBox.style.display = "block";
+        coachBox.innerHTML = `<div style="color:var(--acc-emerald); font-weight:800; margin-bottom:4px;">AI Session Review (${dateAnalysis.source}):</div>${dateAnalysis.html}`;
+      } else if (coachBox) {
+        coachBox.style.display = "none";
       }
     }
 
@@ -2351,11 +2620,18 @@
        SETUP & JSON BACKUP
        ======================================================================== */
     function renderSettings() {
+      document.getElementById("geminiApiKeyInput").value = state.geminiApiKey || "";
       document.getElementById("stepReminderTimeInput").value = state.stepReminderTime || "21:30";
       document.getElementById("targetWeightInput").value = state.targetWeight ?? 70.0;
       document.getElementById("startWeightInput").value = state.startWeight ?? 76.8;
       document.getElementById("stepGoalInput").value = state.stepGoal ?? 10000;
     }
+
+    document.getElementById("saveApiKeyBtn").addEventListener("click", () => {
+      state.geminiApiKey = document.getElementById("geminiApiKeyInput").value.trim();
+      saveState();
+      showSnackbar("Gemini API Key Saved for AI Workout Analysis");
+    });
 
     document.getElementById("saveNotifPrefsBtn").addEventListener("click", () => {
       state.stepReminderTime = document.getElementById("stepReminderTimeInput").value || "21:30";
@@ -2394,8 +2670,10 @@
 
     document.getElementById("resetPlanBtn").addEventListener("click", () => {
       const keepTheme = state.theme;
+      const keepKey = state.geminiApiKey;
       state = getDefaultState();
       state.theme = keepTheme;
+      state.geminiApiKey = keepKey;
       saveState();
       renderDashboard();
       renderTodayWorkoutView();
