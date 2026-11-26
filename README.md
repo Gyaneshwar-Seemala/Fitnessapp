@@ -1,10 +1,9 @@
-# Apex 50 Protocol — High-Volume Cyan M3 Edition (v4)
+# Apex 50 Protocol — True AMOLED Black Edition (v9)
 
-Material You (M3) Progressive Web App built for GitHub Pages (`transformation-app`).
+Material You (M3) Progressive Web App built for GitHub Pages (`yaneshwar-seemala.github.io`) and optimized for Samsung AMOLED battery efficiency.
 
-## What's New in v4
-- **24+ Working Sets Every Training Day (6–7 Exercises/Day):** Upgraded every Mon–Sat routine to 6–7 exercises totaling 24–25 double-digit sets (10–15 reps) using your exact gym machines, cables, Smith machine, and dumbbells.
-- **Animated Exercise & Opener Demos:** Every warm-up opener and working lift includes an interactive animated pose player (`Start` ↔ `Peak` motion loop) backed by the public-domain `free-exercise-db` visual library with offline SVG fallback.
-- **Today-Only Workout Focus & Ephemeral Override:** The **Workout** tab locks strictly onto **Today** (`5:50 AM – 7:20 AM`). Using **Override Today Only** logs a custom session solely for today's date without altering future scheduled splits.
-- **Analytics & Progress Graphs:** Interactive SVG trajectory charts on the Home Dashboard for **Body Weight**, **Daily Steps**, and **Daily Working Sets / Volume**.
-- **Cardio Tab with Custom Override:** Renamed from Treadmill to **Cardio** with a one-tap **Override Today's Cardio** option (e.g., Dance, Outdoor Walk, Cycling, HIIT) alongside your 20-minute ~308 kcal steep incline walk.
+## Features
+- **True Pitch-Black AMOLED Surfaces (`#000000`):** Maximizes battery efficiency by turning off OLED pixels across backgrounds, app bars, inputs, and chart surfaces.
+- **Toned-Down Slate/Steel Cyan Accents:** Low-luminance `#38BDF8` text, `#072233` containers, and `#0E7490` action buttons.
+- **Conventional Busy-Gym Exercises (24 Working Sets / Day):** 7 conventional dumbbell, barbell, and standard machine movements per session with looping `free-exercise-db` pose animations for both warm-up openers and working lifts.
+- **Today-Only Workout & Cardio Overrides + Gemini 3.8 Flash Food Logger + Circular Launcher Icon.**

@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <meta name="theme-color" content="#060B14" id="metaThemeColor" />
+  <meta name="theme-color" content="#000000" id="metaThemeColor" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <title>Apex 50 Protocol — Cyan M3</title>
+  <title>Apex 50 Protocol — AMOLED M3</title>
   <link rel="manifest" href="manifest.json" />
   <link rel="icon" type="image/svg+xml" href="icon.svg" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -15,54 +15,54 @@
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,400..600,0..1,0" rel="stylesheet" />
   <style>
     /* ==========================================================================
-       MATERIAL DESIGN 3 — BLUES, BLACKS & CYANS PALETTE
+       MATERIAL DESIGN 3 — TRUE AMOLED BLACK & TONED-DOWN SLATE CYAN
        ========================================================================== */
     :root[data-theme="dark"] {
-      --md-sys-color-background: #060B14;
-      --md-sys-color-on-background: #E2F1FF;
-      --md-sys-color-surface: #060B14;
-      --md-sys-color-surface-container-lowest: #03060C;
-      --md-sys-color-surface-container-low: #0B1220;
-      --md-sys-color-surface-container: #10192B;
-      --md-sys-color-surface-container-high: #16233B;
-      --md-sys-color-surface-container-highest: #1E2F4D;
-      --md-sys-color-on-surface: #E2F1FF;
-      --md-sys-color-on-surface-variant: #94B2D1;
-      --md-sys-color-outline: #4B6B8F;
-      --md-sys-color-outline-variant: #1E3250;
+      --md-sys-color-background: #000000;
+      --md-sys-color-on-background: #CBD5E1;
+      --md-sys-color-surface: #000000;
+      --md-sys-color-surface-container-lowest: #000000;
+      --md-sys-color-surface-container-low: #05080D;
+      --md-sys-color-surface-container: #080C12;
+      --md-sys-color-surface-container-high: #0D141F;
+      --md-sys-color-surface-container-highest: #131D2B;
+      --md-sys-color-on-surface: #CBD5E1;
+      --md-sys-color-on-surface-variant: #7C92AB;
+      --md-sys-color-outline: #2C4159;
+      --md-sys-color-outline-variant: #142030;
 
-      --md-sys-color-primary: #22D3EE;
-      --md-sys-color-on-primary: #002833;
-      --md-sys-color-primary-container: #083344;
-      --md-sys-color-on-primary-container: #A5F3FC;
+      --md-sys-color-primary: #38BDF8;
+      --md-sys-color-on-primary: #02131D;
+      --md-sys-color-primary-container: #072233;
+      --md-sys-color-on-primary-container: #93C5FD;
 
-      --md-sys-color-secondary: #60A5FA;
-      --md-sys-color-on-secondary: #041E42;
-      --md-sys-color-secondary-container: #132C54;
-      --md-sys-color-on-secondary-container: #BFDBFE;
+      --md-sys-color-secondary: #3B82F6;
+      --md-sys-color-on-secondary: #031126;
+      --md-sys-color-secondary-container: #0A1B33;
+      --md-sys-color-on-secondary-container: #93C5FD;
 
-      --md-sys-color-tertiary: #38BDF8;
-      --md-sys-color-on-tertiary: #022438;
-      --md-sys-color-tertiary-container: #0C3554;
+      --md-sys-color-tertiary: #0EA5E9;
+      --md-sys-color-on-tertiary: #021521;
+      --md-sys-color-tertiary-container: #082336;
       --md-sys-color-on-tertiary-container: #BAE6FD;
 
-      --md-sys-color-error: #F87171;
-      --md-sys-color-error-container: #450A0A;
-      --md-sys-color-on-error-container: #FECACA;
+      --md-sys-color-error: #EF4444;
+      --md-sys-color-error-container: #2B0808;
+      --md-sys-color-on-error-container: #FCA5A5;
 
-      --chip-push-bg: #083344;
-      --chip-push-fg: #67E8F9;
-      --chip-pull-bg: #172554;
+      --chip-push-bg: #072233;
+      --chip-push-fg: #7DD3FC;
+      --chip-pull-bg: #0C1A38;
       --chip-pull-fg: #93C5FD;
-      --chip-legs-bg: #0C4A6E;
+      --chip-legs-bg: #08283B;
       --chip-legs-fg: #BAE6FD;
-      --chip-custom-bg: #1E1B4B;
+      --chip-custom-bg: #141636;
       --chip-custom-fg: #A5B4FC;
-      --chip-rest-bg: #111827;
-      --chip-rest-fg: #94A3B8;
+      --chip-rest-bg: #0A0E14;
+      --chip-rest-fg: #64748B;
 
-      --md-elevation-1: 0 2px 6px rgba(0, 0, 0, 0.55);
-      --md-elevation-2: 0 6px 16px rgba(0, 0, 0, 0.65);
+      --md-elevation-1: none;
+      --md-elevation-2: none;
     }
 
     :root[data-theme="light"] {
@@ -160,8 +160,9 @@
       width: 38px;
       height: 38px;
       border-radius: 50%;
-      background: linear-gradient(135deg, var(--md-sys-color-primary), var(--md-sys-color-secondary));
-      color: #030712;
+      background: #0E7490;
+      color: #F0F9FF;
+      border: 1px solid #155E75;
       display: grid;
       place-items: center;
       font-weight: 800;
@@ -209,13 +210,17 @@
     }
 
     .m3-hero-banner {
-      background: linear-gradient(135deg, var(--md-sys-color-primary-container), var(--md-sys-color-secondary-container));
+      background: linear-gradient(160deg, #061522 0%, #02050A 100%);
       color: var(--md-sys-color-on-primary-container);
       border-radius: 26px;
       padding: 18px;
       margin-bottom: 14px;
-      border: 1px solid var(--md-sys-color-primary);
-      box-shadow: var(--md-elevation-2);
+      border: 1px solid var(--md-sys-color-outline-variant);
+      box-shadow: none;
+    }
+    :root[data-theme="light"] .m3-hero-banner {
+      background: linear-gradient(135deg, var(--md-sys-color-primary-container), var(--md-sys-color-secondary-container));
+      border-color: var(--md-sys-color-primary);
     }
 
     .m3-pill-tag {
@@ -296,9 +301,9 @@
       width: 100%;
       padding: 13px 18px;
       border-radius: 999px;
-      border: none;
-      background: linear-gradient(135deg, var(--md-sys-color-primary), var(--md-sys-color-secondary));
-      color: #030712;
+      background: #0E7490;
+      color: #F0F9FF;
+      border: 1px solid #155E75;
       font-family: inherit;
       font-size: 14px;
       font-weight: 800;
@@ -375,7 +380,7 @@
       height: 168px;
       border-radius: 14px;
       overflow: hidden;
-      background: #030712;
+      background: #000000;
       border: 1px solid var(--md-sys-color-outline-variant);
       margin: 10px 0;
       display: flex;
@@ -387,7 +392,7 @@
       width: 100%;
       height: 100%;
       object-fit: contain;
-      background: #030712;
+      background: #000000;
       transition: opacity 0.25s ease;
     }
 
@@ -395,9 +400,9 @@
       position: absolute;
       top: 8px;
       left: 8px;
-      background: rgba(3, 7, 18, 0.82);
-      color: #22D3EE;
-      border: 1px solid rgba(34, 211, 238, 0.45);
+      background: rgba(0, 0, 0, 0.85);
+      color: #38BDF8;
+      border: 1px solid rgba(56, 189, 248, 0.4);
       font-family: 'JetBrains Mono', monospace;
       font-size: 9.5px;
       font-weight: 800;
@@ -412,8 +417,8 @@
       position: absolute;
       bottom: 8px;
       right: 8px;
-      background: rgba(3, 7, 18, 0.82);
-      color: #E2F1FF;
+      background: rgba(0, 0, 0, 0.85);
+      color: #CBD5E1;
       font-family: 'JetBrains Mono', monospace;
       font-size: 9.5px;
       font-weight: 700;
@@ -442,7 +447,7 @@
       height: 112px;
       border-radius: 10px;
       overflow: hidden;
-      background: #030712;
+      background: #000000;
       margin-bottom: 6px;
     }
 
@@ -500,9 +505,9 @@
       cursor: pointer;
     }
     .set-check-btn.done {
-      background: var(--md-sys-color-primary);
-      border-color: var(--md-sys-color-primary);
-      color: #030712;
+      background: #0E7490;
+      border-color: #38BDF8;
+      color: #F0F9FF;
     }
 
     /* Graph Tabs & SVG Charts */
@@ -637,8 +642,8 @@
       content: ""; position: absolute; height: 16px; width: 16px; left: 4px; top: 4px;
       background: var(--md-sys-color-outline); border-radius: 50%; transition: 0.2s;
     }
-    .m3-switch input:checked + .m3-slider { background: var(--md-sys-color-primary); border-color: var(--md-sys-color-primary); }
-    .m3-switch input:checked + .m3-slider::before { transform: translateX(20px); background: #030712; }
+    .m3-switch input:checked + .m3-slider { background: #0E7490; border-color: #38BDF8; }
+    .m3-switch input:checked + .m3-slider::before { transform: translateX(20px); background: #F0F9FF; }
 
     /* Bottom Navigation */
     .m3-nav-bar {
@@ -647,12 +652,15 @@
       left: 0;
       right: 0;
       z-index: 50;
-      background: var(--md-sys-color-surface-container-low);
+      background: #000000;
       border-top: 1px solid var(--md-sys-color-outline-variant);
       padding: 6px 4px calc(6px + env(safe-area-inset-bottom));
       display: grid;
       grid-template-columns: repeat(5, minmax(0, 1fr));
       gap: 2px;
+    }
+    :root[data-theme="light"] .m3-nav-bar {
+      background: var(--md-sys-color-surface-container-low);
     }
 
     .m3-nav-item {
@@ -690,8 +698,9 @@
       bottom: calc(80px + env(safe-area-inset-bottom));
       left: 50%;
       transform: translateX(-50%) translateY(20px);
-      background: var(--md-sys-color-primary);
-      color: #030712;
+      background: #082233;
+      color: #BAE6FD;
+      border: 1px solid #0E7490;
       padding: 11px 18px;
       border-radius: 14px;
       font-size: 12.5px;
@@ -873,7 +882,7 @@
       <!-- Gemini AI Food Logger -->
       <div class="m3-card">
         <div class="section-heading">
-          <span>AI Meal Logger (Gemini API)</span>
+          <span>AI Meal Logger (Gemini 3.8 Flash)</span>
           <button class="m3-btn-tonal" id="openApiKeySetupBtn" style="padding:5px 10px; font-size:11px;">
             <span class="material-symbols-rounded" style="font-size:14px;">key</span>
             API Key
@@ -1173,68 +1182,66 @@
   <script>
     /* ========================================================================
        PUBLIC-DOMAIN ANIMATED EXERCISE FRAMES (yuhonas/free-exercise-db)
-       Alternates Frame 0 (Start Pose) <-> Frame 1 (Peak Contraction) every 1.1s
-       with crisp inline SVG fallback if offline.
        ======================================================================== */
     const DB_IMG_BASE = "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises";
 
     function getFallbackSvg(label) {
       const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='320' height='180' viewBox='0 0 320 180'>
-        <rect width='320' height='180' fill='#030712'/>
-        <circle cx='160' cy='68' r='22' fill='none' stroke='#22D3EE' stroke-width='3'/>
-        <path d='M124 128 C124 102, 196 102, 196 128' fill='none' stroke='#60A5FA' stroke-width='3' stroke-linecap='round'/>
-        <text x='160' y='156' fill='#94B2D1' font-family='sans-serif' font-size='11' font-weight='bold' text-anchor='middle'>${label}</text>
+        <rect width='320' height='180' fill='#000000'/>
+        <circle cx='160' cy='68' r='22' fill='none' stroke='#0EA5E9' stroke-width='3'/>
+        <path d='M124 128 C124 102, 196 102, 196 128' fill='none' stroke='#3B82F6' stroke-width='3' stroke-linecap='round'/>
+        <text x='160' y='156' fill='#7C92AB' font-family='sans-serif' font-size='11' font-weight='bold' text-anchor='middle'>${label}</text>
       </svg>`;
       return "data:image/svg+xml;utf8," + encodeURIComponent(svg);
     }
 
     /* ========================================================================
-       6-DAY HIGH-VOLUME PROGRAM: 6–7 EXERCISES/DAY, 24+ SETS PER SESSION
+       6-DAY CONVENTIONAL BUSY-GYM PROGRAM: 7 EXERCISES/DAY, 24 SETS PER SESSION
        ======================================================================== */
     const WORKOUT_PLAN = {
       1: {
         dayName: "Monday", shortTag: "PUSH A", typeClass: "tag-push",
         title: "Push A — Chest Priority (24 Sets)",
-        muscles: ["Upper Chest", "Mid Chest", "Lower Chest", "Side Delts", "Triceps"],
-        warmup: "5:50–5:55 AM: Perform 15 reps of Band External Rotations + 15 Arm Circles before your first press.",
+        muscles: ["Upper Chest", "Mid Chest", "Side Delts", "Front Delts", "Triceps"],
+        warmup: "5:50–5:55 AM: Arm circles & shoulder stretches + 2 light ramp-up sets on Incline DB Press (7.5 kg × 12, 10 kg × 8).",
         openers: [
-          { name: "Band Shoulder External Rotation", reps: "2 × 15", slug: "External_Rotation_with_Band" },
-          { name: "Arm Circles & Chest Opener", reps: "2 × 20s", slug: "Arm_Circles" }
+          { name: "Arm Circles & Chest Opener", reps: "2 × 20s", slug: "Arm_Circles" },
+          { name: "Shoulder Stretch Opener", reps: "2 × 15s/side", slug: "Shoulder_Stretch" }
         ],
         exercises: [
-          { id: "mon_1", name: "Incline Dumbbell Press (30°)", sets: 4, repRange: "10–12", targetReps: 12, defaultWeight: 12.5, unit: "kg/hand", slug: "Incline_Dumbbell_Press", cue: "3-sec controlled lowering, 1-sec pause at chest. Hit 4×12 cleanly to move to 15 kg." },
-          { id: "mon_2", name: "Flat Barbell Bench Press", sets: 4, repRange: "10–12", targetReps: 12, defaultWeight: 37.5, unit: "kg total", slug: "Barbell_Bench_Press_-_Medium_Grip", cue: "Shoulder blades pinned back; drive smoothly without bouncing off chest." },
+          { id: "mon_1", name: "Incline Dumbbell Press (30°)", sets: 4, repRange: "10–12", targetReps: 12, defaultWeight: 12.5, unit: "kg/hand", slug: "Incline_Dumbbell_Press", cue: "3-sec controlled lowering, 1-sec pause at chest. Hit 4×12 cleanly to unlock 15 kg." },
+          { id: "mon_2", name: "Flat Barbell Bench Press", sets: 4, repRange: "10–12", targetReps: 12, defaultWeight: 37.5, unit: "kg total", slug: "Barbell_Bench_Press_-_Medium_Grip", cue: "Shoulder blades pinned back; drive bar smoothly without bouncing off ribs." },
           { id: "mon_3", name: "Machine Chest Fly (Pec Deck)", sets: 4, repRange: "12–15", targetReps: 15, defaultWeight: 32.5, unit: "kg stack", slug: "Butterfly", cue: "Hold peak inner-chest squeeze for 1 full second on every rep." },
-          { id: "mon_4", name: "Low-to-High Cable Chest Fly", sets: 3, repRange: "12–15", targetReps: 15, defaultWeight: 10, unit: "kg/side", slug: "Low_Cable_Crossover", cue: "Scoop cables upward toward collarbone to target upper-inner pec fibers." },
-          { id: "mon_5", name: "Dumbbell Lateral Raises", sets: 4, repRange: "12–15", targetReps: 15, defaultWeight: 7.5, unit: "kg/hand", slug: "Side_Lateral_Raise", cue: "Lead with elbows out to sides; zero torso swing." },
-          { id: "mon_6", name: "Cable Rope Tricep Pushdowns", sets: 3, repRange: "12–15", targetReps: 15, defaultWeight: 17.5, unit: "kg stack", slug: "Triceps_Pushdown_-_Rope_Attachment", cue: "Lock elbows to ribs and flare rope ends apart at bottom." },
-          { id: "mon_7", name: "Overhead Dumbbell Tricep Ext.", sets: 2, repRange: "12–15", targetReps: 15, defaultWeight: 12.5, unit: "kg DB", slug: "Standing_Dumbbell_Triceps_Extension", cue: "Two-hand single dumbbell overhead; deep long-head tricep stretch." }
+          { id: "mon_4", name: "Dumbbell Front Raises", sets: 3, repRange: "12–15", targetReps: 15, defaultWeight: 7.5, unit: "kg/hand", slug: "Front_Dumbbell_Raise", cue: "Raise dumbbells smoothly to eye level; hits upper chest & front delts without needing cables." },
+          { id: "mon_5", name: "Standing Dumbbell Lateral Raises", sets: 4, repRange: "12–15", targetReps: 15, defaultWeight: 7.5, unit: "kg/hand", slug: "Side_Lateral_Raise", cue: "Stand anywhere with dumbbells; lead with elbows out to sides, zero torso swing." },
+          { id: "mon_6", name: "Cable Rope Tricep Pushdowns", sets: 3, repRange: "12–15", targetReps: 15, defaultWeight: 17.5, unit: "kg stack", slug: "Triceps_Pushdown_-_Rope_Attachment", cue: "Standard standing rope pushdown; lock elbows to ribs and flare rope at bottom." },
+          { id: "mon_7", name: "Overhead Dumbbell Tricep Ext.", sets: 2, repRange: "12–15", targetReps: 15, defaultWeight: 12.5, unit: "kg DB", slug: "Standing_Dumbbell_Triceps_Extension", cue: "Two hands on one dumbbell overhead; deep long-head tricep stretch." }
         ]
       },
       2: {
         dayName: "Tuesday", shortTag: "PULL A", typeClass: "tag-pull",
         title: "Pull A — Back Width & Rear Delts (24 Sets)",
         muscles: ["Lats", "Upper Back", "Rear Delts", "Biceps", "Forearms"],
-        warmup: "5:50–5:55 AM: Scapular pull-ups/hangs + rear-delt band pull-aparts to wake up upper back.",
+        warmup: "5:50–5:55 AM: Scapular hangs + thoracic cat-cow openers before Lat Pulldowns.",
         openers: [
           { name: "Scapular Pull-Up / Dead Hang", reps: "2 × 12", slug: "Scapular_Pull-Up" },
-          { name: "Band Pull-Apart Opener", reps: "2 × 15", slug: "Band_Pull_Apart" }
+          { name: "Cat-Cow Thoracic Mobility", reps: "2 × 12", slug: "Cat_Stretch" }
         ],
         exercises: [
-          { id: "tue_1", name: "Cable Lat Pulldowns (Wide)", sets: 4, repRange: "10–12", targetReps: 12, defaultWeight: 47.5, unit: "kg stack", slug: "Wide-Grip_Lat_Pulldown", cue: "Drive elbows straight down toward hips; 2-sec stretch up." },
+          { id: "tue_1", name: "Wide-Grip Lat Pulldowns", sets: 4, repRange: "10–12", targetReps: 12, defaultWeight: 47.5, unit: "kg stack", slug: "Wide-Grip_Lat_Pulldown", cue: "Drive elbows straight down toward hips; 2-sec stretch back up." },
           { id: "tue_2", name: "Incline Bench Dumbbell Rows", sets: 4, repRange: "10–12", targetReps: 12, defaultWeight: 15, unit: "kg/hand", slug: "Dumbbell_Incline_Row", cue: "Chest-down on 30° incline bench so lower back cannot cheat." },
-          { id: "tue_3", name: "Close-Grip Neutral Lat Pulldown", sets: 3, repRange: "10–12", targetReps: 12, defaultWeight: 45, unit: "kg stack", slug: "Close-Grip_Front_Lat_Pulldown", cue: "Pull V-bar to upper sternum; great lower-lat sweep." },
-          { id: "tue_4", name: "Straight-Arm Cable Pulldowns", sets: 3, repRange: "12–15", targetReps: 15, defaultWeight: 17.5, unit: "kg stack", slug: "Straight-Arm_Pulldown", cue: "Hinge slightly forward, straight arms, pull bar to thighs." },
-          { id: "tue_5", name: "Reverse Pec Deck Flyes", sets: 4, repRange: "12–15", targetReps: 15, defaultWeight: 27.5, unit: "kg stack", slug: "Reverse_Machine_Flyes", cue: "Push handles outward with back of hands; pause 1 sec." },
-          { id: "tue_6", name: "Incline Dumbbell Bicep Curls", sets: 3, repRange: "10–12", targetReps: 12, defaultWeight: 8.5, unit: "kg/hand", slug: "Incline_Dumbbell_Curl", cue: "45° bench; keep upper arms vertical for long-head stretch." },
-          { id: "tue_7", name: "Cable Rope Hammer Curls", sets: 3, repRange: "12–15", targetReps: 15, defaultWeight: 15, unit: "kg stack", slug: "Cable_Hammer_Curls_-_Rope_Attachment", cue: "Constant cable tension on brachialis and forearms." }
+          { id: "tue_3", name: "Close-Grip Neutral Lat Pulldown", sets: 3, repRange: "10–12", targetReps: 12, defaultWeight: 45, unit: "kg stack", slug: "Close-Grip_Front_Lat_Pulldown", cue: "Pull V-bar to upper sternum; builds thick lower lats." },
+          { id: "tue_4", name: "Dumbbell Pullovers (Flat Bench)", sets: 3, repRange: "12–15", targetReps: 15, defaultWeight: 15, unit: "kg DB", slug: "Bent-Arm_Dumbbell_Pullover", cue: "Conventional free-weight lat stretch — replaces straight-arm cable pulldowns." },
+          { id: "tue_5", name: "Reverse Pec Deck Flyes", sets: 4, repRange: "12–15", targetReps: 15, defaultWeight: 27.5, unit: "kg stack", slug: "Reverse_Machine_Flyes", cue: "Push handles outward with back of hands; pause 1 sec at rear squeeze." },
+          { id: "tue_6", name: "Standing Dumbbell Bicep Curls", sets: 3, repRange: "10–12", targetReps: 12, defaultWeight: 10, unit: "kg/hand", slug: "Dumbbell_Bicep_Curl", cue: "Keep elbows pinned at your sides; full supination at the top." },
+          { id: "tue_7", name: "Dumbbell Hammer Curls", sets: 3, repRange: "12–15", targetReps: 15, defaultWeight: 10, unit: "kg/hand", slug: "Hammer_Curls", cue: "Neutral palms-in grip; builds forearm and outer arm thickness." }
         ]
       },
       3: {
         dayName: "Wednesday", shortTag: "LEGS A", typeClass: "tag-legs",
         title: "Legs A & Abs — Quad Focus (24 Sets)",
         muscles: ["Quads", "Inner Thighs", "Calves", "Upper & Lower Abs"],
-        warmup: "5:50–5:55 AM: Deep groiners & bodyweight squats to open hips and knees before Hack Squats.",
+        warmup: "5:50–5:55 AM: Deep groiners & bodyweight squats to warm up knees and hips.",
         openers: [
           { name: "Groiner Hip Mobility Opener", reps: "2 × 10/side", slug: "Groiners" },
           { name: "Bodyweight Squat Warm-Up", reps: "2 × 15", slug: "Bodyweight_Squat" }
@@ -1243,7 +1250,7 @@
           { id: "wed_1", name: "Hack Squat", sets: 4, repRange: "10–12", targetReps: 12, defaultWeight: 45, unit: "kg plates", slug: "Hack_Squat", cue: "Feet mid-to-low on platform, shoulder-width; break parallel." },
           { id: "wed_2", name: "Sled / 45° Leg Press", sets: 4, repRange: "12–15", targetReps: 15, defaultWeight: 105, unit: "kg plates", cue: "Just below your 130 kg PR for high-rep hypertrophy; don't lock knees.", slug: "Leg_Press" },
           { id: "wed_3", name: "Leg Extensions", sets: 4, repRange: "12–15", targetReps: 15, defaultWeight: 37.5, unit: "kg stack", slug: "Leg_Extensions", cue: "1-sec squeeze at top; 2-sec controlled lowering." },
-          { id: "wed_4", name: "Dumbbell Goblet Squat (Heels Elevated)", sets: 3, repRange: "12–15", targetReps: 15, defaultWeight: 17.5, unit: "kg DB", slug: "Goblet_Squat", cue: "Heels on 2.5 kg plates; deep quad burn." },
+          { id: "wed_4", name: "Dumbbell Goblet Squat", sets: 3, repRange: "12–15", targetReps: 15, defaultWeight: 17.5, unit: "kg DB", slug: "Goblet_Squat", cue: "Hold dumbbell tight to chest; deep upright quad squat." },
           { id: "wed_5", name: "Smith Machine Calf Raises", sets: 4, repRange: "12–15", targetReps: 15, defaultWeight: 45, unit: "kg plates", slug: "Standing_Calf_Raises", cue: "Stand on plate; pause 2 full seconds in bottom stretch." },
           { id: "wed_6", name: "Cable Crunches", sets: 3, repRange: "12–15", targetReps: 15, defaultWeight: 27.5, unit: "kg stack", slug: "Cable_Crunch", cue: "Curl ribs toward pelvis; keep hips stationary." },
           { id: "wed_7", name: "Reverse Crunches (Flat Bench)", sets: 2, repRange: "15–20", targetReps: 15, defaultWeight: 0, unit: "bodyweight", slug: "Reverse_Crunch", cue: "Lift pelvis smoothly off bench; targets lower abs." }
@@ -1253,37 +1260,37 @@
         dayName: "Thursday", shortTag: "PUSH B", typeClass: "tag-push",
         title: "Push B — Upper Chest & Delts (24 Sets)",
         muscles: ["Upper Chest", "Front Delts", "Side Delts", "Triceps"],
-        warmup: "5:50–5:55 AM: Shoulder dislocates + Cuban press openers before Smith Incline.",
+        warmup: "5:50–5:55 AM: Shoulder stretches + arm circles before Smith Incline.",
         openers: [
-          { name: "Shoulder Dislocate Stretch", reps: "2 × 12", slug: "Shoulder_Stretch" },
-          { name: "Light Dumbbell Cuban Press", reps: "2 × 12", slug: "Cuban_Press" }
+          { name: "Shoulder Stretch Opener", reps: "2 × 15s/side", slug: "Shoulder_Stretch" },
+          { name: "Arm Circles & Rotator Warm-Up", reps: "2 × 20s", slug: "Arm_Circles" }
         ],
         exercises: [
-          { id: "thu_1", name: "Smith Machine Incline Press", sets: 4, repRange: "10–12", targetReps: 12, defaultWeight: 27.5, unit: "kg plates", slug: "Smith_Machine_Incline_Bench_Press", cue: "30° bench; lower bar to upper chest below collarbone." },
-          { id: "thu_2", name: "Machine Chest Press", sets: 4, repRange: "10–12", targetReps: 12, defaultWeight: 37.5, unit: "kg stack", slug: "Machine_Bench_Press", cue: "Align handles with mid-chest; push to 1 rep shy of failure." },
+          { id: "thu_1", name: "Smith Machine Incline Press", sets: 4, repRange: "10–12", targetReps: 12, defaultWeight: 27.5, unit: "kg plates", slug: "Smith_Machine_Incline_Bench_Press", cue: "30° bench; lower bar to upper chest just below collarbone." },
+          { id: "thu_2", name: "Machine Chest Press", sets: 4, repRange: "10–12", targetReps: 12, defaultWeight: 37.5, unit: "kg stack", slug: "Machine_Bench_Press", cue: "Align handles with mid-chest; push smoothly to 1 rep shy of failure." },
           { id: "thu_3", name: "Incline Dumbbell Flyes", sets: 3, repRange: "12–15", targetReps: 15, defaultWeight: 10, unit: "kg/hand", slug: "Incline_Dumbbell_Flyes", cue: "Deep upper-pec stretch at bottom; hug a barrel on the way up." },
-          { id: "thu_4", name: "Machine Shoulder Press", sets: 4, repRange: "10–12", targetReps: 12, defaultWeight: 27.5, unit: "kg stack", slug: "Machine_Shoulder_Military_Press", cue: "Keep lower back pressed against pad; stop short of lockout." },
-          { id: "thu_5", name: "Cable Single-Arm Lateral Raises", sets: 4, repRange: "12–15", targetReps: 15, defaultWeight: 5, unit: "kg stack", slug: "Cable_Seated_Lateral_Raise", cue: "Pulley at wrist height; constant side-delt tension." },
-          { id: "thu_6", name: "Overhead Cable Rope Tricep Ext.", sets: 3, repRange: "12–15", targetReps: 15, defaultWeight: 17.5, unit: "kg stack", slug: "Cable_Rope_Overhead_Triceps_Extension", cue: "Split stance; deep tricep stretch behind head." },
-          { id: "thu_7", name: "Single-Arm Reverse Cable Pushdown", sets: 2, repRange: "12–15", targetReps: 15, defaultWeight: 7.5, unit: "kg stack", slug: "Triceps_Pushdown", cue: "Underhand grip; hits medial tricep head." }
+          { id: "thu_4", name: "Machine Shoulder Press", sets: 4, repRange: "10–12", targetReps: 12, defaultWeight: 27.5, unit: "kg stack", slug: "Machine_Shoulder_Military_Press", cue: "Keep lower back pressed against pad; stop just short of lockout." },
+          { id: "thu_5", name: "Standing Dumbbell Lateral Raises", sets: 4, repRange: "12–15", targetReps: 15, defaultWeight: 7.5, unit: "kg/hand", slug: "Side_Lateral_Raise", cue: "Conventional standing DB laterals — zero waiting for busy cable stacks." },
+          { id: "thu_6", name: "Flat Bench Dumbbell Skullcrushers", sets: 3, repRange: "12–15", targetReps: 15, defaultWeight: 7.5, unit: "kg/hand", slug: "Lying_Dumbbell_Tricep_Extension", cue: "Lower dumbbells beside ears; full elbow extension at top." },
+          { id: "thu_7", name: "Cable Straight-Bar Tricep Pushdown", sets: 2, repRange: "12–15", targetReps: 15, defaultWeight: 20, unit: "kg stack", slug: "Triceps_Pushdown", cue: "Overhand grip; finish triceps with strict, fast reps." }
         ]
       },
       5: {
         dayName: "Friday", shortTag: "PULL B", typeClass: "tag-pull",
         title: "Pull B — Thickness, Traps & Arms (24 Sets)",
         muscles: ["Mid Back", "Lats", "Upper Traps", "Brachialis", "Biceps"],
-        warmup: "5:50–5:55 AM: Thoracic cat-cow + bent-over rear delt openers.",
+        warmup: "5:50–5:55 AM: Cat-cow thoracic openers + scapular hangs.",
         openers: [
           { name: "Cat-Cow Thoracic Mobility", reps: "2 × 12", slug: "Cat_Stretch" },
-          { name: "Light Bent-Over Rear Delt Raise", reps: "2 × 15", slug: "Bent_Over_Dumbbell_Rear_Delt_Raise_With_Head_On_Bench" }
+          { name: "Scapular Pull-Up / Dead Hang", reps: "2 × 12", slug: "Scapular_Pull-Up" }
         ],
         exercises: [
           { id: "fri_1", name: "Seated Cable Rows (Neutral)", sets: 4, repRange: "10–12", targetReps: 12, defaultWeight: 47.5, unit: "kg stack", slug: "Seated_Cable_Rows", cue: "Reach forward for stretch, pull to lower sternum, squeeze 1 sec." },
-          { id: "fri_2", name: "Single-Arm Dumbbell Rows", sets: 4, repRange: "10–12", targetReps: 12, defaultWeight: 20, unit: "kg DB", slug: "One-Arm_Dumbbell_Row", cue: "Brace hand on flat bench; row toward hip pocket." },
-          { id: "fri_3", name: "Wide-Grip Seated Cable Row", sets: 3, repRange: "12–15", targetReps: 15, defaultWeight: 37.5, unit: "kg stack", slug: "Seated_Cable_Rows", cue: "Pull wide bar to upper abdomen; flares rhomboids & rear delts." },
+          { id: "fri_2", name: "Single-Arm Dumbbell Rows", sets: 4, repRange: "10–12", targetReps: 12, defaultWeight: 20, unit: "kg DB", slug: "One-Arm_Dumbbell_Row", cue: "Brace hand on flat bench; row dumbbell back toward hip pocket." },
+          { id: "fri_3", name: "Bent-Over Dumbbell Rear Delt Flyes", sets: 3, repRange: "12–15", targetReps: 15, defaultWeight: 7.5, unit: "kg/hand", slug: "Bent_Over_Dumbbell_Rear_Delt_Raise_With_Head_On_Bench", cue: "Hinge forward; sweep dumbbells out wide for rear delts & rhomboids." },
           { id: "fri_4", name: "Smith Machine Shrugs", sets: 4, repRange: "12–15", targetReps: 15, defaultWeight: 45, unit: "kg plates", slug: "Smith_Machine_Shrug", cue: "Shrug straight up toward ears; hold 1.5 sec at top." },
-          { id: "fri_5", name: "Dumbbell Hammer Curls", sets: 3, repRange: "10–12", targetReps: 12, defaultWeight: 10, unit: "kg/hand", slug: "Hammer_Curls", cue: "Neutral grip; builds forearm & outer arm thickness." },
-          { id: "fri_6", name: "Cable Straight-Bar Bicep Curls", sets: 3, repRange: "12–15", targetReps: 15, defaultWeight: 17.5, unit: "kg stack", slug: "Cable_Preacher_Curl", cue: "Elbows tucked slightly forward; squeeze hard at top." },
+          { id: "fri_5", name: "Incline Dumbbell Bicep Curls", sets: 3, repRange: "10–12", targetReps: 12, defaultWeight: 8.5, unit: "kg/hand", slug: "Incline_Dumbbell_Curl", cue: "45° bench; deep long-head bicep stretch at bottom." },
+          { id: "fri_6", name: "Dumbbell Hammer Curls", sets: 3, repRange: "12–15", targetReps: 15, defaultWeight: 10, unit: "kg/hand", slug: "Hammer_Curls", cue: "Neutral grip; builds forearm & outer arm thickness." },
           { id: "fri_7", name: "Dumbbell Concentration Curls", sets: 3, repRange: "10–12", targetReps: 12, defaultWeight: 7.5, unit: "kg DB", slug: "Concentration_Curls", cue: "Elbow braced against inner thigh; peak bicep contraction." }
         ]
       },
@@ -1291,7 +1298,7 @@
         dayName: "Saturday", shortTag: "LEGS B", typeClass: "tag-legs",
         title: "Legs B & Core — Hamstrings & Glutes (24 Sets)",
         muscles: ["Hamstrings", "Glutes", "Quads", "Calves", "Core"],
-        warmup: "5:50–5:55 AM: Glute bridges & walking lunge openers before Smith RDLs.",
+        warmup: "5:50–5:55 AM: Glute bridges & walking lunges before Smith RDLs.",
         openers: [
           { name: "Glute Bridge Activation", reps: "2 × 15", slug: "Butt_Lift_Bridge" },
           { name: "Bodyweight Lunge Hip Opener", reps: "2 × 10/leg", slug: "Bodyweight_Walking_Lunge" }
@@ -1347,7 +1354,7 @@
     /* ========================================================================
        PERSISTENT STATE
        ======================================================================== */
-    const STORAGE_KEY = "apex50_cyan_m3_v4";
+    const STORAGE_KEY = "apex50_amoled_m3_v9";
 
     function getDefaultState() {
       const logs = {};
@@ -1368,14 +1375,13 @@
         calYear: now.getFullYear(),
         calMonth: now.getMonth(),
         setLogs: logs,
-        // Ephemeral per-date overrides & completions: keyed strictly by "YYYY-MM-DD"
-        dailyRecords: {}, // { "YYYY-MM-DD": { splitTag, typeClass, title, muscles, notes, isCustom, cardioOverride, cardioDone, setsDone } }
+        dailyRecords: {},
         cardioChecked: {},
         legDayMode: false,
         weight: 75.4,
         targetWeight: 70.0,
-        weightHistory: {}, // { "YYYY-MM-DD": 75.4 }
-        dailySteps: {}, // { "YYYY-MM-DD": 9200 }
+        weightHistory: {},
+        dailySteps: {},
         waterMl: 0,
         waterDate: getTodayIso(),
         waterReminderActive: false,
@@ -1392,10 +1398,9 @@
 
     function loadState() {
       try {
-        const raw = localStorage.getItem(STORAGE_KEY);
+        const raw = localStorage.getItem(STORAGE_KEY) || localStorage.getItem("apex50_cyan_m3_v4");
         if (!raw) return getDefaultState();
         const merged = { ...getDefaultState(), ...JSON.parse(raw) };
-        // Ensure any newly added 24-set exercise IDs exist in setLogs
         Object.values(WORKOUT_PLAN).forEach((day) => {
           day.exercises.forEach((ex) => {
             if (!merged.setLogs[ex.id]) {
@@ -1407,7 +1412,6 @@
             }
           });
         });
-        // Reset daily water if new day
         if (merged.waterDate !== getTodayIso()) {
           merged.waterDate = getTodayIso();
           merged.waterMl = 0;
@@ -1431,7 +1435,7 @@
     }
 
     /* ========================================================================
-       ANIMATED POSE LOOP ENGINE (0.jpg <-> 1.jpg every 1.1s)
+       ANIMATED POSE LOOP ENGINE (0.jpg <-> 1.jpg every 1.15s)
        ======================================================================== */
     let poseFrame = 0;
     setInterval(() => {
@@ -1451,14 +1455,14 @@
     function applyTheme(theme) {
       document.documentElement.setAttribute("data-theme", theme);
       document.getElementById("themeIcon").textContent = theme === "light" ? "dark_mode" : "light_mode";
-      document.getElementById("metaThemeColor").setAttribute("content", theme === "light" ? "#F0F7FF" : "#060B14");
+      document.getElementById("metaThemeColor").setAttribute("content", theme === "light" ? "#F0F7FF" : "#000000");
     }
 
     document.getElementById("themeToggleBtn").addEventListener("click", () => {
       state.theme = state.theme === "dark" ? "light" : "dark";
       applyTheme(state.theme);
       saveState();
-      showSnackbar(state.theme === "light" ? "Glacial Ice & Cobalt Theme" : "Obsidian Black & Electric Cyan Theme");
+      showSnackbar(state.theme === "light" ? "Glacial Ice Light Theme" : "True AMOLED Pitch-Black Theme");
     });
 
     /* ========================================================================
@@ -1592,19 +1596,15 @@
       }
 
       let values = [];
-      let unit = "";
       if (type === "weight") {
-        unit = "kg";
         let lastW = Number(state.weight) || 75.4;
         values = days.map((d) => {
           if (state.weightHistory[d.iso]) lastW = Number(state.weightHistory[d.iso]);
           return lastW;
         });
       } else if (type === "steps") {
-        unit = "steps";
         values = days.map((d) => Number(state.dailySteps[d.iso]) || 0);
       } else {
-        unit = "sets";
         values = days.map((d) => Number(state.dailyRecords[d.iso]?.setsDone) || 0);
       }
 
@@ -1627,11 +1627,11 @@
       const circles = pts
         .map(
           (p) => `
-          <circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="4" fill="#22D3EE" stroke="#030712" stroke-width="1.5" />
-          <text x="${p.x.toFixed(1)}" y="${(p.y - 7).toFixed(1)}" fill="#A5F3FC" font-family="JetBrains Mono, monospace" font-size="8.5" font-weight="700" text-anchor="middle">
+          <circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="4" fill="#38BDF8" stroke="#000000" stroke-width="1.5" />
+          <text x="${p.x.toFixed(1)}" y="${(p.y - 7).toFixed(1)}" fill="#BAE6FD" font-family="JetBrains Mono, monospace" font-size="8.5" font-weight="700" text-anchor="middle">
             ${type === "steps" && p.v >= 1000 ? (p.v / 1000).toFixed(1) + "k" : p.v}
           </text>
-          <text x="${p.x.toFixed(1)}" y="${H - 5}" fill="#94B2D1" font-family="Plus Jakarta Sans, sans-serif" font-size="9" font-weight="700" text-anchor="middle">
+          <text x="${p.x.toFixed(1)}" y="${H - 5}" fill="#7C92AB" font-family="Plus Jakarta Sans, sans-serif" font-size="9" font-weight="700" text-anchor="middle">
             ${p.label}
           </text>
         `
@@ -1642,12 +1642,12 @@
         <svg viewBox="0 0 ${W} ${H}" style="width:100%; height:auto; display:block;">
           <defs>
             <linearGradient id="cyanArea" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stop-color="#22D3EE" stop-opacity="0.35"/>
-              <stop offset="100%" stop-color="#22D3EE" stop-opacity="0.0"/>
+              <stop offset="0%" stop-color="#0EA5E9" stop-opacity="0.18"/>
+              <stop offset="100%" stop-color="#0EA5E9" stop-opacity="0.0"/>
             </linearGradient>
           </defs>
           <polygon points="${areaPoints}" fill="url(#cyanArea)" />
-          <polyline points="${polyPoints}" fill="none" stroke="#22D3EE" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+          <polyline points="${polyPoints}" fill="none" stroke="#0EA5E9" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
           ${circles}
         </svg>
       `;
@@ -1759,19 +1759,34 @@
       btn.innerHTML = `<span class="material-symbols-rounded">hourglass_top</span> Analyzing...`;
 
       try {
-        const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${encodeURIComponent(state.geminiApiKey)}`;
         const sysPrompt = `Estimate total calories (kcal) and protein (grams) for this meal: "${promptText}". Return ONLY valid JSON: {"kcal": number, "protein": number, "summary": "short clean label"}`;
-        const res = await fetch(endpoint, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            contents: [{ parts: [{ text: sysPrompt }] }],
-            generationConfig: { responseMimeType: "application/json" }
-          })
+        const bodyPayload = JSON.stringify({
+          contents: [{ parts: [{ text: sysPrompt }] }],
+          generationConfig: { responseMimeType: "application/json" }
         });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data?.error?.message || "API Error");
-        const parsed = JSON.parse(data.candidates?.[0]?.content?.parts?.[0]?.text || "{}");
+
+        const candidateModels = ["gemini-3.8-flash", "gemini-3.0-flash", "gemini-flash-latest"];
+        let res = null;
+        let data = null;
+
+        for (const modelName of candidateModels) {
+          const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${encodeURIComponent(state.geminiApiKey)}`;
+          res = await fetch(endpoint, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: bodyPayload
+          });
+          data = await res.json();
+          if (res.ok) break;
+          const errMsg = String(data?.error?.message || "");
+          if (!errMsg.includes("no longer available") && !errMsg.includes("not found")) {
+            break;
+          }
+        }
+
+        if (!res || !res.ok) throw new Error(data?.error?.message || "API Error");
+        const rawText = (data.candidates?.[0]?.content?.parts?.[0]?.text || "{}").replace(/```json|```/g, "").trim();
+        const parsed = JSON.parse(rawText);
 
         state.meals.unshift({
           id: String(Date.now()),
@@ -1827,7 +1842,6 @@
 
       document.getElementById("warmupText").textContent = plan.warmup;
 
-      // Render Animated Openers
       const openerGrid = document.getElementById("openerVisualGrid");
       if (plan.openers && plan.openers.length > 0) {
         openerGrid.style.display = "grid";
@@ -1850,7 +1864,6 @@
         openerGrid.style.display = "none";
       }
 
-      // Render Today's 6-7 Exercises (24+ Sets) with Animated GIF-Style Loops
       const list = document.getElementById("exerciseList");
       if (plan.exercises.length === 0) {
         list.innerHTML = `
@@ -1959,7 +1972,6 @@
       });
     }
 
-    // Ephemeral Today-Only Workout Override Controls
     document.getElementById("toggleWorkoutOverrideBtn").addEventListener("click", () => {
       const form = document.getElementById("workoutOverrideForm");
       form.style.display = form.style.display === "none" ? "block" : "none";
@@ -2340,7 +2352,7 @@
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `apex-50-v4-backup-${getTodayIso()}.json`;
+      a.download = `apex-50-amoled-backup-${getTodayIso()}.json`;
       a.click();
       URL.revokeObjectURL(url);
       showSnackbar("Downloaded JSON Backup");

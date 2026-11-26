@@ -1,13 +1,13 @@
 {
   "name": "Apex 50 Protocol",
   "short_name": "Apex 50",
-  "description": "Material You High-Volume Hypertrophy (24+ Sets), Animated Exercise Demos, Cardio & Analytics PWA",
+  "description": "True AMOLED Black & Muted Cyan High-Volume Hypertrophy & Recomp PWA",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#060B14",
-  "theme_color": "#060B14",
+  "background_color": "#000000",
+  "theme_color": "#000000",
   "icons": [
     {
       "src": "icon.svg",
