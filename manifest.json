@@ -1,13 +1,13 @@
 {
   "name": "Apex 50 Protocol",
   "short_name": "Apex 50",
-  "description": "Material You Double-Digit Hypertrophy, Incline Cardio & Target-Muscle Tracker",
+  "description": "Material You Double-Digit Hypertrophy, Incline Cardio, Gemini Nutrition & Hydration PWA",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#0F1419",
-  "theme_color": "#0F1419",
+  "background_color": "#060B14",
+  "theme_color": "#060B14",
   "icons": [
     {
       "src": "icon.svg",
