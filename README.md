@@ -1,6 +1,6 @@
-# Apex 50 Protocol — Notes-Aware AI Coach & Next-Workout Planner Edition (v21)
+# Apex 50 Protocol — Matte Blue, Purple, Black, Grey & White Edition (v23)
 
-Upgraded with session & per-exercise notes that directly drive **Post-Workout AI Analysis** and **Next Workout Planning**:
-- **Session & Exercise Notes:** Add session notes (energy, sleep, joint tightness, equipment crowd, form cues) right above the complete button—plus optional quick notes per exercise.
-- **Notes-Driven AI Coach & Smart Planner:** When you complete a session, your notes are passed into Gemini AI (and the offline Smart Coach engine) to tailor volume feedback, adjust next week's progression if you flagged fatigue/joint pain/equipment swaps, and display a **Next Session Coach Note** banner when that split comes around again.
-- **Calendar & History Integration:** Saved notes appear in the Calendar inspector alongside your `weight × reps` logs and AI review.
+Zero copper, zero neon—built strictly around solid matte **Blues**, **Purples**, **Pitch Black**, **Charcoal Greys**, and **Crisp Whites** with **Space Grotesk**, **Inter**, and **IBM Plex Mono** typography:
+- **Midnight Blue (AMOLED Black):** Pitch-black `#000000` canvas, `#14161D` charcoal grey cards, matte cobalt blue (`#5B8DEF`), and soft royal purple (`#8B7AE8`).
+- **Amethyst (AMOLED Black):** Pitch-black `#000000` canvas with matte plum purple (`#937EE8`) and steel blue (`#6893DF`).
+- **Crisp White (Light):** Clean `#F4F5F8` cool alabaster grey, pure `#FFFFFF` cards, deep charcoal ink (`#111318`), and solid royal blue (`#3563C9`) / indigo (`#5E4BC4`).
