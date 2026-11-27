@@ -1,7 +1,6 @@
-# Apex 50 Protocol — Adaptive Cardio & Weight Progression Edition (v19)
+# Apex 50 Protocol — Notes-Aware AI Coach & Next-Workout Planner Edition (v21)
 
-Applies the exact same Previous History + Smart Progression / Missed-Target Rule to Cardio as well as Workouts:
-- Previous Cardio History (Incline x Speed x Mins): Every incline cardio block and the main Cardio banner display your last logged incline% x speed km/h and minutes so you see your prior session at a glance.
-- Auto-Progression on Full Completion: When you complete all 20 minutes of your incline protocol, the app automatically progresses next week's incline (+0.5%, up to 18% / 20%) or speed (+0.1 km/h, up to 6.6 km/h) while keeping your 20-minute 6:40-7:00 AM window intact.
-- Missed-Target Rule for Cardio: If you log fewer minutes or drop incline/speed during a session, the app holds your incline and speed targets steady and focuses on completing the full 20 minutes before increasing intensity.
-- Post-Cardio AI Coach Review & Calendar Log: Logging Cardio generates an AI/Smart Coach pacing review and stamps your exact incline% x speed km/h blocks onto the Calendar inspector.
+Upgraded with session & per-exercise notes that directly drive **Post-Workout AI Analysis** and **Next Workout Planning**:
+- **Session & Exercise Notes:** Add session notes (energy, sleep, joint tightness, equipment crowd, form cues) right above the complete button—plus optional quick notes per exercise.
+- **Notes-Driven AI Coach & Smart Planner:** When you complete a session, your notes are passed into Gemini AI (and the offline Smart Coach engine) to tailor volume feedback, adjust next week's progression if you flagged fatigue/joint pain/equipment swaps, and display a **Next Session Coach Note** banner when that split comes around again.
+- **Calendar & History Integration:** Saved notes appear in the Calendar inspector alongside your `weight × reps` logs and AI review.

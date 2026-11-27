@@ -540,13 +540,83 @@
       font-size: 11px;
       color: var(--acc-emerald);
     }
+    .ex-action-bar {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex-shrink: 0;
+    }
+    .ex-mini-btn {
+      width: 30px;
+      height: 30px;
+      border-radius: 9px;
+      border: 1px solid var(--md-sys-color-outline-variant);
+      background: var(--md-sys-color-surface-container-low);
+      color: var(--md-sys-color-on-surface);
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+    }
+    .ex-mini-btn:active { transform: scale(0.92); }
+    .ex-mini-btn.danger {
+      background: var(--md-sys-color-error-container);
+      color: var(--md-sys-color-on-error-container);
+      border-color: rgba(239, 68, 68, 0.35);
+    }
     .set-row {
       display: grid;
-      grid-template-columns: 36px 68px 1fr 1fr 38px;
-      gap: 6px;
+      grid-template-columns: 32px 60px 1fr 1fr 34px 28px;
+      gap: 5px;
       align-items: center;
       margin-top: 7px;
     }
+    .set-del-btn {
+      width: 28px;
+      height: 36px;
+      border-radius: 9px;
+      border: 1px solid var(--md-sys-color-outline-variant);
+      background: transparent;
+      color: var(--md-sys-color-on-surface-variant);
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+    }
+    .set-del-btn:hover, .set-del-btn:active {
+      background: var(--md-sys-color-error-container);
+      color: var(--md-sys-color-on-error-container);
+    }
+    .set-footer-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 9px;
+      padding-top: 8px;
+      border-top: 1px solid var(--md-sys-color-outline-variant);
+    }
+    .scope-pill-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+    .scope-radio-btn {
+      padding: 8px 10px;
+      border-radius: 12px;
+      border: 1.5px solid var(--md-sys-color-outline-variant);
+      background: var(--md-sys-color-surface-container-lowest);
+      color: var(--md-sys-color-on-surface-variant);
+      font-family: inherit;
+      font-size: 11.5px;
+      font-weight: 800;
+      cursor: pointer;
+      text-align: center;
+    }
+    .scope-radio-btn.active {
+      background: var(--md-sys-color-primary-container);
+      color: var(--md-sys-color-primary);
+      border-color: var(--md-sys-color-primary);
+    }
+
     .set-prev-tag {
       font-family: 'JetBrains Mono', monospace;
       font-size: 10px;
@@ -1007,6 +1077,18 @@
         </div>
       </div>
 
+      <!-- Next Workout Plan Banner (Generated from Previous Session Notes & Progression) -->
+      <div class="m3-card" id="nextWorkoutPlanBanner" style="display:none; border-color:var(--acc-violet); background:var(--md-sys-color-surface-container-low);">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+          <span style="font-size:12px; font-weight:800; color:var(--acc-violet); display:flex; align-items:center; gap:5px;">
+            <span class="material-symbols-rounded" style="font-size:17px;">event_upcoming</span>
+            Coach Plan for Today's Session
+          </span>
+          <span class="m3-pill-tag" style="font-size:9px; color:var(--acc-violet);">From Prior Notes</span>
+        </div>
+        <div id="nextWorkoutPlanBody" style="font-size:12px; line-height:1.45; color:var(--md-sys-color-on-surface);"></div>
+      </div>
+
       <!-- Warm-Up Openers with Animated Motion Loops -->
       <div class="m3-card">
         <div class="section-heading" style="margin-bottom:4px;">
@@ -1020,14 +1102,18 @@
       <!-- Today's 7 Conventional Exercises (24 Sets) with Animated Motion Loops -->
       <div id="exerciseList"></div>
 
-      <!-- Add Extra Custom Exercise for Today -->
+      <!-- Add Custom Variation (Only Today OR Part of Weekly Cycle) -->
       <div class="m3-card">
         <div class="section-heading" style="margin-bottom:6px;">
-          <span>Add Custom Exercise (Today Only)</span>
-          <span class="m3-pill-tag" style="font-size:9.5px;">Extra Lift</span>
+          <span>Add Custom Variation</span>
+          <span class="m3-pill-tag" style="font-size:9.5px;">Today or Cycle</span>
+        </div>
+        <div class="scope-pill-group" id="customExScopeGroup">
+          <button type="button" class="scope-radio-btn active" data-scope="today">Only for Today</button>
+          <button type="button" class="scope-radio-btn" data-scope="cycle">Part of Weekly Cycle</button>
         </div>
         <div style="display:grid; grid-template-columns: 1.4fr 0.6fr; gap:8px; margin-bottom:8px;">
-          <input type="text" id="extraExNameInput" class="m3-input" placeholder="Exercise name (e.g., Dips / Pushups)" />
+          <input type="text" id="extraExNameInput" class="m3-input" placeholder="Variation name (e.g., Cable Fly / Dips)" />
           <input type="number" id="extraExSetsInput" class="m3-input" placeholder="Sets" value="3" min="1" max="10" />
         </div>
         <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px; margin-bottom:8px;">
@@ -1036,8 +1122,24 @@
         </div>
         <button class="m3-btn-tonal" id="addExtraExerciseBtn" style="width:100%;">
           <span class="material-symbols-rounded" style="font-size:17px;">add_circle</span>
-          Add Exercise to Today's List
+          <span id="addExtraExBtnLabel">Add Variation (Only Today)</span>
         </button>
+      </div>
+
+      <!-- Session Notes for AI Analysis & Next Workout Planning -->
+      <div class="m3-card" style="border-color:var(--acc-cyan);">
+        <div class="section-heading" style="margin-bottom:6px;">
+          <span style="display:flex; align-items:center; gap:6px;">
+            <span class="material-symbols-rounded" style="font-size:18px; color:var(--acc-cyan);">edit_note</span>
+            Session Notes (Used by AI & Next Plan)
+          </span>
+          <span class="m3-pill-tag" style="font-size:9.5px;">AI Context</span>
+        </div>
+        <textarea id="sessionNotesInput" rows="2" class="m3-textarea" placeholder="Add notes on energy, sleep, shoulder/knee feel, busy equipment, or target changes for next session..."></textarea>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:6px;">
+          <span style="font-size:10.5px; color:var(--md-sys-color-on-surface-variant);">Auto-saved & fed into AI analysis + next week's plan</span>
+          <button type="button" class="m3-btn-tonal" id="saveSessionNoteBtn" style="padding:5px 11px; font-size:11px;">Save Note</button>
+        </div>
       </div>
 
       <!-- Complete Today's Workout CTA -->
@@ -1154,7 +1256,18 @@
       </div>
       <div id="treadmillBlockList"></div>
 
-      <button class="m3-btn-filled" id="saveCardioBtn" style="margin-top:6px;">
+      <div class="m3-card" style="margin-top:8px; border-color:var(--acc-cyan);">
+        <div class="section-heading" style="margin-bottom:6px;">
+          <span style="display:flex; align-items:center; gap:6px;">
+            <span class="material-symbols-rounded" style="font-size:18px; color:var(--acc-cyan);">edit_note</span>
+            Cardio Notes (Used by AI & Next Plan)
+          </span>
+          <span class="m3-pill-tag" style="font-size:9.5px;">AI Context</span>
+        </div>
+        <textarea id="cardioNotesInput" rows="2" class="m3-textarea" placeholder="Add notes on calf tightness, stamina, breathing, or next session adjustments..."></textarea>
+      </div>
+
+      <button class="m3-btn-filled" id="saveCardioBtn" style="margin-top:2px;">
         <span class="material-symbols-rounded">auto_awesome</span>
         Complete Cardio, Auto-Progress & AI Analyze
       </button>
@@ -1287,19 +1400,32 @@
         </button>
       </div>
 
-      <div class="m3-card" style="display:flex; gap:8px; flex-wrap:wrap;">
-        <button class="m3-btn-tonal" id="exportJsonBtn" style="flex:1;">
-          <span class="material-symbols-rounded" style="font-size:17px;">download</span>
-          Export JSON
-        </button>
-        <button class="m3-btn-tonal" id="hardReloadAppBtn" style="flex:1;">
-          <span class="material-symbols-rounded" style="font-size:17px;">sync</span>
-          Force Update
-        </button>
-        <button class="m3-btn-tonal" id="resetPlanBtn" style="flex:1; background:var(--md-sys-color-error-container); color:var(--md-sys-color-on-error-container);">
-          <span class="material-symbols-rounded" style="font-size:17px;">refresh</span>
-          Reset Defaults
-        </button>
+      <div class="m3-card">
+        <div class="section-heading" style="margin-bottom:8px;">
+          <span>Backup, Restore & App Updates</span>
+          <span class="m3-pill-tag" style="font-size:9.5px;">JSON Sync</span>
+        </div>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px; margin-bottom:8px;">
+          <button class="m3-btn-tonal" id="exportJsonBtn">
+            <span class="material-symbols-rounded" style="font-size:17px;">download</span>
+            Export JSON
+          </button>
+          <button class="m3-btn-tonal" id="importJsonBtn">
+            <span class="material-symbols-rounded" style="font-size:17px;">upload_file</span>
+            Upload JSON
+          </button>
+          <input type="file" id="importJsonFileInput" accept=".json,application/json" style="display:none;" />
+        </div>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
+          <button class="m3-btn-tonal" id="hardReloadAppBtn">
+            <span class="material-symbols-rounded" style="font-size:17px;">sync</span>
+            Force Update
+          </button>
+          <button class="m3-btn-tonal" id="resetPlanBtn" style="background:var(--md-sys-color-error-container); color:var(--md-sys-color-on-error-container);">
+            <span class="material-symbols-rounded" style="font-size:17px;">refresh</span>
+            Reset Defaults
+          </button>
+        </div>
       </div>
     </section>
 
@@ -1507,7 +1633,7 @@
     /* ========================================================================
        PERSISTENT STATE
        ======================================================================== */
-    const STORAGE_KEY = "apex50_amoled_m3_v19";
+    const STORAGE_KEY = "apex50_amoled_m3_v21";
 
     function getDefaultState() {
       const logs = {};
@@ -1524,6 +1650,9 @@
       const now = new Date();
       return {
         theme: "dark",
+        customWorkoutPlan: JSON.parse(JSON.stringify(WORKOUT_PLAN)),
+        todayTempExercises: {},
+        hiddenTodayExerciseIds: {},
         selectedCalDate: getTodayIso(),
         calYear: now.getFullYear(),
         calMonth: now.getMonth(),
@@ -1542,6 +1671,9 @@
         geminiApiKey: "",
         lastResetDate: getTodayIso(),
         exerciseHistory: {},
+        sessionNotes: {},
+        nextSessionPlanNotes: {},
+        cardioNotes: {},
         cardioHistory: [],
         cardioBlocksStd: JSON.parse(JSON.stringify(TREADMILL_STANDARD)),
         cardioBlocksLeg: JSON.parse(JSON.stringify(TREADMILL_LEGDAY)),
@@ -1577,8 +1709,20 @@
         }
         if (!Array.isArray(merged.cardioHistory)) merged.cardioHistory = [];
         if (!merged.cardioAnalyses) merged.cardioAnalyses = {};
-        if (merged.lastResetDate !== getTodayIso()) {
-          merged.lastResetDate = getTodayIso();
+        if (!merged.sessionNotes) merged.sessionNotes = {};
+        if (!merged.nextSessionPlanNotes) merged.nextSessionPlanNotes = {};
+        if (!merged.cardioNotes) merged.cardioNotes = {};
+        if (!merged.customWorkoutPlan) {
+          merged.customWorkoutPlan = JSON.parse(JSON.stringify(WORKOUT_PLAN));
+        }
+        if (!merged.todayTempExercises) merged.todayTempExercises = {};
+        if (!merged.hiddenTodayExerciseIds) merged.hiddenTodayExerciseIds = {};
+        const todayIsoNow = getTodayIso();
+        Object.keys(merged.todayTempExercises).forEach((k) => { if (k !== todayIsoNow) delete merged.todayTempExercises[k]; });
+        Object.keys(merged.hiddenTodayExerciseIds).forEach((k) => { if (k !== todayIsoNow) delete merged.hiddenTodayExerciseIds[k]; });
+
+        if (merged.lastResetDate !== todayIsoNow) {
+          merged.lastResetDate = todayIsoNow;
           Object.keys(merged.setLogs).forEach((exId) => {
             merged.setLogs[exId] = merged.setLogs[exId].map((r) => ({ ...r, done: false }));
           });
@@ -1698,10 +1842,24 @@
     /* ========================================================================
        HOME DASHBOARD, VISUAL RINGS & SVG PROGRESS GRAPHS
        ======================================================================== */
+    function getPlanForDow(dow) {
+      return (state.customWorkoutPlan && state.customWorkoutPlan[dow]) || WORKOUT_PLAN[dow];
+    }
+
+    function getEffectiveExercisesForToday() {
+      const todayIso = getTodayIso();
+      const dow = getTodayDow();
+      const plan = getPlanForDow(dow);
+      const hiddenIds = new Set(state.hiddenTodayExerciseIds?.[todayIso] || []);
+      const baseList = (plan.exercises || []).filter((ex) => !hiddenIds.has(ex.id));
+      const tempList = state.todayTempExercises?.[todayIso] || [];
+      return [...baseList, ...tempList];
+    }
+
     function countTodayCompletedSets(dow) {
-      const plan = WORKOUT_PLAN[dow];
+      const exercises = dow === getTodayDow() ? getEffectiveExercisesForToday() : (getPlanForDow(dow).exercises || []);
       let done = 0, total = 0;
-      plan.exercises.forEach((ex) => {
+      exercises.forEach((ex) => {
         const rows = state.setLogs[ex.id] || [];
         total += rows.length;
         done += rows.filter((r) => r.done).length;
@@ -1873,7 +2031,7 @@
     function renderDashboard() {
       const todayIso = getTodayIso();
       const dow = getTodayDow();
-      const plan = WORKOUT_PLAN[dow];
+      const plan = getPlanForDow(dow);
       const todayRec = state.dailyRecords[todayIso];
       const { done, total } = countTodayCompletedSets(dow);
 
@@ -1941,7 +2099,8 @@
     function renderTodayWorkoutView() {
       const todayIso = getTodayIso();
       const dow = getTodayDow();
-      const plan = WORKOUT_PLAN[dow];
+      const plan = getPlanForDow(dow);
+      const effectiveExercises = getEffectiveExercisesForToday();
       const todayRec = state.dailyRecords[todayIso];
       const { done, total } = countTodayCompletedSets(dow);
 
@@ -1951,7 +2110,7 @@
         document.getElementById("activeTargetMuscles").textContent = `Muscles: ${todayRec.muscles.join(" • ")}`;
         document.getElementById("sessionVolumeLive").textContent = "Custom Session";
       } else {
-        document.getElementById("todayWorkoutBadge").textContent = `TODAY ONLY • ${total} SETS`;
+        document.getElementById("todayWorkoutBadge").textContent = `TODAY • ${total} SETS`;
         document.getElementById("activeSplitTitle").textContent = `Today (${plan.dayName}) — ${plan.title}`;
         document.getElementById("activeTargetMuscles").textContent = `Target: ${plan.muscles.join(" • ")}`;
         document.getElementById("sessionVolumeLive").textContent = `${done} / ${total} Sets`;
@@ -1982,27 +2141,27 @@
       }
 
       const list = document.getElementById("exerciseList");
-      if (plan.exercises.length === 0) {
+      if (effectiveExercises.length === 0) {
         list.innerHTML = `
           <div class="m3-card" style="text-align:center; padding:24px 16px;">
             <span class="material-symbols-rounded" style="font-size:36px; color:var(--md-sys-color-primary);">self_improvement</span>
-            <h3 style="font-size:16px; font-weight:800; margin-top:6px;">Sunday Active Recovery</h3>
+            <h3 style="font-size:16px; font-weight:800; margin-top:6px;">Active Recovery / Empty List</h3>
             <p style="font-size:12.5px; color:var(--md-sys-color-on-surface-variant); margin-top:4px;">
-              Hit 8,000–10,000 steps or dance. If you train today, tap "Override Today" above.
+              Hit 8,000–10,000 steps or add a custom variation below for today or your weekly cycle.
             </p>
           </div>
         `;
         return;
       }
 
-      list.innerHTML = plan.exercises
+      list.innerHTML = effectiveExercises
         .map((ex, idx) => {
           const rows = state.setLogs[ex.id] || [];
           const allDone = rows.length > 0 && rows.every((r) => r.done);
           const readyUp = rows.length > 0 && rows.every((r) => r.done && Number(r.reps) >= ex.targetReps);
+          const isTempToday = !!ex.isTodayOnly;
 
           const histList = state.exerciseHistory?.[ex.id] || [];
-          // Find most recent entry prior to today (or latest entry if completed today)
           const prevEntry = histList.find((h) => h.date !== todayIso) || histList[0] || null;
           const unitSuffix = ex.unit === "kg plate" ? "s" : "";
 
@@ -2012,8 +2171,8 @@
                  <span>${histList.length}x logged</span>
                </div>`
             : `<div class="prev-session-banner" style="color:var(--md-sys-color-on-surface-variant);">
-                 <span>PREVIOUS: First cycle baseline (${ex.defaultWeight} kg × ${ex.repRange})</span>
-                 <span>0x logged</span>
+                 <span>PREVIOUS: First baseline (${ex.defaultWeight} kg × ${ex.repRange})</span>
+                 <span>${isTempToday ? "Today Only" : "Cycle"}</span>
                </div>`;
 
           const rowsHtml = rows
@@ -2034,7 +2193,10 @@
                   <span class="m3-unit">${ex.unit === "kg plate" ? "sec" : "reps"}</span>
                 </div>
                 <button class="set-check-btn ${r.done ? "done" : ""}" data-ex="${ex.id}" data-set="${sIdx}">
-                  <span class="material-symbols-rounded" style="font-size:18px;">check</span>
+                  <span class="material-symbols-rounded" style="font-size:17px;">check</span>
+                </button>
+                <button class="set-del-btn" title="Remove Set" onclick="removeSetFromExercise('${ex.id}', ${sIdx})">
+                  <span class="material-symbols-rounded" style="font-size:15px;">remove</span>
                 </button>
               </div>
             `;
@@ -2046,10 +2208,20 @@
             <div class="ex-card ${allDone ? "completed" : ""}">
               <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px;">
                 <div>
-                  <div style="font-size:14.5px; font-weight:800;">${idx + 1}. ${ex.name}</div>
-                  <div style="font-size:11.5px; color:var(--md-sys-color-on-surface-variant);">${ex.sets} Sets × ${ex.repRange} • Target: ${r0Weight = rows[0]?.weight ?? ex.defaultWeight} ${ex.unit}</div>
+                  <div style="font-size:14.5px; font-weight:800;">${idx + 1}. ${ex.name} ${isTempToday ? '<span style="font-size:10px; color:var(--acc-violet);">[TODAY]</span>' : ''}</div>
+                  <div style="font-size:11.5px; color:var(--md-sys-color-on-surface-variant);">${rows.length} Sets × ${ex.repRange} • Target: ${rows[0]?.weight ?? ex.defaultWeight} ${ex.unit}</div>
                 </div>
-                <span class="m3-pill-tag" style="font-size:10px;">${readyUp ? "Level Up Next Wk" : `${rows.filter((r) => r.done).length}/${ex.sets}`}</span>
+                <div class="ex-action-bar">
+                  <button class="ex-mini-btn" title="Move Up" onclick="moveExerciseOrder('${ex.id}', -1)" ${idx === 0 ? "disabled style='opacity:0.35;'" : ""}>
+                    <span class="material-symbols-rounded" style="font-size:17px;">arrow_upward</span>
+                  </button>
+                  <button class="ex-mini-btn" title="Move Down" onclick="moveExerciseOrder('${ex.id}', 1)" ${idx === effectiveExercises.length - 1 ? "disabled style='opacity:0.35;'" : ""}>
+                    <span class="material-symbols-rounded" style="font-size:17px;">arrow_downward</span>
+                  </button>
+                  <button class="ex-mini-btn danger" title="Remove Variation" onclick="removeExerciseVariation('${ex.id}')">
+                    <span class="material-symbols-rounded" style="font-size:16px;">delete</span>
+                  </button>
+                </div>
               </div>
               ${prevBannerHtml}
 
@@ -2064,6 +2236,13 @@
                 ${ex.cue}
               </div>
               ${rowsHtml}
+              <div class="set-footer-bar">
+                <span class="mono" style="font-size:11px; color:var(--md-sys-color-primary);">${readyUp ? "Level Up Next Wk ✓" : `${rows.filter((r) => r.done).length}/${rows.length} sets done`}</span>
+                <button type="button" class="m3-btn-tonal" style="padding:5px 12px; font-size:11px;" onclick="addSetToExercise('${ex.id}')">
+                  <span class="material-symbols-rounded" style="font-size:15px;">add</span>
+                  Add Set
+                </button>
+              </div>
             </div>
           `;
         })
@@ -2085,6 +2264,21 @@
           renderTodayWorkoutView();
         });
       });
+
+      const noteInput = document.getElementById("sessionNotesInput");
+      if (noteInput) {
+        noteInput.value = state.sessionNotes?.[todayIso] || "";
+      }
+
+      const nextPlanBanner = document.getElementById("nextWorkoutPlanBanner");
+      const nextPlanBody = document.getElementById("nextWorkoutPlanBody");
+      const savedNextPlan = state.nextSessionPlanNotes?.[dow];
+      if (savedNextPlan && nextPlanBanner && nextPlanBody) {
+        nextPlanBanner.style.display = "block";
+        nextPlanBody.innerHTML = savedNextPlan;
+      } else if (nextPlanBanner) {
+        nextPlanBanner.style.display = "none";
+      }
 
       const savedAnalysis = state.sessionAnalyses?.[todayIso];
       const analysisCard = document.getElementById("aiWorkoutAnalysisCard");
@@ -2119,6 +2313,16 @@
         });
       });
     }
+
+    document.getElementById("saveSessionNoteBtn").addEventListener("click", () => {
+      const todayIso = getTodayIso();
+      const val = document.getElementById("sessionNotesInput").value.trim();
+      state.sessionNotes = state.sessionNotes || {};
+      if (val) state.sessionNotes[todayIso] = val;
+      else delete state.sessionNotes[todayIso];
+      saveState();
+      showSnackbar("Session note saved for AI analysis & next workout plan!");
+    });
 
     document.getElementById("toggleWorkoutOverrideBtn").addEventListener("click", () => {
       const form = document.getElementById("workoutOverrideForm");
@@ -2166,68 +2370,74 @@
       return 2.5;
     }
 
-    function applyWeeklyAutoProgression(dow) {
-      const plan = WORKOUT_PLAN[dow];
+    function applyWeeklyAutoProgression(dow, userNotes = "") {
+      const plan = getPlanForDow(dow);
       const upgraded = [];
       const maintained = [];
+      const lowerNotes = String(userNotes || "").toLowerCase();
+      const holdDueToFatigueOrPain = /(pain|sore|tight|injury|hurt|fatigue|tired|deload|heavy|struggl)/.test(lowerNotes);
 
-      plan.exercises.forEach((ex) => {
+      getEffectiveExercisesForToday().forEach((ex) => {
         const rows = state.setLogs[ex.id] || [];
         if (rows.length === 0) return;
 
-        // Treat checked sets (or all sets if user tapped complete at end of session)
         const activeRows = rows.some((r) => r.done) ? rows.filter((r) => r.done) : rows;
         const avgWeight = activeRows.reduce((s, r) => s + (Number(r.weight) || 0), 0) / activeRows.length;
         const minReps = Math.min(...activeRows.map((r) => Number(r.reps) || 0));
 
         if (ex.unit === "bodyweight") {
-          const nextReps = Math.min(25, minReps + 2);
+          const nextReps = holdDueToFatigueOrPain ? minReps : Math.min(25, minReps + 2);
           state.setLogs[ex.id] = rows.map((r) => ({ weight: 0, reps: nextReps, done: r.done }));
-          upgraded.push(`${ex.name}: ${minReps} → ${nextReps} reps`);
+          if (!holdDueToFatigueOrPain) upgraded.push(`${ex.name}: ${minReps} → ${nextReps} reps`);
+          else maintained.push(`${ex.name}: Hold ${minReps} reps (recovery focus)`);
         } else if (ex.unit === "kg plate") {
-          if (minReps >= 60) {
+          if (minReps >= 60 && !holdDueToFatigueOrPain) {
             const nextW = +(avgWeight + 2.5).toFixed(2);
             state.setLogs[ex.id] = rows.map((r) => ({ weight: nextW, reps: 45, done: r.done }));
             upgraded.push(`${ex.name}: ${avgWeight} kg → ${nextW} kg (45s)`);
           } else {
-            const nextSec = Math.min(60, minReps + 5);
+            const nextSec = holdDueToFatigueOrPain ? minReps : Math.min(60, minReps + 5);
             state.setLogs[ex.id] = rows.map((r) => ({ weight: avgWeight, reps: nextSec, done: r.done }));
-            upgraded.push(`${ex.name}: ${minReps}s → ${nextSec}s @ ${avgWeight} kg`);
+            maintained.push(`${ex.name}: ${nextSec}s @ ${avgWeight} kg`);
           }
-        } else if (minReps >= ex.targetReps) {
+        } else if (minReps >= ex.targetReps && !holdDueToFatigueOrPain) {
           const inc = getWeightStepIncrement(ex);
           const nextW = +(avgWeight + inc).toFixed(2);
           const resetReps = ex.repRange.startsWith("12") ? 12 : 10;
           state.setLogs[ex.id] = rows.map((r) => ({ weight: nextW, reps: resetReps, done: r.done }));
           upgraded.push(`${ex.name}: ${avgWeight} kg → ${nextW} kg (${resetReps} reps)`);
         } else {
-          const nextReps = Math.min(ex.targetReps, minReps + 1);
+          const nextReps = holdDueToFatigueOrPain ? minReps : Math.min(ex.targetReps, minReps + 1);
           state.setLogs[ex.id] = rows.map((r) => ({ weight: avgWeight, reps: nextReps, done: r.done }));
           maintained.push(`${ex.name}: ${avgWeight} kg × ${nextReps} reps`);
         }
       });
 
-      return { upgraded, maintained };
+      return { upgraded, maintained, holdDueToFatigueOrPain };
     }
 
-    function buildLocalWorkoutAnalysis(sessionTitle, totalSets, totalVolumeKg, progResult, isCustom) {
+    function buildLocalWorkoutAnalysis(sessionTitle, totalSets, totalVolumeKg, progResult, isCustom, userNotes) {
       const lines = [];
       lines.push(`<strong>Session Summary:</strong> Completed <strong>${sessionTitle}</strong> (${totalSets} working sets${totalVolumeKg > 0 ? `, ~${totalVolumeKg.toLocaleString()} kg total tonnage` : ""}).`);
+      if (userNotes) {
+        lines.push(`<strong>Your Session Note Applied:</strong> "${userNotes}"`);
+      }
       if (isCustom) {
-        lines.push(`<strong>Schedule Sync:</strong> Logged as a today-only override. Tomorrow automatically returns to your scheduled split.`);
+        lines.push(`<strong>Next Workout Plan:</strong> Logged as a today-only override. Next session automatically returns to your scheduled split.`);
+      } else if (progResult.holdDueToFatigueOrPain) {
+        lines.push(`<strong>Next Workout Plan (Note-Adjusted):</strong> Because your notes flagged soreness/fatigue/pain, weights were held steady for joint recovery before stepping up.`);
       } else if (progResult.upgraded.length > 0) {
         lines.push(`<strong>Next Week's Auto-Upgrades (${progResult.upgraded.length} lifts leveled up):</strong><br>• ${progResult.upgraded.join("<br>• ")}`);
       } else if (progResult.maintained.length > 0) {
         lines.push(`<strong>Next Week's Rep Progression:</strong> Keep current weights and push +1 rep per set:<br>• ${progResult.maintained.slice(0, 4).join("<br>• ")}`);
       }
-      lines.push(`<strong>Recovery Cue:</strong> Hit your 20-min incline walk (6:40–7:00 AM), log end-of-day steps tonight, and prioritize sleep for muscle repair.`);
       return lines.join("<br><br>");
     }
 
     document.getElementById("completeWorkoutBtn").addEventListener("click", async () => {
       const todayIso = getTodayIso();
       const dow = getTodayDow();
-      const plan = WORKOUT_PLAN[dow];
+      const plan = getPlanForDow(dow);
       const counts = countTodayCompletedSets(dow);
       const existing = state.dailyRecords[todayIso];
       const isCustom = !!existing?.isCustom;
@@ -2239,7 +2449,7 @@
       state.exerciseHistory = state.exerciseHistory || {};
 
       if (!isCustom) {
-        plan.exercises.forEach((ex) => {
+        getEffectiveExercisesForToday().forEach((ex) => {
           const rows = state.setLogs[ex.id] || [];
           const activeRows = rows.some((r) => r.done) ? rows.filter((r) => r.done) : rows;
           const mult = ex.unit === "kg/hand" ? 2 : 1;
@@ -2266,8 +2476,13 @@
       }
       totalVolumeKg = Math.round(totalVolumeKg);
 
-      // Apply automatic weekly progression (or hold weight & +1 rep if reps were missed)
-      const progResult = isCustom ? { upgraded: [], maintained: [] } : applyWeeklyAutoProgression(dow);
+      const userNotes = (document.getElementById("sessionNotesInput")?.value || "").trim();
+      state.sessionNotes = state.sessionNotes || {};
+      if (userNotes) state.sessionNotes[todayIso] = userNotes;
+      else delete state.sessionNotes[todayIso];
+
+      // Apply automatic weekly progression (respecting user notes on soreness/fatigue or missed reps)
+      const progResult = isCustom ? { upgraded: [], maintained: [], holdDueToFatigueOrPain: false } : applyWeeklyAutoProgression(dow, userNotes);
 
       const sessionTitle = isCustom ? existing.title : plan.title;
       const sessionMuscles = isCustom ? existing.muscles : plan.muscles;
@@ -2275,9 +2490,12 @@
 
       const btn = document.getElementById("completeWorkoutBtn");
       btn.disabled = true;
-      btn.innerHTML = `<span class="material-symbols-rounded">hourglass_top</span> Analyzing Session...`;
+      btn.innerHTML = `<span class="material-symbols-rounded">hourglass_top</span> Analyzing Notes & Planning...`;
 
-      let analysisHtml = buildLocalWorkoutAnalysis(sessionTitle, setsCompleted, totalVolumeKg, progResult, isCustom);
+      let analysisHtml = buildLocalWorkoutAnalysis(sessionTitle, setsCompleted, totalVolumeKg, progResult, isCustom, userNotes);
+      let nextPlanSummary = progResult.upgraded.length > 0
+        ? `<strong>Auto-Upgraded Targets:</strong> ${progResult.upgraded.slice(0, 3).join(" • ")}${userNotes ? `<br><strong>Note Reminder:</strong> "${userNotes}"` : ""}`
+        : `<strong>Target Focus:</strong> ${progResult.maintained.slice(0, 3).join(" • ") || "Build clean reps"}${userNotes ? `<br><strong>Note Reminder:</strong> "${userNotes}"` : ""}`;
       let sourceLabel = "Smart Coach";
 
       if (state.geminiApiKey) {
@@ -2287,12 +2505,16 @@ Session: ${sessionTitle}
 Target Muscles: ${sessionMuscles.join(", ")}
 Details: ${isCustom ? (existing.notes || "Custom session") : exerciseSummaryLines.join("; ")}
 Total Tonnage: ${totalVolumeKg} kg
+Athlete Session Notes: ${userNotes || "None provided"}
 Next-Week Auto-Progressions Applied: ${progResult.upgraded.join("; ") || "Building reps at current weights"}
 
-Provide a concise, high-impact 3-part post-workout analysis (1. Volume & Stimulus Assessment, 2. Plateau-Breaking & Form Focus, 3. Next Week's Progression Target). Keep it under 130 words in clean HTML using <strong> and <br> tags only.`;
+Return ONLY valid JSON with two keys:
+1. "analysisHtml": concise 3-part post-workout review (1. Volume & Stimulus, 2. Response to Athlete Notes & Form Focus, 3. Next Session Progression Plan) under 130 words using <strong> and <br> tags only.
+2. "nextSessionPlan": 1-2 short actionable sentences (under 45 words, clean HTML <strong>/<br>) to display at the top of the screen next time this split is trained.`;
 
           const bodyPayload = JSON.stringify({
-            contents: [{ parts: [{ text: prompt }] }]
+            contents: [{ parts: [{ text: prompt }] }],
+            generationConfig: { responseMimeType: "application/json" }
           });
 
           for (const modelName of ["gemini-3.8-flash", "gemini-3.0-flash", "gemini-flash-latest"]) {
@@ -2300,10 +2522,14 @@ Provide a concise, high-impact 3-part post-workout analysis (1. Volume & Stimulu
             const res = await fetch(ep, { method: "POST", headers: { "Content-Type": "application/json" }, body: bodyPayload });
             const data = await res.json();
             if (res.ok) {
-              const aiText = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
-              if (aiText) {
-                analysisHtml = aiText.replace(/```html|```/g, "").trim();
+              const rawText = (data.candidates?.[0]?.content?.parts?.[0]?.text || "{}").replace(/```json|```/g, "").trim();
+              const parsed = JSON.parse(rawText);
+              if (parsed.analysisHtml) {
+                analysisHtml = parsed.analysisHtml;
                 sourceLabel = "Gemini 3.8 AI";
+              }
+              if (parsed.nextSessionPlan) {
+                nextPlanSummary = parsed.nextSessionPlan;
               }
               break;
             }
@@ -2314,12 +2540,15 @@ Provide a concise, high-impact 3-part post-workout analysis (1. Volume & Stimulu
       state.sessionAnalyses = state.sessionAnalyses || {};
       state.sessionAnalyses[todayIso] = { html: analysisHtml, source: sourceLabel };
 
+      state.nextSessionPlanNotes = state.nextSessionPlanNotes || {};
+      state.nextSessionPlanNotes[dow] = nextPlanSummary;
+
       state.dailyRecords[todayIso] = {
         splitTag: isCustom ? "OVERRIDE" : plan.shortTag,
         typeClass: isCustom ? "tag-custom" : plan.typeClass,
         title: sessionTitle,
         muscles: sessionMuscles,
-        notes: existing?.notes || "",
+        notes: userNotes || existing?.notes || "",
         isCustom,
         cardioOverride: existing?.cardioOverride || null,
         cardioDone: existing?.cardioDone || false,
@@ -2425,6 +2654,11 @@ Provide a concise, high-impact 3-part post-workout analysis (1. Volume & Stimulu
 
       document.getElementById("cardioLoggedMins").textContent = `${loggedMins} / 20 min`;
 
+      const cardioNoteEl = document.getElementById("cardioNotesInput");
+      if (cardioNoteEl) {
+        cardioNoteEl.value = state.cardioNotes?.[todayIso] || "";
+      }
+
       const savedCardioAnalysis = state.cardioAnalyses?.[todayIso];
       const cardioCard = document.getElementById("aiCardioAnalysisCard");
       if (savedCardioAnalysis && cardioCard) {
@@ -2452,7 +2686,7 @@ Provide a concise, high-impact 3-part post-workout analysis (1. Volume & Stimulu
     document.getElementById("applyCardioOverrideBtn").addEventListener("click", () => {
       const todayIso = getTodayIso();
       const dow = getTodayDow();
-      const plan = WORKOUT_PLAN[dow];
+      const plan = getPlanForDow(dow);
       const type = document.getElementById("customCardioType").value.trim() || "Custom Cardio";
       const mins = Math.max(1, parseFloat(document.getElementById("customCardioMins").value) || 20);
       const incline = Math.max(0, parseFloat(document.getElementById("customCardioIncline").value) || 0);
@@ -2578,7 +2812,7 @@ Provide a concise, high-impact 3-part post-workout analysis (1. Volume & Stimulu
     document.getElementById("saveCardioBtn").addEventListener("click", async () => {
       const todayIso = getTodayIso();
       const dow = getTodayDow();
-      const plan = WORKOUT_PLAN[dow];
+      const plan = getPlanForDow(dow);
       const existing = state.dailyRecords[todayIso];
       const blocks = getActiveCardioBlocks();
 
@@ -2619,15 +2853,20 @@ Provide a concise, high-impact 3-part post-workout analysis (1. Volume & Stimulu
       btn.disabled = true;
       btn.innerHTML = `<span class="material-symbols-rounded">hourglass_top</span> Analyzing Cardio...`;
 
-      let analysisHtml = `<strong>Cardio Summary:</strong> Logged <strong>${summaryText}</strong>.<br><br><strong>Next Cycle Target:</strong> ${cardioProg.note}<br><br><strong>Execution Cue:</strong> Keep hands off the treadmill rails and breathe rhythmically through your nose/mouth.`;
+      const userCardioNotes = (document.getElementById("cardioNotesInput")?.value || "").trim();
+      state.cardioNotes = state.cardioNotes || {};
+      if (userCardioNotes) state.cardioNotes[todayIso] = userCardioNotes;
+
+      let analysisHtml = `<strong>Cardio Summary:</strong> Logged <strong>${summaryText}</strong>.${userCardioNotes ? `<br><br><strong>Your Cardio Note Applied:</strong> "${userCardioNotes}"` : ""}<br><br><strong>Next Cycle Target:</strong> ${cardioProg.note}`;
       let sourceLabel = "Smart Coach";
 
       if (state.geminiApiKey) {
         try {
           const prompt = `You are a conditioning coach reviewing a post-lift cardio session (${state.weight} kg lifter, 6:40-7:00 AM window).
 Session: ${summaryText} (${completedMins}/${targetMins} target minutes completed).
+Athlete Cardio Notes: ${userCardioNotes || "None provided"}
 Progression Update: ${cardioProg.note}
-Give a concise 2-part review (1. Cardiovascular & Recomp Stimulus, 2. Next Session Pacing Target) in under 90 words using clean HTML <strong> and <br> tags only.`;
+Give a concise 2-part review (1. Conditioning Stimulus & Note Feedback, 2. Next Session Pacing Target) in under 95 words using clean HTML <strong> and <br> tags only.`;
           const bodyPayload = JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] });
           for (const modelName of ["gemini-3.8-flash", "gemini-3.0-flash", "gemini-flash-latest"]) {
             const ep = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${encodeURIComponent(state.geminiApiKey)}`;
@@ -2701,7 +2940,7 @@ Give a concise 2-part review (1. Cardiovascular & Recomp Stimulus, 2. Next Sessi
       for (let day = 1; day <= daysInMonth; day++) {
         const dateStr = `${year}-${pad2(month + 1)}-${pad2(day)}`;
         const dt = new Date(year, month, day);
-        const plan = WORKOUT_PLAN[dt.getDay()];
+        const plan = getPlanForDow(dt.getDay());
         const record = state.dailyRecords[dateStr];
         const isSelected = state.selectedCalDate === dateStr;
 
@@ -2733,7 +2972,7 @@ Give a concise 2-part review (1. Cardiovascular & Recomp Stimulus, 2. Next Sessi
     function renderCalendarInspector() {
       const dateStr = state.selectedCalDate || getTodayIso();
       const dt = new Date(dateStr + "T00:00:00");
-      const plan = WORKOUT_PLAN[dt.getDay()];
+      const plan = getPlanForDow(dt.getDay());
       const record = state.dailyRecords[dateStr];
 
       document.getElementById("inspDateLabel").textContent = dt.toLocaleDateString("en-US", {
@@ -2767,6 +3006,14 @@ Give a concise 2-part review (1. Cardiovascular & Recomp Stimulus, 2. Next Sessi
 
       if (record && record.cardioSummary) {
         summaryEl.innerHTML += `<br><span style="color:var(--acc-cyan);">• <strong>Cardio:</strong> <span class="mono">${record.cardioSummary}</span></span>`;
+      }
+      const savedDayNote = state.sessionNotes?.[dateStr] || record?.notes;
+      if (savedDayNote) {
+        summaryEl.innerHTML += `<br><span style="color:var(--acc-violet);">• <strong>Session Note:</strong> "${savedDayNote}"</span>`;
+      }
+      const savedDayCardioNote = state.cardioNotes?.[dateStr];
+      if (savedDayCardioNote) {
+        summaryEl.innerHTML += `<br><span style="color:var(--acc-violet);">• <strong>Cardio Note:</strong> "${savedDayCardioNote}"</span>`;
       }
 
       const coachBox = document.getElementById("inspAiCoachBox");
@@ -2808,7 +3055,7 @@ Give a concise 2-part review (1. Cardiovascular & Recomp Stimulus, 2. Next Sessi
         showSnackbar(`Unmarked ${dateStr}`);
       } else {
         const dt = new Date(dateStr + "T00:00:00");
-        const plan = WORKOUT_PLAN[dt.getDay()];
+        const plan = getPlanForDow(dt.getDay());
         state.dailyRecords[dateStr] = {
           splitTag: plan.shortTag,
           typeClass: plan.typeClass,
@@ -2896,32 +3143,193 @@ Give a concise 2-part review (1. Cardiovascular & Recomp Stimulus, 2. Next Sessi
     /* ========================================================================
        CUSTOM EXTRA EXERCISE HANDLER (TODAY ONLY)
        ======================================================================== */
+    let selectedVariationScope = "today";
+
+    document.querySelectorAll("#customExScopeGroup .scope-radio-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll("#customExScopeGroup .scope-radio-btn").forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        selectedVariationScope = btn.dataset.scope;
+        document.getElementById("addExtraExBtnLabel").textContent =
+          selectedVariationScope === "cycle" ? "Add Variation to Weekly Cycle" : "Add Variation (Only Today)";
+      });
+    });
+
     document.getElementById("addExtraExerciseBtn").addEventListener("click", () => {
       const name = document.getElementById("extraExNameInput").value.trim();
-      if (!name) return showSnackbar("Enter an exercise name first.");
+      if (!name) return showSnackbar("Enter a variation name first.");
       const sets = Math.max(1, Math.min(10, parseInt(document.getElementById("extraExSetsInput").value, 10) || 3));
       const weight = parseFloat(document.getElementById("extraExWeightInput").value) || 0;
       const reps = parseInt(document.getElementById("extraExRepsInput").value, 10) || 12;
       const dow = getTodayDow();
-      const plan = WORKOUT_PLAN[dow];
-      if (!plan.exercises) plan.exercises = [];
-      const newId = `extra_${getTodayIso()}_${Date.now()}`;
-      plan.exercises.push({
-        id: newId,
-        name: `${name} (Today Only)`,
-        sets,
-        repRange: `${reps}–15`,
-        targetReps: reps,
-        defaultWeight: weight,
-        unit: "kg",
-        slug: "Dumbbell_Bicep_Curl",
-        cue: "Added for today's session only."
-      });
-      state.setLogs[newId] = Array.from({ length: sets }, () => ({ weight, reps, done: false }));
+      const todayIso = getTodayIso();
+
+      if (selectedVariationScope === "cycle") {
+        const plan = getPlanForDow(dow);
+        if (!plan.exercises) plan.exercises = [];
+        const newId = `cycle_${dow}_${Date.now()}`;
+        plan.exercises.push({
+          id: newId,
+          name,
+          sets,
+          repRange: `${reps}–15`,
+          targetReps: reps,
+          defaultWeight: weight,
+          unit: "kg",
+          slug: "Dumbbell_Bicep_Curl",
+          cue: "Custom variation added to weekly cycle."
+        });
+        state.setLogs[newId] = Array.from({ length: sets }, () => ({ weight, reps, done: false }));
+        showSnackbar(`Added "${name}" to ${plan.dayName} weekly cycle!`);
+      } else {
+        state.todayTempExercises = state.todayTempExercises || {};
+        if (!state.todayTempExercises[todayIso]) state.todayTempExercises[todayIso] = [];
+        const newId = `today_${todayIso}_${Date.now()}`;
+        state.todayTempExercises[todayIso].push({
+          id: newId,
+          name,
+          sets,
+          repRange: `${reps}–15`,
+          targetReps: reps,
+          defaultWeight: weight,
+          unit: "kg",
+          isTodayOnly: true,
+          slug: "Dumbbell_Bicep_Curl",
+          cue: "Added strictly for today's session."
+        });
+        state.setLogs[newId] = Array.from({ length: sets }, () => ({ weight, reps, done: false }));
+        showSnackbar(`Added "${name}" for today only!`);
+      }
+
       document.getElementById("extraExNameInput").value = "";
       saveState();
       renderTodayWorkoutView();
-      showSnackbar(`Added "${name}" for today`);
+      renderDashboard();
+    });
+
+    window.moveExerciseOrder = function (exId, direction) {
+      const todayIso = getTodayIso();
+      const dow = getTodayDow();
+      const plan = getPlanForDow(dow);
+      const tempList = state.todayTempExercises?.[todayIso] || [];
+
+      const tIdx = tempList.findIndex((e) => e.id === exId);
+      if (tIdx !== -1) {
+        const targetIdx = tIdx + direction;
+        if (targetIdx >= 0 && targetIdx < tempList.length) {
+          const [item] = tempList.splice(tIdx, 1);
+          tempList.splice(targetIdx, 0, item);
+          saveState();
+          renderTodayWorkoutView();
+        }
+        return;
+      }
+
+      const cIdx = (plan.exercises || []).findIndex((e) => e.id === exId);
+      if (cIdx !== -1) {
+        const targetIdx = cIdx + direction;
+        if (targetIdx >= 0 && targetIdx < plan.exercises.length) {
+          const [item] = plan.exercises.splice(cIdx, 1);
+          plan.exercises.splice(targetIdx, 0, item);
+          saveState();
+          renderTodayWorkoutView();
+          showSnackbar(`Reordered "${item.name}"`);
+        }
+      }
+    };
+
+    window.removeExerciseVariation = function (exId) {
+      const todayIso = getTodayIso();
+      const dow = getTodayDow();
+      const plan = getPlanForDow(dow);
+
+      if (state.todayTempExercises?.[todayIso]) {
+        const beforeLen = state.todayTempExercises[todayIso].length;
+        state.todayTempExercises[todayIso] = state.todayTempExercises[todayIso].filter((e) => e.id !== exId);
+        if (state.todayTempExercises[todayIso].length < beforeLen) {
+          delete state.setLogs[exId];
+          saveState();
+          renderTodayWorkoutView();
+          renderDashboard();
+          showSnackbar("Removed today's variation");
+          return;
+        }
+      }
+
+      if (plan.exercises) {
+        const targetEx = plan.exercises.find((e) => e.id === exId);
+        plan.exercises = plan.exercises.filter((e) => e.id !== exId);
+        delete state.setLogs[exId];
+        saveState();
+        renderTodayWorkoutView();
+        renderDashboard();
+        showSnackbar(`Removed "${targetEx?.name || "variation"}" from cycle`);
+      }
+    };
+
+    window.addSetToExercise = function (exId) {
+      const rows = state.setLogs[exId] || [];
+      const last = rows[rows.length - 1] || { weight: 10, reps: 12 };
+      rows.push({ weight: last.weight, reps: last.reps, done: false });
+      state.setLogs[exId] = rows;
+
+      const plan = getPlanForDow(getTodayDow());
+      const planEx = (plan.exercises || []).find((e) => e.id === exId);
+      if (planEx) planEx.sets = rows.length;
+
+      saveState();
+      renderTodayWorkoutView();
+      renderDashboard();
+      showSnackbar(`Added Set S${rows.length}`);
+    };
+
+    window.removeSetFromExercise = function (exId, setIdx) {
+      const rows = state.setLogs[exId] || [];
+      if (rows.length <= 1) {
+        return showSnackbar("Keep at least 1 set (or tap delete icon to remove exercise).");
+      }
+      rows.splice(setIdx, 1);
+      state.setLogs[exId] = rows;
+
+      const plan = getPlanForDow(getTodayDow());
+      const planEx = (plan.exercises || []).find((e) => e.id === exId);
+      if (planEx) planEx.sets = rows.length;
+
+      saveState();
+      renderTodayWorkoutView();
+      renderDashboard();
+      showSnackbar("Removed set");
+    };
+
+    document.getElementById("importJsonBtn").addEventListener("click", () => {
+      document.getElementById("importJsonFileInput").click();
+    });
+
+    document.getElementById("importJsonFileInput").addEventListener("change", (e) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        try {
+          const parsed = JSON.parse(String(ev.target?.result || "{}"));
+          if (!parsed || typeof parsed !== "object") throw new Error("Invalid JSON");
+          state = { ...getDefaultState(), ...parsed };
+          if (!state.customWorkoutPlan) state.customWorkoutPlan = JSON.parse(JSON.stringify(WORKOUT_PLAN));
+          saveState();
+          applyTheme(state.theme || "dark");
+          renderDashboard();
+          renderTodayWorkoutView();
+          renderCardioView();
+          renderCalendar();
+          renderSettings();
+          showSnackbar("JSON Backup Uploaded & Restored!");
+        } catch (err) {
+          showSnackbar("Invalid JSON file — upload a valid Apex 50 backup.");
+        } finally {
+          e.target.value = "";
+        }
+      };
+      reader.readAsText(file);
     });
 
     /* ========================================================================
